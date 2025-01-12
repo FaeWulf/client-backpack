@@ -25,5 +25,6 @@ public abstract class ClientLevelMixin extends Level {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void initInject(ClientPacketListener connection, ClientLevel.ClientLevelData levelData, ResourceKey dimension, Holder dimensionTypeRegistration, int viewDistance, int serverSimulationDistance, LevelRenderer levelRenderer, boolean isDebug, long biomeZoomSeed, int seaLevel, CallbackInfo ci) {
         Constants.PLAYER_INV.clear();
+        Constants.PLAYER_INV_STATUS.clear();
     }
 }

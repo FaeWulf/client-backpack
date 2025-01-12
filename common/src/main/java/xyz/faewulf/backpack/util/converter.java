@@ -5,10 +5,31 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class converter {
+
+    public static List<ItemStack> takeInventorySnapshot(Player player) {
+        List<ItemStack> snapshot = new ArrayList<>();
+
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack originalStack = player.getInventory().getItem(i);
+            if (!originalStack.isEmpty()) {
+                snapshot.add(originalStack.copy()); // Deep copy of the ItemStack
+            } else {
+                snapshot.add(ItemStack.EMPTY); // Preserve empty slots
+            }
+        }
+
+        return snapshot;
+    }
+
     public static Holder<Enchantment> getEnchant(Level world, ResourceKey<Enchantment> enchant) {
         HolderGetter<Enchantment> registryEntryLookup = world.registryAccess()
                 .lookupOrThrow(Registries.ENCHANTMENT);

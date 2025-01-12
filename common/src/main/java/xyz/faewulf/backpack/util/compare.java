@@ -4,9 +4,16 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SuspiciousEffectHolder;
 import net.minecraft.world.phys.Vec3;
+import xyz.faewulf.backpack.Constants;
+
+import java.util.List;
 
 public class compare {
     public static boolean isHasTag(Block block, String tagName) {
@@ -96,5 +103,24 @@ public class compare {
 
         // If angle is close to π (180 degrees), the player is behind the villager
         return angle >= Math.PI / 2 && angle <= Math.PI;
+    }
+
+    public static boolean hasInventoryChanged(Player player) {
+        List<ItemStack> previousSnapshot = Constants.PLAYER_INV.get(player.getName().getString());
+
+        if (previousSnapshot == null) {
+            return true;
+        }
+
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+            ItemStack currentItem = player.getInventory().getItem(slot);
+            ItemStack previousItem = previousSnapshot.get(slot);
+
+            if (!ItemStack.matches(currentItem, previousItem)) {
+                return true; // Inventory has changed
+            }
+        }
+
+        return false; // No changes
     }
 }
