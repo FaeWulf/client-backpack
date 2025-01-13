@@ -31,8 +31,9 @@ public abstract class ClientPlayerMixin extends Player {
             } else {
                 // Check for inv change if player exists
                 Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
-                    v.holdingSlot = this.getInventory().selected;
-                    if (compare.hasInventoryChanged(this)) {
+                    // if inv change
+                    if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.holdingSlot) {
+                        v.holdingSlot = this.getInventory().selected;
                         v.invChanged = true;
                     }
                     return v;

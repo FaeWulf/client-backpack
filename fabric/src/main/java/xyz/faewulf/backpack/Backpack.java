@@ -3,8 +3,7 @@ package xyz.faewulf.backpack;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import xyz.faewulf.backpack.feature.BackpackModel;
-import xyz.faewulf.backpack.registry.CustomModelLayers;
+import xyz.faewulf.backpack.feature.backpacks.DefaultBackpackModel;
 
 public class Backpack implements ModInitializer {
 
@@ -12,7 +11,7 @@ public class Backpack implements ModInitializer {
     public void onInitialize() {
         Constants.LOG.info("Loading");
 
-        EntityModelLayerRegistry.registerModelLayer(CustomModelLayers.BACKPACK, BackpackModel::createBodyLayer);
+        EntityModelLayerRegistry.registerModelLayer(DefaultBackpackModel.LAYER_LOCATION, DefaultBackpackModel::createBodyLayer);
 
         loadCommand();
         loadEvent();
