@@ -20,6 +20,6 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void addRenderMixinInject(EntityRendererProvider.Context context, boolean useSlimModel, CallbackInfo ci) {
-        this.addLayer(new BackpackLayer(this, context.getModelSet()));
+        this.addLayer(new BackpackLayer(this, context));
     }
 }

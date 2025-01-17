@@ -1,3 +1,11 @@
 {
-  "parent": "client_backpack:block/backpack"
+  "credit": "Made with Blockbench",
+  "parent": "builtin/entity",
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "particle": "item/texture"
+  }
 }

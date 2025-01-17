@@ -3,7 +3,7 @@ package xyz.faewulf.backpack;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import xyz.faewulf.backpack.feature.backpacks.DefaultBackpackModel;
+import xyz.faewulf.backpack.feature.backpacks.defaultBackPack.DefaultBackpackModel;
 
 public class Backpack implements ModInitializer {
 

@@ -20,6 +20,8 @@ public class BackpackStatus {
 
     public List<ItemStack> pocketList = new ArrayList<>();
 
+    public ItemStack banner = null;
+
     public BackpackStatus() {
 
     }

@@ -11,6 +11,17 @@ repositories {
         name = "Terraformers"
         url = "https://maven.terraformersmc.com/"
     }
+    maven {
+        name = 'GeckoLib'
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroup("software.bernie.geckolib")
+        }
+    }
+    maven {
+        name = "Gegy"
+        url = uri("https://maven.gegy.dev")
+    }
 }
 
 dependencies {
@@ -26,6 +37,8 @@ dependencies {
     //lib
     include(modImplementation "com.electronwill.night-config:core:3.6.0")
     include(modImplementation "com.electronwill.night-config:toml:3.6.0")
+    modImplementation "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
+    modCompileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.0.1+1.21.4")
 }
 
 loom {

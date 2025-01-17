@@ -13,6 +13,7 @@ public class CommonClass {
 //            Constants.LOG.info("Hello to examplemod");
 //        }
 
+
         //for debug/testing
         if (Services.PLATFORM.isDevelopmentEnvironment())
             SharedConstants.IS_RUNNING_IN_IDE = true;

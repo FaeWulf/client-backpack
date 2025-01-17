@@ -3,15 +3,15 @@
   "package": "xyz.faewulf.backpack.mixinClient",
   "compatibilityLevel": "JAVA_18",
   "refmap": "${mod_id}.refmap.json",
-  "mixins": [
-  ],
+  "mixins": [],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
     "ClientLevelMixin",
     "ClientPlayerMixin",
-    "PlayerEntityRendererMixin"
+    "PlayerEntityRendererMixin",
+    "core.ModelManagerMixin"
   ],
   "plugin": "xyz.faewulf.backpack.util.mixinPlugin.ConditionalMixinPlugin"
 }
