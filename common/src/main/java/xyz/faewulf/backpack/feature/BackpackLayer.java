@@ -2,8 +2,8 @@ package xyz.faewulf.backpack.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.*;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -11,9 +11,10 @@ import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import xyz.faewulf.backpack.Constants;
-import xyz.faewulf.backpack.feature.backpacks.DefaultBackpackModel;
+import xyz.faewulf.backpack.feature.backpacks.defaultBackPack.DefaultBackpackModel;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IBackpackModel;
+import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.util.compare;
 
 import java.util.ArrayList;
@@ -22,9 +23,9 @@ import java.util.List;
 public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
     private final EntityModel<EntityRenderState> model;
 
-    public BackpackLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityModelSet modelSet) {
+    public BackpackLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
         super(parent);
-        this.model = new DefaultBackpackModel(modelSet.bakeLayer(DefaultBackpackModel.LAYER_LOCATION));
+        this.model = new DefaultBackpackModel(context.getModelSet().bakeLayer(DefaultBackpackModel.LAYER_LOCATION));
     }
 
     @Override
@@ -39,6 +40,7 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
             List<ItemStack> pockets = new ArrayList<>();
             List<ItemStack> containers = new ArrayList<>();
             List<ItemStack> liquids = new ArrayList<>();
+            ItemStack banner = null;
             backpackStatus.hasLightSource = false;
 
             for (int index = 0; index < playerInv.size(); index++) {
@@ -48,7 +50,7 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
                     continue;
 
                 // if light source
-                if (stack.getItem() == Items.LANTERN) {
+                if (!backpackStatus.hasLightSource && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
                     backpackStatus.hasLightSource = true;
                 }
 
@@ -62,6 +64,11 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
                     pockets.add(stack);
                 }
 
+                // Banner
+                if (compare.isHasTag(stack.getItem(), "client_backpack:banner")) {
+                    banner = stack;
+                }
+
                 // if containers (shulker, bundle for example)
                 if (backpackStatus.holdingSlot != index && index != 40 && compare.isHasTag(stack.getItem(), "client_backpack:container")) {
                     containers.add(stack);
@@ -72,7 +79,6 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
                     liquids.add(stack);
                 }
 
-                // Todo: banner
             }
 
             backpackStatus.invChanged = false;
@@ -80,11 +86,17 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
             backpackStatus.pocketList = pockets;
             backpackStatus.containerList = containers;
             backpackStatus.liquidList = liquids;
+            backpackStatus.banner = banner;
 
             Constants.PLAYER_INV_STATUS.put(playerRenderState.name, backpackStatus);
         }
 
-        // Render backpack
+        //System.out.println(ModelHelper..getQuads(null, Direction.DOWN, RandomSource.create()).size());
+        //BlockModel blockModel = ModelHelper.loadBlockModel(ResourceLocation.tryBuild(Constants.MOD_ID, "models/block/backpack.json"));
+        //System.out.println(ModelHelper.loadJsonModel(ResourceLocation.tryBuild(Constants.MOD_ID, "models/item/backpack.json")));
+
+        //Render backpack
+
         if (this.model instanceof IBackpackModel backpackModel) {
             backpackModel.render(poseStack, multiBufferSource, i, playerRenderState, backpackStatus, this.model);
         }
