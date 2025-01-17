@@ -24,6 +24,9 @@
     ],
     "modmenu": [
       "xyz.faewulf.backpack.config.ModMenuIntegration"
+    ],
+    "lambdynlights:initializer": [
+      "xyz.faewulf.backpack.feature.DynamicLightInitializer"
     ]
   },
   "custom": {
@@ -40,7 +43,7 @@
     "${mod_id}.mixins.json",
     "${mod_id}.fabric.mixins.json"
   ],
-  "accessWidener": "backpack.accesswidener",
+  "accessWidener": "client_backpack.accesswidener",
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": "*",
