@@ -79,7 +79,7 @@ public class DefaultBackpackModel extends EntityModel<EntityRenderState> impleme
 
         poseStack.pushPose();
 
-        // global transform
+        // global transform for crouching
         if (playerRenderState.isCrouching) {
             poseStack.rotateAround(
                     Axis.XP.rotationDegrees(25.0F), // Rotation of 20 degrees (adjust for effect)

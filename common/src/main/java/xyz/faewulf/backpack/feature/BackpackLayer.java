@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.feature.backpacks.defaultBackPack.DefaultBackpackModel;
 import xyz.faewulf.backpack.inter.BackpackStatus;
@@ -30,6 +29,11 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, PlayerRenderState playerRenderState, float v, float v1) {
+
+        // Todo: add option to disable this behavior
+        if (playerRenderState.isInvisible) {
+            return; // Stop rendering if invisible
+        }
 
         // Check for inv change, if change then compute the status again
         BackpackStatus backpackStatus = Constants.PLAYER_INV_STATUS.get(playerRenderState.name);
