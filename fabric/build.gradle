@@ -37,8 +37,7 @@ dependencies {
     //lib
     include(modImplementation "com.electronwill.night-config:core:3.6.0")
     include(modImplementation "com.electronwill.night-config:toml:3.6.0")
-    modImplementation "software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}"
-    modCompileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.0.1+1.21.4")
+    modCompileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:${lambdynamiclights}")
 }
 
 loom {
