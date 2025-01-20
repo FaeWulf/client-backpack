@@ -1,6 +1,7 @@
 package xyz.faewulf.backpack;
 
 import net.minecraft.SharedConstants;
+import xyz.faewulf.backpack.feature.BackpackModelRegistry;
 import xyz.faewulf.backpack.platform.Services;
 
 public class CommonClass {
@@ -13,6 +14,7 @@ public class CommonClass {
 //            Constants.LOG.info("Hello to examplemod");
 //        }
 
+        BackpackModelRegistry.register();
 
         //for debug/testing
         if (Services.PLATFORM.isDevelopmentEnvironment())

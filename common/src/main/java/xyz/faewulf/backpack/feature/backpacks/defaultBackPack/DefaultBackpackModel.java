@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import xyz.faewulf.backpack.Constants;
+import xyz.faewulf.backpack.feature.backpacks.basketBackpack.BasketBackpackModel;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IBackpackModel;
 import xyz.faewulf.backpack.inter.ItemDisplayTransform;
@@ -87,7 +89,7 @@ public class DefaultBackpackModel extends EntityModel<EntityRenderState> impleme
             );
             poseStack.translate(0f, -0.63f, 0.1f);
         } else {
-            poseStack.translate(0f, -0.8f, 0.14f);
+            poseStack.translate(0f, -0.8f, 0.16f);
         }
 
         // Backpack model
@@ -177,5 +179,10 @@ public class DefaultBackpackModel extends EntityModel<EntityRenderState> impleme
 
         // end global transform
         poseStack.popPose();
+    }
+
+    @Override
+    public ModelLayerLocation getLayerLocation() {
+        return LAYER_LOCATION;
     }
 }
