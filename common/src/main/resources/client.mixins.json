@@ -10,8 +10,7 @@
   "client": [
     "ClientLevelMixin",
     "ClientPlayerMixin",
-    "PlayerEntityRendererMixin",
-    "core.ModelManagerMixin"
+    "PlayerEntityRendererMixin"
   ],
   "plugin": "xyz.faewulf.backpack.util.mixinPlugin.ConditionalMixinPlugin"
 }
