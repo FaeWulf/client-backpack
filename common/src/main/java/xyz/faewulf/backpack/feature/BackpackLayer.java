@@ -10,29 +10,43 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.world.item.ItemStack;
 import xyz.faewulf.backpack.Constants;
-import xyz.faewulf.backpack.feature.backpacks.defaultBackPack.DefaultBackpackModel;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IBackpackModel;
 import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.util.compare;
+import xyz.faewulf.backpack.util.config.ModConfigs;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
-    private final EntityModel<EntityRenderState> model;
+    private EntityModel<EntityRenderState> model;
+    private EntityRendererProvider.Context context;
 
     public BackpackLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
         super(parent);
-        this.model = new DefaultBackpackModel(context.getModelSet().bakeLayer(DefaultBackpackModel.LAYER_LOCATION));
+        this.context = context;
     }
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, PlayerRenderState playerRenderState, float v, float v1) {
 
-        // Todo: add option to disable this behavior
-        if (playerRenderState.isInvisible) {
-            return; // Stop rendering if invisible
+        // Toggle mod
+        if (!ModConfigs._enable_mod)
+            return;
+
+        if (ModConfigs.backpack == ModConfigs.BACKPACK_TYPE.BASKET)
+            this.model = BackpackModelRegistry.createBackpackModel("basket", this.context);
+        else
+            this.model = BackpackModelRegistry.createBackpackModel("default", this.context);
+
+        //if no model then don't render
+        if (this.model == null)
+            return;
+
+        // Stop rendering if invisible
+        if (ModConfigs.hide_if_invisible && playerRenderState.isInvisible) {
+            return;
         }
 
         // Check for inv change, if change then compute the status again
