@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.util.config.ConfigScreen.ConfigScreen;
+import xyz.faewulf.backpack.util.config.ConfigScreen.CustomizeScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,11 +90,18 @@ public class ModInfoScreen extends Screen {
         GridLayout.RowHelper rowHelper = buttonLayout.createRowHelper(1);
         rowHelper.defaultCellSetting().padding(4);
 
+        rowHelper.addChild(
+                Button.builder(
+                        Component.literal("Customize"),
+                        button -> this.client.setScreen(CustomizeScreen.getScreen(this))).build()
+        );
+
         settingButton = rowHelper.addChild(
                 Button.builder(
-                        Component.literal("Configuration..."),
+                        Component.literal("Configurations"),
                         button -> this.client.setScreen(ConfigScreen.getScreen(this))).build()
         );
+
 
         rowHelper.addChild(
                 Button.builder(
@@ -114,7 +122,7 @@ public class ModInfoScreen extends Screen {
         rowHelperInfoLayout.addChild(
                 Button.builder(
                                 Component.literal("Discord").withStyle(ChatFormatting.BLUE),
-                                button -> this.openWebLink("https://discord.com/invite/xZneCTcEvb"))
+                                button -> this.openWebLink("https://faewulf.xyz/discord"))
                         .width(50).build()
         );
 
@@ -131,8 +139,11 @@ public class ModInfoScreen extends Screen {
         //background
         this.renderBackground(guiGraphics, mouseX, mouseY, delta);
         settingButton.setFocused(false);
+
         // Render other screen elements (if any)
         super.render(guiGraphics, mouseX, mouseY, delta);
+
+
     }
 
     @Override

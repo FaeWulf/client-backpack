@@ -12,18 +12,24 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.util.config.Config;
 import xyz.faewulf.backpack.util.config.ConfigLoaderFromAnnotation;
 import xyz.faewulf.backpack.util.config.ModConfigs;
+import xyz.faewulf.backpack.util.config.util.DummyPlayer;
 
 import java.util.*;
 
+import static net.minecraft.client.gui.screens.inventory.InventoryScreen.renderEntityInInventory;
 import static xyz.faewulf.backpack.util.config.Config.configClass;
 
 public class ConfigScreen extends Screen {
@@ -117,7 +123,6 @@ public class ConfigScreen extends Screen {
         configMap.forEach((s, stringEntryTypeMap) -> { //create tab for each category
             tabBuilder.addTabs(new ConfigTab(Component.literal(s), stringEntryTypeMap));
         });
-
 
         this.tabNavigationBar = tabBuilder.build();
 
@@ -391,6 +396,43 @@ public class ConfigScreen extends Screen {
         );
 
         super.render(guiGraphics, $$1, $$2, $$3);
+
+        //dummyPlayer for review
+        ClientLevel clientLevel = Minecraft.getInstance().level;
+
+        // is selecting styling tab, then tweaking layout for the tab
+        if (this.tabManager.getCurrentTab() != null) {
+            if (clientLevel != null && this.tabManager.getCurrentTab().getTabTitle().getString().equalsIgnoreCase("style")) {
+
+                //Disable info and title
+                infoTab_Title.visible = false;
+                infoTab_Info.visible = false;
+
+                DummyPlayer localPlayer = DummyPlayer.createInstance(clientLevel);
+
+                // Set up the position, scale, and orientation
+                float x = infoTab.getX() + (float) infoTab.getWidth() / 2; // Center of the screen
+                float y = (float) this.height / 2; // Slightly lower than center
+                float scale = 100; // Scale for rendering the entity (adjust as needed)
+
+
+                // Render the entity
+                renderEntityInInventory(
+                        guiGraphics, // Graphics context
+                        x,
+                        y,           // Y position
+                        scale,       // Scale
+                        new Vector3f(0.0f, 0.0f, 0.0f),   // Translation vector
+                        new Quaternionf().rotationYXZ((float) (Math.PI * 15 / 180), 0.0f, (float) Math.PI),        // Entity rotation
+                        null, // Optional camera orientation
+                        localPlayer       // The entity to render
+                );
+            } else {
+                //Disable info and title
+                infoTab_Title.visible = true;
+                infoTab_Info.visible = true;
+            }
+        }
     }
 
     private void drawRandomTiledBackground(GuiGraphics guiGraphics) {
