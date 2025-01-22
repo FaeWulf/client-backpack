@@ -1,6 +1,6 @@
 {
-  "replace": false,
-  "values": [
+  "type": "tool_and_weapon",
+  "items": [
     "#minecraft:axes",
     "#minecraft:pickaxes",
     "#minecraft:shovels",

@@ -1,6 +1,6 @@
 {
-  "replace": false,
-  "values": [
+  "type": "container",
+  "items": [
     "#minecraft:shulker_boxes",
     "#minecraft:bundles"
   ]

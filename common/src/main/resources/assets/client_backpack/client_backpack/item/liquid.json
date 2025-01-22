@@ -1,6 +1,6 @@
 {
-  "replace": false,
-  "values": [
+  "type": "liquid",
+  "items": [
     "minecraft:water_bucket",
     "minecraft:lava_bucket"
   ]
