@@ -4,16 +4,16 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SuspiciousEffectHolder;
 import net.minecraft.world.phys.Vec3;
 import xyz.faewulf.backpack.Constants;
+import xyz.faewulf.backpack.registry.ItemTagRegistry;
 
 import java.util.List;
+import java.util.Map;
 
 public class compare {
     public static boolean isHasTag(Block block, String tagName) {
@@ -67,6 +67,15 @@ public class compare {
             return false;
         }
 
+    }
+
+    public static boolean isHasTagClient(Item item, String tagName) {
+        Map<String, List<Item>> stringListMap = ItemTagRegistry.getTypeToItemsMap();
+
+        if (!stringListMap.containsKey(tagName))
+            return false;
+
+        return stringListMap.get(tagName).contains(item);
     }
 
     public static boolean isBlock(String name, Block block) {

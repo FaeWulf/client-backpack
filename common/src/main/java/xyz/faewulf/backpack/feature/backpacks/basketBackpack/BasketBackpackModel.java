@@ -107,7 +107,7 @@ public class BasketBackpackModel extends EntityModel<EntityRenderState> implemen
                 ItemStack itemStack = backpackStatus.toolsList.get(index);
 
                 //first weapon will hold in the back
-                if (compare.isHasTag(itemStack.getItem(), Constants.MOD_ID + ":weapon") && !alreadyHasWeaponInTheBack) {
+                if (compare.isHasTagClient(itemStack.getItem(), "weapon") && !alreadyHasWeaponInTheBack) {
                     alreadyHasWeaponInTheBack = true;
 
                     poseStack.pushPose();

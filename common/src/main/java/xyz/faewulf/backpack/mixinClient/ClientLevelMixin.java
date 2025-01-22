@@ -1,5 +1,6 @@
 package xyz.faewulf.backpack.mixinClient;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.faewulf.backpack.Constants;
+import xyz.faewulf.backpack.registry.ItemTagRegistry;
 
 @Mixin(ClientLevel.class)
 public abstract class ClientLevelMixin extends Level {
@@ -26,5 +28,6 @@ public abstract class ClientLevelMixin extends Level {
     private void initInject(ClientPacketListener connection, ClientLevel.ClientLevelData levelData, ResourceKey dimension, Holder dimensionTypeRegistration, int viewDistance, int serverSimulationDistance, LevelRenderer levelRenderer, boolean isDebug, long biomeZoomSeed, int seaLevel, CallbackInfo ci) {
         Constants.PLAYER_INV.clear();
         Constants.PLAYER_INV_STATUS.clear();
+        ItemTagRegistry.loadAllBackpackItems();
     }
 }

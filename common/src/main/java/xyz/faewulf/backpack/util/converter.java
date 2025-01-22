@@ -26,7 +26,6 @@ public class converter {
                 snapshot.add(ItemStack.EMPTY); // Preserve empty slots
             }
         }
-
         return snapshot;
     }
 

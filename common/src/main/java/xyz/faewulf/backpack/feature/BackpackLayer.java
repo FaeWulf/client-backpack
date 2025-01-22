@@ -61,43 +61,46 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
             ItemStack banner = null;
             backpackStatus.hasLightSource = false;
 
-            for (int index = 0; index < playerInv.size(); index++) {
-                ItemStack stack = playerInv.get(index);
+            if (playerInv != null)
+                for (int index = 0; index < playerInv.size(); index++) {
+                    ItemStack stack = playerInv.get(index);
 
                 if (stack.isEmpty())
                     continue;
+                    if (stack.isEmpty())
+                        continue;
 
-                // if light source
-                if (!backpackStatus.hasLightSource && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
-                    backpackStatus.hasLightSource = true;
+                    // if light source
+                    if (!backpackStatus.hasLightSource && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
+                        backpackStatus.hasLightSource = true;
+                    }
+
+                    // if weapon or tool, and not holding it (main hand and offhand = 40)
+                    if (backpackStatus.holdingSlot != index && index != 40 && compare.isHasTagClient(stack.getItem(), "tool_and_weapon")) {
+                        tools.add(stack);
+                    }
+
+                    // if pocket item (arrow for example)
+                    if (compare.isHasTagClient(stack.getItem(), "pocket_item")) {
+                        pockets.add(stack);
+                    }
+
+                    // Banner
+                    if (compare.isHasTagClient(stack.getItem(), "banner")) {
+                        banner = stack;
+                    }
+
+                    // if containers (shulker, bundle for example)
+                    if (backpackStatus.holdingSlot != index && index != 40 && compare.isHasTagClient(stack.getItem(), "container")) {
+                        containers.add(stack);
+                    }
+
+                    // if liquid (lava, water for example)
+                    if (compare.isHasTagClient(stack.getItem(), "liquid")) {
+                        liquids.add(stack);
+                    }
+
                 }
-
-                // if weapon or tool, and not holding it (main hand and offhand = 40)
-                if (backpackStatus.holdingSlot != index && index != 40 && compare.isHasTag(stack.getItem(), "client_backpack:tool_and_weapon")) {
-                    tools.add(stack);
-                }
-
-                // if pocket item (arrow for example)
-                if (compare.isHasTag(stack.getItem(), "client_backpack:pocket_item")) {
-                    pockets.add(stack);
-                }
-
-                // Banner
-                if (compare.isHasTag(stack.getItem(), "client_backpack:banner")) {
-                    banner = stack;
-                }
-
-                // if containers (shulker, bundle for example)
-                if (backpackStatus.holdingSlot != index && index != 40 && compare.isHasTag(stack.getItem(), "client_backpack:container")) {
-                    containers.add(stack);
-                }
-
-                // if liquid (lava, water for example)
-                if (compare.isHasTag(stack.getItem(), "client_backpack:liquid")) {
-                    liquids.add(stack);
-                }
-
-            }
 
             backpackStatus.invChanged = false;
             backpackStatus.toolsList = tools;
