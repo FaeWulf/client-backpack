@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BackpackStatus {
+    public String backpackType = "default";
+    public String backpackVariant = "default";
+
     public boolean invChanged = true;
     public boolean hasLightSource = false;
 

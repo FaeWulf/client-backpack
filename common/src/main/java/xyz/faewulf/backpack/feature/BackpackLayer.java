@@ -9,10 +9,12 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IBackpackModel;
 import xyz.faewulf.backpack.platform.Services;
+import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.compare;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 
@@ -21,7 +23,7 @@ import java.util.List;
 
 public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
     private EntityModel<EntityRenderState> model;
-    private EntityRendererProvider.Context context;
+    private final EntityRendererProvider.Context context;
 
     public BackpackLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
         super(parent);
@@ -29,19 +31,10 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, PlayerRenderState playerRenderState, float v, float v1) {
+    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, @NotNull PlayerRenderState playerRenderState, float v, float v1) {
 
         // Toggle mod
         if (!ModConfigs._enable_mod)
-            return;
-
-        if (ModConfigs.backpack == ModConfigs.BACKPACK_TYPE.BASKET)
-            this.model = BackpackModelRegistry.createBackpackModel("basket", this.context);
-        else
-            this.model = BackpackModelRegistry.createBackpackModel("default", this.context);
-
-        //if no model then don't render
-        if (this.model == null)
             return;
 
         // Stop rendering if invisible
@@ -53,7 +46,19 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
         BackpackStatus backpackStatus = Constants.PLAYER_INV_STATUS.get(playerRenderState.name);
         List<ItemStack> playerInv = Constants.PLAYER_INV.get(playerRenderState.name);
 
-        if (backpackStatus != null && backpackStatus.invChanged) {
+        if (backpackStatus == null)
+            return;
+
+        // Handle backpack model based on model type and variant
+        if (BackpackModelRegistry.isValid(backpackStatus.backpackType))
+            this.model = BackpackModelRegistry.createBackpackModel(backpackStatus.backpackType, this.context);
+
+        //if no model then don't render
+        if (this.model == null)
+            return;
+
+        // Calculate backpack contents based on inv only if inv changed
+        if (backpackStatus.invChanged) {
             List<ItemStack> tools = new ArrayList<>();
             List<ItemStack> pockets = new ArrayList<>();
             List<ItemStack> containers = new ArrayList<>();
@@ -65,8 +70,6 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
                 for (int index = 0; index < playerInv.size(); index++) {
                     ItemStack stack = playerInv.get(index);
 
-                if (stack.isEmpty())
-                    continue;
                     if (stack.isEmpty())
                         continue;
 
@@ -117,7 +120,6 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
         //System.out.println(ModelHelper.loadJsonModel(ResourceLocation.tryBuild(Constants.MOD_ID, "models/item/backpack.json")));
 
         //Render backpack
-
         if (this.model instanceof IBackpackModel backpackModel) {
             backpackModel.render(poseStack, multiBufferSource, i, playerRenderState, backpackStatus, this.model);
         }

@@ -1,19 +1,18 @@
 package xyz.faewulf.backpack.util.config.util;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.resources.PlayerSkin;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
+import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
+import xyz.faewulf.backpack.util.config.ModConfigs;
 
 import java.util.UUID;
-import java.util.function.Function;
 
-public class DummyPlayer extends LocalPlayer {
+public class DummyPlayer extends AbstractClientPlayer {
     private static DummyPlayer instance;
     private PlayerSkin playerSkin = null;
-    public Function<EquipmentSlot, ItemStack> equippedStackSupplier = slot -> ItemStack.EMPTY;
 
     public static DummyPlayer createInstance(ClientLevel clientLevel) {
         if (instance == null) instance = new DummyPlayer(clientLevel);
@@ -21,8 +20,13 @@ public class DummyPlayer extends LocalPlayer {
     }
 
     public DummyPlayer(ClientLevel clientLevel) {
-        super(Minecraft.getInstance(), clientLevel, Minecraft.getInstance().getConnection(), null, null, false, false);
+        super(clientLevel, new GameProfile(UUID.randomUUID(), "Faewulf"));
+        //super(Minecraft.getInstance(), clientLevel, Minecraft.getInstance().getConnection(), null, null, false, false);
         setUUID(UUID.randomUUID());
         Minecraft.getInstance().getSkinManager().getOrLoad(getGameProfile()).thenAccept((textures) -> textures.ifPresent(skin -> playerSkin = skin));
+
+        if (this instanceof IClientPlayerBackpackData clientPlayerBackpackData) {
+            clientPlayerBackpackData.client_Backpack$setModel(ModConfigs.backpack);
+        }
     }
 }
