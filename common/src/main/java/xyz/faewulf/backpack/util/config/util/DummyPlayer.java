@@ -15,7 +15,7 @@ public class DummyPlayer extends AbstractClientPlayer {
     private PlayerSkin playerSkin = null;
 
     public static DummyPlayer createInstance(ClientLevel clientLevel) {
-        if (instance == null) instance = new DummyPlayer(clientLevel);
+        if (instance == null || instance.clientLevel != clientLevel) instance = new DummyPlayer(clientLevel);
         return instance;
     }
 
