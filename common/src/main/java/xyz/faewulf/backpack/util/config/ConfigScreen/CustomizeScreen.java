@@ -13,10 +13,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import xyz.faewulf.backpack.Constants;
+import xyz.faewulf.backpack.inter.BackpackStatus;
+import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.config.Config;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.config.util.DummyPlayer;
+import xyz.faewulf.backpack.util.converter;
 
 import java.util.List;
 
@@ -32,6 +36,7 @@ public class CustomizeScreen extends Screen {
 
     //layout vars
     private static final int RIGHT_TAB_PADDING = 4;
+    private DummyPlayer dummyPlayer;
 
     //layouts
     private GridLayout settingLayout;
@@ -90,6 +95,8 @@ public class CustomizeScreen extends Screen {
 
                                     if (this.button_Model != null)
                                         this.button_Model.setMessage(Component.literal(modelList.get(model_index))); // update message
+
+                                    this.updateDummyStatus();
                                 })
                         .width(20)
                         .tooltip(Tooltip.create(Component.translatable("backpack.config.selectType.tooltip")))
@@ -119,6 +126,8 @@ public class CustomizeScreen extends Screen {
 
                                     if (this.button_Model != null)
                                         this.button_Model.setMessage(Component.literal(modelList.get(model_index))); // update message
+
+                                    this.updateDummyStatus();
                                 })
                         .width(20)
                         .tooltip(Tooltip.create(Component.translatable("backpack.config.selectType.tooltip")))
@@ -170,6 +179,7 @@ public class CustomizeScreen extends Screen {
                                         //this.updateConfig();
                                     } else {
                                         //undoConfig();
+                                        this.saveConfig();
                                         this.onClose();
                                     }
                                 })
@@ -187,6 +197,29 @@ public class CustomizeScreen extends Screen {
 
         //init the reposition
         this.repositionElements();
+    }
+
+    // Method for update dummy status after its value changed
+    private void updateDummyStatus() {
+        // Update dummy player
+        if (this.dummyPlayer instanceof IClientPlayerBackpackData clientPlayerBackpackDat) {
+            clientPlayerBackpackDat.client_Backpack$setModel(modelList.get(model_index));
+        }
+    }
+
+    private void saveConfig() {
+        ModConfigs.backpack = this.modelList.get(model_index);
+        Config.save();
+
+        //update model for player
+        if (Minecraft.getInstance().player != null) {
+            // Create status for new player
+            Constants.PLAYER_INV_STATUS.computeIfPresent(Minecraft.getInstance().player.getName().getString(), (k, v) -> {
+                v.backpackType = ModConfigs.backpack;
+                //backpackStatus.backpackVariant = client_Backpack$variantType;
+                return v;
+            });
+        }
     }
 
     @Override
@@ -218,6 +251,7 @@ public class CustomizeScreen extends Screen {
         if (clientLevel != null) {
 
             DummyPlayer localPlayer = DummyPlayer.createInstance(clientLevel);
+            this.dummyPlayer = localPlayer;
 
             // Set up the position, scale, and orientation
             float x = (float) this.width / 2; // Center of the screen

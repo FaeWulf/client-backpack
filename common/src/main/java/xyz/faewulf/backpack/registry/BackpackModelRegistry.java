@@ -1,4 +1,4 @@
-package xyz.faewulf.backpack.feature;
+package xyz.faewulf.backpack.registry;
 
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -8,15 +8,18 @@ import xyz.faewulf.backpack.feature.backpacks.basketBackpack.BasketBackpackModel
 import xyz.faewulf.backpack.feature.backpacks.defaultBackPack.DefaultBackpackModel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 public class BackpackModelRegistry {
     private static final Map<String, Function<EntityRendererProvider.Context, EntityModel<EntityRenderState>>> MODEL_REGISTRY = new HashMap<>();
+    private static final Map<String, Function<EntityRendererProvider.Context, EntityModel<EntityRenderState>>> VARIANT_REGISTRY = new HashMap<>();
 
     public static void register() {
         BackpackModelRegistry.registerModel("default", (ctx) -> new DefaultBackpackModel(ctx.bakeLayer(DefaultBackpackModel.LAYER_LOCATION)));
         BackpackModelRegistry.registerModel("basket", (ctx) -> new BasketBackpackModel(ctx.bakeLayer(BasketBackpackModel.LAYER_LOCATION)));
+        BackpackModelRegistry.registerModel("default2", (ctx) -> new DefaultBackpackModel(ctx.bakeLayer(DefaultBackpackModel.LAYER_LOCATION)));
     }
 
     // Register a backpack model
@@ -44,5 +47,13 @@ public class BackpackModelRegistry {
             Constants.LOG.error("Failed to create backpack model for identifier: " + id, e);
             return null;
         }
+    }
+
+    public static List<String> getModelList() {
+        return MODEL_REGISTRY.keySet().stream().toList();
+    }
+
+    public static boolean isValid(String id) {
+        return MODEL_REGISTRY.containsKey(id.toLowerCase());
     }
 }

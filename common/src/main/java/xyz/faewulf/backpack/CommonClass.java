@@ -1,8 +1,10 @@
 package xyz.faewulf.backpack;
 
 import net.minecraft.SharedConstants;
-import xyz.faewulf.backpack.feature.BackpackModelRegistry;
+import net.minecraft.world.item.Item;
+import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.platform.Services;
+import xyz.faewulf.backpack.registry.ItemTagRegistry;
 
 public class CommonClass {
     public static void init() {
@@ -15,6 +17,7 @@ public class CommonClass {
 //        }
 
         BackpackModelRegistry.register();
+
 
         //for debug/testing
         if (Services.PLATFORM.isDevelopmentEnvironment())
