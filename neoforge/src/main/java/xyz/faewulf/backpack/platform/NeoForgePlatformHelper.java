@@ -1,6 +1,8 @@
 package xyz.faewulf.backpack.platform;
 
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 import xyz.faewulf.backpack.platform.services.IPlatformHelper;
 
@@ -25,6 +27,11 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     public boolean isDevelopmentEnvironment() {
 
         return !FMLLoader.isProduction();
+    }
+
+    @Override
+    public boolean isClientSide() {
+        return FMLEnvironment.dist == Dist.CLIENT;
     }
 
     @Override

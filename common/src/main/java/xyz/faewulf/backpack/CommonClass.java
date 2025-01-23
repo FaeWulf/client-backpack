@@ -2,6 +2,7 @@ package xyz.faewulf.backpack;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.world.item.Item;
+import xyz.faewulf.backpack.networking.networkConstants;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.registry.ItemTagRegistry;
@@ -16,7 +17,8 @@ public class CommonClass {
 //            Constants.LOG.info("Hello to examplemod");
 //        }
 
-        BackpackModelRegistry.register();
+        if (Services.PLATFORM.isClientSide())
+            BackpackModelRegistry.register();
 
         networkConstants.init();
 

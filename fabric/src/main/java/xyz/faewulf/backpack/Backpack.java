@@ -1,10 +1,12 @@
 package xyz.faewulf.backpack;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -18,8 +20,10 @@ public class Backpack implements ModInitializer {
     public void onInitialize() {
         Constants.LOG.info("Loading");
 
-        EntityModelLayerRegistry.registerModelLayer(DefaultBackpackModel.LAYER_LOCATION, DefaultBackpackModel::createBodyLayer);
-        EntityModelLayerRegistry.registerModelLayer(BasketBackpackModel.LAYER_LOCATION, BasketBackpackModel::createBodyLayer);
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            EntityModelLayerRegistry.registerModelLayer(DefaultBackpackModel.LAYER_LOCATION, DefaultBackpackModel::createBodyLayer);
+            EntityModelLayerRegistry.registerModelLayer(BasketBackpackModel.LAYER_LOCATION, BasketBackpackModel::createBodyLayer);
+        }
 
         loadCommand();
         loadEvent();
@@ -53,6 +57,8 @@ public class Backpack implements ModInitializer {
                 ItemTagRegistry.loadAllBackpackItems();
             }
         });
+
+
     }
 
 }

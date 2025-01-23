@@ -30,6 +30,9 @@ public interface IPlatformHelper {
      */
     boolean isDevelopmentEnvironment();
 
+    // Detect client side
+    boolean isClientSide();
+
     /**
      * Gets the name of the environment type as a string.
      *
