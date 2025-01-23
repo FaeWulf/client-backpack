@@ -9,12 +9,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import xyz.faewulf.backpack.Constants;
+import xyz.faewulf.backpack.inter.BackpackStatus;
+import xyz.faewulf.backpack.platform.Services;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class converter {
 
+    // Todo: smart system to update inventory of other player's inventory, since you couldn't see other player inv
+    // By remember item they holding in their hands and push into the list.
+    // Also ignore smart system for Local players, this should only calculate for outsider
     public static List<ItemStack> takeInventorySnapshot(Player player) {
         List<ItemStack> snapshot = new ArrayList<>();
 
@@ -27,6 +33,95 @@ public class converter {
             }
         }
         return snapshot;
+    }
+
+    // Todo: Handle for server and client different
+    public static BackpackStatus updateBackpackStatus(BackpackStatus backpackStatus, String name, Boolean serverSide) {
+
+        List<ItemStack> playerInv;
+
+        if (serverSide)
+            playerInv = Constants.SERVER_PLAYER_INV.get(name);
+        else
+            playerInv = Constants.PLAYER_INV.get(name);
+
+        List<ItemStack> tools = new ArrayList<>();
+        List<ItemStack> pockets = new ArrayList<>();
+        List<ItemStack> containers = new ArrayList<>();
+        List<ItemStack> liquids = new ArrayList<>();
+        ItemStack banner = null;
+        backpackStatus.hasLightSource = false;
+
+        if (playerInv != null)
+            for (int index = 0; index < playerInv.size(); index++) {
+                ItemStack stack = playerInv.get(index);
+
+                if (stack.isEmpty())
+                    continue;
+
+                // if light source
+                if (Services.PLATFORM.isModLoaded("lambdynlights"))
+                    if (!backpackStatus.hasLightSource && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
+                        backpackStatus.hasLightSource = true;
+                    }
+
+                // if weapon or tool, and not holding it (main hand and offhand = 40)
+                if (backpackStatus.holdingSlot != index && index != 40) {
+                    if (serverSide) {
+                        if (compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":tool_and_weapon"))
+                            tools.add(stack);
+                    } else if (compare.isHasTagClient(stack.getItem(), "tool_and_weapon"))
+                        tools.add(stack);
+                }
+
+                // if pocket item (arrow for example)
+                if (serverSide) {
+                    if (compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":pocket_item")) {
+                        pockets.add(stack);
+                    }
+                } else if (compare.isHasTagClient(stack.getItem(), "pocket_item")) {
+                    pockets.add(stack);
+                }
+
+
+                // Banner
+                if (serverSide) {
+                    if (compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":banner")) {
+                        banner = stack;
+                    }
+                } else if (compare.isHasTagClient(stack.getItem(), "banner")) {
+                    banner = stack;
+                }
+
+                // if containers (shulker, bundle for example)
+                if (backpackStatus.holdingSlot != index && index != 40) {
+                    if (serverSide) {
+                        if (compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":container"))
+                            containers.add(stack);
+                    } else if (compare.isHasTagClient(stack.getItem(), "container")) {
+                        containers.add(stack);
+                    }
+                }
+
+                // if liquid (lava, water for example)
+                if (serverSide) {
+                    if (compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":liquid")) {
+                        liquids.add(stack);
+                    }
+                } else if (compare.isHasTagClient(stack.getItem(), "liquid")) {
+                    liquids.add(stack);
+                }
+
+            }
+
+        backpackStatus.invChanged = false;
+        backpackStatus.toolsList = tools;
+        backpackStatus.pocketList = pockets;
+        backpackStatus.containerList = containers;
+        backpackStatus.liquidList = liquids;
+        backpackStatus.banner = banner;
+
+        return backpackStatus;
     }
 
     public static Holder<Enchantment> getEnchant(Level world, ResourceKey<Enchantment> enchant) {

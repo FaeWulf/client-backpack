@@ -58,60 +58,9 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
             return;
 
         // Calculate backpack contents based on inv only if inv changed
-        if (backpackStatus.invChanged) {
-            List<ItemStack> tools = new ArrayList<>();
-            List<ItemStack> pockets = new ArrayList<>();
-            List<ItemStack> containers = new ArrayList<>();
-            List<ItemStack> liquids = new ArrayList<>();
-            ItemStack banner = null;
-            backpackStatus.hasLightSource = false;
-
-            if (playerInv != null)
-                for (int index = 0; index < playerInv.size(); index++) {
-                    ItemStack stack = playerInv.get(index);
-
-                    if (stack.isEmpty())
-                        continue;
-
-                    // if light source
-                    if (!backpackStatus.hasLightSource && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
-                        backpackStatus.hasLightSource = true;
-                    }
-
-                    // if weapon or tool, and not holding it (main hand and offhand = 40)
-                    if (backpackStatus.holdingSlot != index && index != 40 && compare.isHasTagClient(stack.getItem(), "tool_and_weapon")) {
-                        tools.add(stack);
-                    }
-
-                    // if pocket item (arrow for example)
-                    if (compare.isHasTagClient(stack.getItem(), "pocket_item")) {
-                        pockets.add(stack);
-                    }
-
-                    // Banner
-                    if (compare.isHasTagClient(stack.getItem(), "banner")) {
-                        banner = stack;
-                    }
-
-                    // if containers (shulker, bundle for example)
-                    if (backpackStatus.holdingSlot != index && index != 40 && compare.isHasTagClient(stack.getItem(), "container")) {
-                        containers.add(stack);
-                    }
-
-                    // if liquid (lava, water for example)
-                    if (compare.isHasTagClient(stack.getItem(), "liquid")) {
-                        liquids.add(stack);
-                    }
-
-                }
-
-            backpackStatus.invChanged = false;
-            backpackStatus.toolsList = tools;
-            backpackStatus.pocketList = pockets;
-            backpackStatus.containerList = containers;
-            backpackStatus.liquidList = liquids;
-            backpackStatus.banner = banner;
-
+        // Only for Local player
+        if (backpackStatus.invChanged && isLocalPLayer) {
+            converter.updateBackpackStatus(backpackStatus, playerRenderState.name, false);
             Constants.PLAYER_INV_STATUS.put(playerRenderState.name, backpackStatus);
         }
 
