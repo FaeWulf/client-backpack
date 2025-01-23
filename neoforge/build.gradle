@@ -7,6 +7,9 @@ repositories {
     maven {
         url = "https://api.modrinth.com/maven"
     }
+    maven {
+        url = "https://jm.gserv.me/repository/maven-public/"
+    }
 }
 
 dependencies {
@@ -14,6 +17,7 @@ dependencies {
 
     //lib
     implementation("com.electronwill.night-config:toml:3.6.0")
+    jarJar(implementation "mysticdrew:common-networking-neoforge:${common_networking}")
 }
 
 neoForge {

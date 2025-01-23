@@ -19,6 +19,9 @@ repositories {
         }
     }
     maven {
+        url = "https://jm.gserv.me/repository/maven-public/"
+    }
+    maven {
         name = "Gegy"
         url = uri("https://maven.gegy.dev")
     }
@@ -37,6 +40,7 @@ dependencies {
     //lib
     include(modImplementation "com.electronwill.night-config:core:3.6.0")
     include(modImplementation "com.electronwill.night-config:toml:3.6.0")
+    include(modImplementation "mysticdrew:common-networking-fabric:${common_networking}")
     modCompileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:${lambdynamiclights}")
 }
 

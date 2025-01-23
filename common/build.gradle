@@ -7,6 +7,9 @@ repositories {
     maven {
         url = "https://api.modrinth.com/maven"
     }
+    maven {
+        url = "https://jm.gserv.me/repository/maven-public/"
+    }
     mavenCentral()
 }
 
@@ -34,6 +37,9 @@ dependencies {
 
     //config
     compileOnly("com.electronwill.night-config:toml:3.6.0")
+
+    // common-networking
+    implementation "mysticdrew:common-networking-common:${common_networking}"
 }
 
 configurations {

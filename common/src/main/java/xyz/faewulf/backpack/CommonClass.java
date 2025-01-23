@@ -18,6 +18,7 @@ public class CommonClass {
 
         BackpackModelRegistry.register();
 
+        networkConstants.init();
 
         //for debug/testing
         if (Services.PLATFORM.isDevelopmentEnvironment())
