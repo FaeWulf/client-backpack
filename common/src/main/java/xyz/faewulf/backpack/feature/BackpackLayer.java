@@ -1,6 +1,8 @@
 package xyz.faewulf.backpack.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import commonnetwork.api.Dispatcher;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,10 +15,12 @@ import org.jetbrains.annotations.NotNull;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IBackpackModel;
+import xyz.faewulf.backpack.networking.Packet_Handle_BackpackData;
 import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.compare;
 import xyz.faewulf.backpack.util.config.ModConfigs;
+import xyz.faewulf.backpack.util.converter;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,5 @@
 package xyz.faewulf.backpack.mixinClient;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -24,6 +23,7 @@ public abstract class ClientLevelMixin extends Level {
         super(levelData, dimension, registryAccess, dimensionTypeRegistration, isClientSide, isDebug, biomeZoomSeed, maxChainedNeighborUpdates);
     }
 
+    // Todo: remove duplicate when join nether
     @Inject(method = "<init>", at = @At("TAIL"))
     private void initInject(ClientPacketListener connection, ClientLevel.ClientLevelData levelData, ResourceKey dimension, Holder dimensionTypeRegistration, int viewDistance, int serverSimulationDistance, LevelRenderer levelRenderer, boolean isDebug, long biomeZoomSeed, int seaLevel, CallbackInfo ci) {
         Constants.PLAYER_INV.clear();

@@ -25,6 +25,7 @@ public class DummyPlayer extends AbstractClientPlayer {
         setUUID(UUID.randomUUID());
         Minecraft.getInstance().getSkinManager().getOrLoad(getGameProfile()).thenAccept((textures) -> textures.ifPresent(skin -> playerSkin = skin));
 
+        // Todo: Variant
         if (this instanceof IClientPlayerBackpackData clientPlayerBackpackData) {
             clientPlayerBackpackData.client_Backpack$setModel(ModConfigs.backpack);
         }

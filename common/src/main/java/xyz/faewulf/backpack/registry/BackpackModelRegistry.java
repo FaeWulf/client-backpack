@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+
 public class BackpackModelRegistry {
     private static final Map<String, Function<EntityRendererProvider.Context, EntityModel<EntityRenderState>>> MODEL_REGISTRY = new HashMap<>();
     private static final Map<String, Function<EntityRendererProvider.Context, EntityModel<EntityRenderState>>> VARIANT_REGISTRY = new HashMap<>();
