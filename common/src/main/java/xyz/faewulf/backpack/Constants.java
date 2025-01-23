@@ -16,4 +16,7 @@ public class Constants {
 
     public static final Map<String, List<ItemStack>> PLAYER_INV = new HashMap<>();
     public static final Map<String, BackpackStatus> PLAYER_INV_STATUS = new HashMap<>();
+
+    public static final Map<String, BackpackStatus> SERVER_PLAYER_INV_STATUS = new HashMap<>();
+    public static final Map<String, List<ItemStack>> SERVER_PLAYER_INV = new HashMap<>();
 }
