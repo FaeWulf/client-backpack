@@ -1,6 +1,7 @@
 package xyz.faewulf.backpack.mixinClient;
 
 import com.mojang.authlib.GameProfile;
+import commonnetwork.api.Dispatcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -15,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
+import xyz.faewulf.backpack.networking.Packet_Handle_BackpackData;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.compare;
 import xyz.faewulf.backpack.util.config.ModConfigs;
@@ -29,7 +31,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
     private String client_Backpack$variantType = "default";
 
     @Unique
-    private boolean runOnce = false;
+    private boolean client_Backpack$runOnce = false;
 
     public ClientPlayerMixin(Level level, BlockPos pos, float yRot, GameProfile gameProfile) {
         super(level, pos, yRot, gameProfile);
@@ -48,14 +50,22 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
     private void tickInject(CallbackInfo ci) {
         if (this.level().isClientSide) {
             if (!this.isAlive()) {
+                // If player died then reset all the status
                 Constants.PLAYER_INV.remove(this.getName().getString());
                 Constants.PLAYER_INV_STATUS.remove(this.getName().getString());
             } else {
-                if (Minecraft.getInstance().player != null && !runOnce) {
-                    runOnce = true;
-                    Constants.PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
 
-                    // Create status for new player
+                // This one runs once when player join the world
+                // Get and set backpack
+                // Todo: System to make other player can see your backpack's customizations
+                if (Minecraft.getInstance().player != null && !client_Backpack$runOnce) {
+                    client_Backpack$runOnce = true;
+
+
+                    // Update backpack
+                    //Constants.PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
+
+                    // Create status for player just joined the level
                     this.client_Backpack$createNewStatus();
 
                     if (this.getName().getString().equals(Minecraft.getInstance().player.getName().getString())) {
@@ -66,22 +76,19 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                 }
 
                 // Check for inv change if player exists
-                Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
-                    // if inv change
-                    if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.holdingSlot) {
-                        v.holdingSlot = this.getInventory().selected;
-                        v.invChanged = true;
-                    }
-                    return v;
-                });
+                // Then update it into PLAYER_INV_STATUS
+                // Only for Local player
+                if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getName().getString().equals(this.getName().getString()))
+                    Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
+                        // if inv change
+                        if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.holdingSlot) {
+                            v.holdingSlot = this.getInventory().selected;
+                            v.invChanged = true;
+                        }
+                        return v;
+                    });
 
-                // Create status for new player
-                Constants.PLAYER_INV_STATUS.computeIfAbsent(this.getName().getString(), k -> {
-                    BackpackStatus backpackStatus = new BackpackStatus();
-                    backpackStatus.holdingSlot = this.getInventory().selected;
-                    return backpackStatus;
-                });
-
+                //update Inventory
                 Constants.PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
             }
         }
@@ -93,6 +100,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
             BackpackStatus backpackStatus = new BackpackStatus();
             backpackStatus.backpackVariant = client_Backpack$variantType;
             backpackStatus.backpackType = client_Backpack$modelType;
+            backpackStatus.holdingSlot = this.getInventory().selected;
             return backpackStatus;
         });
     }
