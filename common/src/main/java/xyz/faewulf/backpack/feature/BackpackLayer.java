@@ -42,10 +42,21 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
             return;
         }
 
-        // Check for inv change, if change then compute the status again
-        BackpackStatus backpackStatus = Constants.PLAYER_INV_STATUS.get(playerRenderState.name);
-        List<ItemStack> playerInv = Constants.PLAYER_INV.get(playerRenderState.name);
+        boolean isLocalPLayer = Minecraft.getInstance().player != null && Minecraft.getInstance().player.getName().getString().equals(playerRenderState.name);
+        BackpackStatus backpackStatus = null;
 
+        // Local player check
+        // Outsider players will handle differently
+        if (isLocalPLayer) {
+            // Local player
+            backpackStatus = Constants.PLAYER_INV_STATUS.get(playerRenderState.name);
+        } else {
+            // Outsider will send request to server
+            Dispatcher.sendToServer(new Packet_Handle_BackpackData(playerRenderState.name, new BackpackStatus()));
+            backpackStatus = Constants.PLAYER_INV_STATUS.get(playerRenderState.name);
+        }
+
+        // Get BackpackStatus
         if (backpackStatus == null)
             return;
 
