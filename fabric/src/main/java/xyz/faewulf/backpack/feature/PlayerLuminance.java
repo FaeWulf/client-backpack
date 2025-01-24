@@ -9,6 +9,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Range;
+import xyz.faewulf.backpack.util.config.ModConfigs;
 
 public record PlayerLuminance(boolean invert) implements EntityLuminance {
     // The Codec of this entity luminance provider,
@@ -37,6 +38,9 @@ public record PlayerLuminance(boolean invert) implements EntityLuminance {
         //boolean isNight = this.invert ? entity.level().isDay() : entity.level().isNight();
 
         int maxLight = 0;
+
+        if (!ModConfigs.enable_dynamiclight_compat)
+            return maxLight;
 
         if (entity instanceof AbstractClientPlayer abstractClientPlayer) {
             for (ItemStack item : abstractClientPlayer.getInventory().items) {
