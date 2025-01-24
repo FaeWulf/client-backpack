@@ -1,7 +1,6 @@
 package xyz.faewulf.backpack.mixinClient;
 
 import com.mojang.authlib.GameProfile;
-import commonnetwork.api.Dispatcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -16,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
-import xyz.faewulf.backpack.networking.Packet_Handle_BackpackData;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.compare;
 import xyz.faewulf.backpack.util.config.ModConfigs;
@@ -80,7 +78,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                 // Check for inv change if player exists
                 // Then update it into PLAYER_INV_STATUS
                 // Only for Local player
-                if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getName().getString().equals(this.getName().getString()))
+                if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getName().getString().equals(this.getName().getString())) {
                     Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
                         // if inv change
                         if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.holdingSlot) {
@@ -90,8 +88,9 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                         return v;
                     });
 
-                //update Inventory
-                Constants.PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
+                    //update Inventory
+                    Constants.PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
+                }
             }
         }
     }
