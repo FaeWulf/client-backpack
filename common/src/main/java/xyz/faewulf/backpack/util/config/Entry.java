@@ -14,5 +14,7 @@ public @interface Entry {
 
     String info() default "";  // Extra information or tooltip
 
+    boolean hidden() default false;
+
     boolean require_restart() default false;
 }

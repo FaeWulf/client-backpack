@@ -24,7 +24,11 @@ public class ConfigLoaderFromAnnotation {
                 String category = entry.category();
                 String name = entry.name();
                 String info = entry.info();
+                boolean hidden = entry.hidden();
                 boolean require_restart = entry.require_restart();
+
+                if (hidden)
+                    continue;
 
                 // Add the field's value to the map
                 try {
@@ -55,7 +59,11 @@ public class ConfigLoaderFromAnnotation {
 
                 String name = entry.name();
                 String info = entry.info();
+                boolean hidden = entry.hidden();
                 boolean require_restart = entry.require_restart();
+
+                if (hidden)
+                    continue;
 
                 // Add the field's value to the map
                 try {
