@@ -14,6 +14,8 @@ public class Constants {
     public static final String MOD_NAME = "Client Backpack";
     public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
 
+    public static final String DUMMY_PLAYER_NAME = ";-;";
+
     public static final Map<String, List<ItemStack>> PLAYER_INV = new HashMap<>();
     public static final Map<String, BackpackStatus> PLAYER_INV_STATUS = new HashMap<>();
 

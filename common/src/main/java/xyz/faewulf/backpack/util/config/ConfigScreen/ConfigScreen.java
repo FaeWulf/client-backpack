@@ -396,43 +396,6 @@ public class ConfigScreen extends Screen {
         );
 
         super.render(guiGraphics, $$1, $$2, $$3);
-
-        //dummyPlayer for review
-        ClientLevel clientLevel = Minecraft.getInstance().level;
-
-        // is selecting styling tab, then tweaking layout for the tab
-        if (this.tabManager.getCurrentTab() != null) {
-            if (clientLevel != null && this.tabManager.getCurrentTab().getTabTitle().getString().equalsIgnoreCase("style")) {
-
-                //Disable info and title
-                infoTab_Title.visible = false;
-                infoTab_Info.visible = false;
-
-                DummyPlayer localPlayer = DummyPlayer.createInstance(clientLevel);
-
-                // Set up the position, scale, and orientation
-                float x = infoTab.getX() + (float) infoTab.getWidth() / 2; // Center of the screen
-                float y = (float) this.height / 2; // Slightly lower than center
-                float scale = 100; // Scale for rendering the entity (adjust as needed)
-
-
-                // Render the entity
-                renderEntityInInventory(
-                        guiGraphics, // Graphics context
-                        x,
-                        y,           // Y position
-                        scale,       // Scale
-                        new Vector3f(0.0f, 0.0f, 0.0f),   // Translation vector
-                        new Quaternionf().rotationYXZ((float) (Math.PI * 15 / 180), 0.0f, (float) Math.PI),        // Entity rotation
-                        null, // Optional camera orientation
-                        localPlayer       // The entity to render
-                );
-            } else {
-                //Disable info and title
-                infoTab_Title.visible = true;
-                infoTab_Info.visible = true;
-            }
-        }
     }
 
     private void drawRandomTiledBackground(GuiGraphics guiGraphics) {

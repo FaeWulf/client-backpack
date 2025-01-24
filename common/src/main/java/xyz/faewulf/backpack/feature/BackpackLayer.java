@@ -42,7 +42,10 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
             return;
 
         // Stop rendering if invisible
-        if (ModConfigs.hide_if_invisible && playerRenderState.isInvisible) {
+        // Exception:
+        // DummyPlayer have to bypass this setting,
+        // then when toggle HidePlayer when previewing backpack won't affect by this setting.
+        if (ModConfigs.hide_if_invisible && playerRenderState.isInvisible && !playerRenderState.name.equals(Constants.DUMMY_PLAYER_NAME)) {
             return;
         }
 

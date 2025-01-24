@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.resources.PlayerSkin;
+import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 
@@ -20,7 +21,7 @@ public class DummyPlayer extends AbstractClientPlayer {
     }
 
     public DummyPlayer(ClientLevel clientLevel) {
-        super(clientLevel, new GameProfile(UUID.randomUUID(), "Faewulf"));
+        super(clientLevel, new GameProfile(UUID.randomUUID(), Constants.DUMMY_PLAYER_NAME));
         //super(Minecraft.getInstance(), clientLevel, Minecraft.getInstance().getConnection(), null, null, false, false);
         setUUID(UUID.randomUUID());
         Minecraft.getInstance().getSkinManager().getOrLoad(getGameProfile()).thenAccept((textures) -> textures.ifPresent(skin -> playerSkin = skin));
