@@ -100,12 +100,18 @@ public class Packet_Handle_BackpackData {
             // Server side
             //ctx.sender().sendSystemMessage(Component.literal("Packet1 received on the server"));
 
+
             // get inv status from requested client
             String name = ctx.message().name;
             BackpackStatus backpackStatus = Constants.SERVER_PLAYER_INV_STATUS.get(name);
 
+            // Todo: null handle
+            if (backpackStatus == null) {
+                backpackStatus = new BackpackStatus();
+            }
+
             //if changed then recalculate
-            if (backpackStatus != null && backpackStatus.invChanged)
+            if (backpackStatus.invChanged)
                 converter.updateBackpackStatus(backpackStatus, name, true);
 
             // Send data to requester
