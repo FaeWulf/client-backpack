@@ -35,7 +35,7 @@ public class converter {
         return snapshot;
     }
 
-    // Todo: Handle for server and client different
+    // Update Backpack status based on inv content, server and client handled different
     public static BackpackStatus updateBackpackStatus(BackpackStatus backpackStatus, String name, Boolean serverSide) {
 
         List<ItemStack> playerInv;

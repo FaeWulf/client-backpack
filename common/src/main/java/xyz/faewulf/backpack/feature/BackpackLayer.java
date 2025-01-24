@@ -1,6 +1,7 @@
 package xyz.faewulf.backpack.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.kinds.Const;
 import commonnetwork.api.Dispatcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
@@ -16,14 +17,9 @@ import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IBackpackModel;
 import xyz.faewulf.backpack.networking.Packet_Handle_BackpackData;
-import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
-import xyz.faewulf.backpack.util.compare;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.converter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
     private EntityModel<EntityRenderState> model;
@@ -54,7 +50,7 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
         // Local player check
         // Outsider players will handle differently
-        if (isLocalPLayer) {
+        if (isLocalPLayer || playerRenderState.name.equals(Constants.DUMMY_PLAYER_NAME)) {
             // Local player
             backpackStatus = Constants.PLAYER_INV_STATUS.get(playerRenderState.name);
         } else {
