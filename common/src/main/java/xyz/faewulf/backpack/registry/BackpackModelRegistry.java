@@ -22,7 +22,11 @@ public class BackpackModelRegistry {
     public static void register() {
         BackpackModelRegistry.registerModel("default", (ctx) -> new DefaultBackpackModel(ctx.bakeLayer(DefaultBackpackModel.LAYER_LOCATION)));
         BackpackModelRegistry.registerModel("basket", (ctx) -> new BasketBackpackModel(ctx.bakeLayer(BasketBackpackModel.LAYER_LOCATION)));
-        BackpackModelRegistry.registerModel("default2", (ctx) -> new DefaultBackpackModel(ctx.bakeLayer(DefaultBackpackModel.LAYER_LOCATION)));
+
+        registerVariant("default", "default", "textures/block/default/default.png");
+        registerVariant("default", "green", "textures/block/default/green.png");
+        registerVariant("basket", "bamboo", "textures/block/basket/basket.png");
+        registerVariant("basket", "barrel", "textures/block/basket/barrel.png");
     }
 
     // Register a backpack model
