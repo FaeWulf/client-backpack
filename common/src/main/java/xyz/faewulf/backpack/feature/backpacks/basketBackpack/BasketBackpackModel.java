@@ -59,8 +59,8 @@ public class BasketBackpackModel extends EntityModel<EntityRenderState> implemen
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, PlayerRenderState playerRenderState, BackpackStatus backpackStatus, EntityModel<EntityRenderState> model) {
-        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(this.TEXTURE_LOCATION));
+    public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, PlayerRenderState playerRenderState, BackpackStatus backpackStatus, EntityModel<EntityRenderState> model, ResourceLocation texture) {
+        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(texture));
 
         poseStack.pushPose();
 

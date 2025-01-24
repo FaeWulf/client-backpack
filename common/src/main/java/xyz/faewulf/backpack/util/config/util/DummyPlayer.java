@@ -28,6 +28,7 @@ public class DummyPlayer extends AbstractClientPlayer {
         // Todo: Variant
         if (this instanceof IClientPlayerBackpackData clientPlayerBackpackData) {
             clientPlayerBackpackData.client_Backpack$setModel(ModConfigs.backpack);
+            clientPlayerBackpackData.client_Backpack$setVariant(ModConfigs.variant);
         }
     }
 }

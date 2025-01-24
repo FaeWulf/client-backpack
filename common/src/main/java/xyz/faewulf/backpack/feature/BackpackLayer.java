@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
@@ -65,8 +65,13 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
             return;
 
         // Handle backpack model based on model type and variant
-        if (BackpackModelRegistry.isValid(backpackStatus.backpackType))
+        if (BackpackModelRegistry.isValidModel(backpackStatus.backpackType))
             this.model = BackpackModelRegistry.createBackpackModel(backpackStatus.backpackType, this.context);
+
+        ResourceLocation variant = null;
+        // handle backpack variant
+        if (BackpackModelRegistry.isValidVariant(backpackStatus.backpackType, backpackStatus.backpackVariant))
+            variant = BackpackModelRegistry.getVariant(backpackStatus.backpackType, backpackStatus.backpackVariant);
 
         //if no model then don't render
         if (this.model == null)
@@ -85,7 +90,7 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
         //Render backpack
         if (this.model instanceof IBackpackModel backpackModel) {
-            backpackModel.render(poseStack, multiBufferSource, i, playerRenderState, backpackStatus, this.model);
+            backpackModel.render(poseStack, multiBufferSource, i, playerRenderState, backpackStatus, this.model, variant);
         }
 
 

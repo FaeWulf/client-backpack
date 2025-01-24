@@ -11,14 +11,9 @@ public class ModConfigs {
     @Entry(category = "general", name = "Hide backpack if invisible", require_restart = false)
     public static boolean hide_if_invisible = true;
 
-    @Entry(category = "style", name = "Backpack Model Type", require_restart = false)
+    @Entry(category = "style", name = "Backpack Model Type", require_restart = false, hidden = true)
     public static String backpack = "default";
 
-    @Entry(category = "style", name = "Variant", require_restart = false)
-    public static BACKPACK_TYPE backpack_variant = BACKPACK_TYPE.DEFAULT;
-
-
-    public enum BACKPACK_TYPE {
-        BASKET, DEFAULT
-    }
+    @Entry(category = "style", name = "Variant", require_restart = false, hidden = true)
+    public static String variant = "default";
 }

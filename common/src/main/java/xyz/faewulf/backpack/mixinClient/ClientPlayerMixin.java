@@ -70,8 +70,10 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
 
                     if (this.getName().getString().equals(Minecraft.getInstance().player.getName().getString())) {
                         this.client_Backpack$setModel(ModConfigs.backpack);
+                        this.client_Backpack$setVariant(ModConfigs.variant);
                     } else {
                         this.client_Backpack$setModel("default");
+                        this.client_Backpack$setVariant("default");
                     }
                 }
 
@@ -112,7 +114,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
 
     @Override
     public void client_Backpack$setModel(String value) {
-        if (BackpackModelRegistry.isValid(value)) {
+        if (BackpackModelRegistry.isValidModel(value)) {
             this.client_Backpack$modelType = value;
             // Update status if present
             Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
@@ -130,11 +132,15 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
 
     @Override
     public void client_Backpack$setVariant(String value) {
-        this.client_Backpack$variantType = value;
-        // Update status if present
-        Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
-            v.backpackVariant = value;
-            return v;
-        });
+        if (BackpackModelRegistry.isValidVariant(this.client_Backpack$modelType, value)) {
+
+            this.client_Backpack$variantType = value;
+            // Update status if present
+            Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
+                v.backpackVariant = value;
+                return v;
+            });
+        } else
+            Constants.LOG.error(value + " is not a valid variant id.");
     }
 }
