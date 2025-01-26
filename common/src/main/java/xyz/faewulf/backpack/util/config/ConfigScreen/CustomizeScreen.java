@@ -1,8 +1,10 @@
 package xyz.faewulf.backpack.util.config.ConfigScreen;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -24,14 +26,20 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
+import xyz.faewulf.backpack.inter.SyncUnavailable;
+import xyz.faewulf.backpack.inter.SyncingTooFrequentlyException;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
+import xyz.faewulf.backpack.util.DataSync;
 import xyz.faewulf.backpack.util.config.Config;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.config.util.DummyPlayer;
 import xyz.faewulf.backpack.util.misc;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static net.minecraft.client.gui.screens.inventory.InventoryScreen.renderEntityInInventory;
 
@@ -58,9 +66,10 @@ public class CustomizeScreen extends Screen {
     @Nullable
     private Button button_Variant;
     @Nullable
-    private Button ButtonReset_Cncel;
+    private Button button_Status;
+
     @Nullable
-    private Button ButtonDone_Save;
+    private FocusableTextWidget textWidget;
 
     //vars
     private List<String> modelList;
@@ -106,6 +115,7 @@ public class CustomizeScreen extends Screen {
             variant_index = 0;
 
         //layout
+        //textWidget = this.addRenderableWidget(new FocusableTextWidget(300, this.title, this.font, 12));
 
         this.settingLayout = new GridLayout();
         GridLayout.RowHelper rightTabRowHelper = this.settingLayout.createRowHelper(3);
@@ -208,6 +218,17 @@ public class CustomizeScreen extends Screen {
                                         this.button_Variant.setMessage(Component.literal(variantList.get(variant_index))); // update message
 
                                     this.updateDummyStatus();
+                                })
+                        .width(20)
+                        .build(),
+                1
+        );
+
+        button_Status = rightTabRowHelper.addChild(
+                Button.builder(
+                                Component.literal("..."),
+                                button -> {
+                                    updateOnlineStatus();
                                 })
                         .width(20)
                         .build(),
@@ -359,7 +380,7 @@ public class CustomizeScreen extends Screen {
         // Quit and Save layout buttons
 
         this.quitSaveLayout = new GridLayout();
-        GridLayout.RowHelper rowHelper_QuitSaveLayout = this.quitSaveLayout.createRowHelper(2);
+        GridLayout.RowHelper rowHelper_QuitSaveLayout = this.quitSaveLayout.createRowHelper(3);
         rowHelper_QuitSaveLayout.defaultCellSetting().alignHorizontallyCenter().alignVerticallyMiddle().padding(1);
 
         rowHelper_QuitSaveLayout.addChild(
@@ -379,6 +400,24 @@ public class CustomizeScreen extends Screen {
                                 Component.translatable("backpack.customize.save"),
                                 button -> {
                                     this.saveConfig();
+
+                                    if (Minecraft.getInstance().player != null)
+                                        CompletableFuture.runAsync(() -> {
+                                            try {
+                                                DataSync.sync(Minecraft.getInstance().player.getUUID().toString(), Constants.PLAYER_INV_STATUS.get(";-;"));
+                                                button.setMessage(Component.literal("syncing...."));
+                                            } catch (Exception e) {
+                                                var actualException = e instanceof CompletionException ce ? ce.getCause() : e;
+                                                if (actualException instanceof SyncingTooFrequentlyException) {
+                                                    Constants.LOG.warn("Failed to sync settings as we've already synced too recently");
+                                                } else {
+                                                    Constants.LOG.error("Failed to sync settings", actualException);
+                                                }
+                                                Constants.LOG.error("Failed to sync settings", actualException);
+                                                button.setMessage(Component.literal("Failed"));
+                                            }
+                                        });
+
                                     this.onClose();
                                 })
                         .width(80)
@@ -388,6 +427,7 @@ public class CustomizeScreen extends Screen {
         );
 
         //register each widget in right tab (buttons)
+
         this.settingLayout.visitWidgets(abstractWidget -> {
             abstractWidget.setTabOrderGroup(1);
             this.addRenderableWidget(abstractWidget);
@@ -403,6 +443,21 @@ public class CustomizeScreen extends Screen {
 
         //init the reposition
         this.repositionElements();
+        this.updateOnlineStatus();
+    }
+
+    private void updateOnlineStatus() {
+        if (button_Status == null)
+            return;
+
+        SyncUnavailable result = DataSync.unavailableReason();
+        if (result == null) {
+            button_Status.setMessage(Component.literal("✔").withStyle(ChatFormatting.GREEN));
+            button_Status.setTooltip(Tooltip.create(Component.translatable("backpack.customize.online_status.normal")));
+        } else {
+            button_Status.setMessage(Component.literal("❌").withStyle(ChatFormatting.RED));
+            button_Status.setTooltip(Tooltip.create(Component.translatable("backpack.customize.online_status.error")));
+        }
     }
 
     // Method for update dummy status after its value changed
@@ -445,6 +500,12 @@ public class CustomizeScreen extends Screen {
         this.previewLayout.arrangeElements();
         this.quitSaveLayout.arrangeElements();
 
+//        if (this.textWidget != null) {
+//            this.textWidget.containWithin(this.width);
+//            this.textWidget.setPosition(this.width - this.textWidget.getWidth() - 20, this.height - this.textWidget.getHeight() - 20);
+//        }
+
+        //each vertical layout get 1/3 max width
         int layoutWidth = this.width / 3;
 
         //reposition for right tab

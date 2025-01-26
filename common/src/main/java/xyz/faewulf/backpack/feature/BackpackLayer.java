@@ -1,7 +1,6 @@
 package xyz.faewulf.backpack.feature;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.datafixers.kinds.Const;
 import commonnetwork.api.Dispatcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
@@ -34,7 +33,7 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
     public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, @NotNull PlayerRenderState playerRenderState, float v, float v1) {
 
         // Toggle mod
-        if (!ModConfigs._enable_mod)
+        if (!ModConfigs.__enable_mod)
             return;
 
         // Stop rendering if invisible

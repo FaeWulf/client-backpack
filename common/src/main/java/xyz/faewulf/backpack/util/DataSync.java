@@ -150,10 +150,20 @@ public class DataSync {
             if (syncOnCooldown()) {
                 var future = new CompletableFuture<Void>();
                 future.completeExceptionally(new SyncingTooFrequentlyException());
+
+                misc.sendSystemToast(
+                        Component.translatable("backpack.system.upload.cooldown"),
+                        Component.translatable("backpack.system.upload.cooldown.message")
+                );
                 return future;
             }
             lastSync = Instant.now();
         }
+
+        misc.sendSystemToast(
+                Component.translatable("backpack.system.upload.syncing"),
+                null
+        );
 
         return uploadData(uuid, status, false);
     }

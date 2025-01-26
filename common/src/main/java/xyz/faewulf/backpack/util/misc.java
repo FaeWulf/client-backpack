@@ -1,6 +1,8 @@
 package xyz.faewulf.backpack.util;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -11,6 +13,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.block.entity.BannerPatterns;
+import org.jetbrains.annotations.Nullable;
 
 public class misc {
     public static ItemStack wardenBanner(HolderGetter<BannerPattern> bannerPatternLookup) {
@@ -28,5 +31,15 @@ public class misc {
         itemStack.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
         itemStack.set(DataComponents.ITEM_NAME, Component.literal("Warden Banner").withStyle(ChatFormatting.GOLD));
         return itemStack;
+    }
+
+    public static void sendSystemToast(Component title, @Nullable Component message) {
+
+        if (Minecraft.getInstance() != null)
+            SystemToast.add(
+                    Minecraft.getInstance().getToastManager(), SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                    title, message
+            );
+
     }
 }

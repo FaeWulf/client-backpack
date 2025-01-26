@@ -38,5 +38,11 @@
   "backpack.customize.save": "Save & Quit",
   "backpack.customize.save.tooltip": "Save and quit",
   "backpack.customize.preview.hideplayer": "Hide Player",
-  "backpack.customize.preview.hideplayer.tooltip": "Show/Hide Player model"
+  "backpack.customize.preview.hideplayer.tooltip": "Show/Hide Player model",
+  "backpack.system.upload.success": "Data upload success!",
+  "backpack.system.upload.syncing": "Uploading bacpack data to public API...",
+  "backpack.customize.online_status.error": "Sync service not available, server you're connected to is in offline mode or you aren't currently logged into a valid Minecraft account",
+  "backpack.customize.online_status.normal": "Sync service available!",
+  "backpack.system.upload.cooldown": "Sync data on cooldown!",
+  "backpack.system.upload.cooldown.message": "Please try again after 10 seconds."
 }
