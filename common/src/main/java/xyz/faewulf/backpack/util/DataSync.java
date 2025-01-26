@@ -8,6 +8,8 @@ import com.mojang.util.InstantTypeAdapter;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
+import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,8 +62,9 @@ public class DataSync {
         return intA.xor(intB).toString(16);
     }
 
-    private static HttpRequest.Builder createRequest(URI uri) {
-        Constants.LOG.info("Connecting to server: " + uri);
+    private static HttpRequest.Builder createRequest(URI uri, boolean log) {
+        if (log)
+            Constants.LOG.info("Connecting to server: " + uri);
         return HttpRequest.newBuilder(uri)
                 .header("User-Agent", USER_AGENT)
                 .header("Accept", "application/json")
@@ -88,16 +91,13 @@ public class DataSync {
                 try {
                     client.getMinecraftSessionService().joinServer(Objects.requireNonNull(session.getProfileId()), session.getAccessToken(), serverId);
                 } catch (AuthenticationException e) {
-                    System.out.println("huh: " + e.toString());
                     //throw new RuntimeException(e);
                 }
 
                 String query = HttpAuthenticationService.buildQuery(Map.of("serverId", serverId, "username", session.getName(), "uuid", client.player.getUUID()));
                 URI uri = URI.create(SERVER_URL + "/auth?" + query);
-                HttpRequest request = createRequest(uri).GET().build();
+                HttpRequest request = createRequest(uri, true).GET().build();
                 var response = CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString()).join();
-
-                System.out.println(response.body());
 
                 if (response.statusCode() >= 400) {
                     Constants.LOG.error("[DataSync] Auth failed");
@@ -105,8 +105,6 @@ public class DataSync {
                 }
 
                 auth = GSON.fromJson(response.body(), Auth.class);
-
-                System.out.println(auth);
 
                 if (auth.isInvalidForClientPlayer()) {
                     Constants.LOG.error("Authenticated account {} does not match the current player ({}); you likely have a misbehaving account switcher mod installed!", auth.account(), client.player.getUUID());
@@ -174,7 +172,6 @@ public class DataSync {
         }
 
         Map<String, String> copy = new HashMap<>(UPDATE_QUEUE);
-        System.out.println("System: size " + copy.size());
 
         CompletableFuture.runAsync(() -> {
             getData(copy);
@@ -188,26 +185,20 @@ public class DataSync {
         return CompletableFuture.runAsync(() -> {
             var url = URI.create(SERVER_URL + "/get");
 
-            Constants.LOG.info("Get backpack data for {} users...", requests.size());
+            Constants.LOG.debug("Get backpack data for {} users...", requests.size());
 
             Gson gson = new Gson();
             String json = gson.toJson(requests);
 
-            System.out.println(json);
-
-            HttpRequest request = createRequest(url)
+            HttpRequest request = createRequest(url, false)
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .header("Content-Type", "application/json; charset=UTF-8")
                     .build();
 
-            System.out.println(request);
-
             var response = CLIENT.sendAsync(request, HttpResponse.BodyHandlers.ofString()).join();
 
-            System.out.println(response.body());
-
             if (response.statusCode() >= 401) {
-                Constants.LOG.info("Server API doesn't have any data for the list");
+                Constants.LOG.debug("Server API doesn't have any data for the list");
                 return;
             }
 
@@ -218,7 +209,7 @@ public class DataSync {
             }
 
             Constants.LOG.debug("Server responded to update: {}", response.body());
-            Constants.LOG.info("Download data success");
+            Constants.LOG.debug("Download data success");
         }, EXECUTOR);
     }
 
@@ -230,7 +221,8 @@ public class DataSync {
 
             Constants.LOG.info("Syncing...");
 
-            var request = createRequest(url)
+
+            var request = createRequest(url, true)
                     .PUT(HttpRequest.BodyPublishers.ofString(json))
                     .header("Content-Type", "application/json; charset=UTF-8")
                     .header("Authorization", "Bearer " + token)
@@ -248,7 +240,11 @@ public class DataSync {
             }
 
             Constants.LOG.debug("Server responded to update: {}", response.body());
-            Constants.LOG.info("Uplaod data success");
+            Constants.LOG.info("Upload data success");
+            misc.sendSystemToast(
+                    Component.translatable("backpack.system.upload.success"),
+                    null
+            );
         }, EXECUTOR);
     }
 }
