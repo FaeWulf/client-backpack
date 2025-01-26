@@ -24,6 +24,10 @@ public class DummyPlayer extends AbstractClientPlayer {
         super(clientLevel, new GameProfile(UUID.randomUUID(), Constants.DUMMY_PLAYER_NAME));
         //super(Minecraft.getInstance(), clientLevel, Minecraft.getInstance().getConnection(), null, null, false, false);
         setUUID(UUID.randomUUID());
+
+        if (Minecraft.getInstance().player != null)
+            setUUID(Minecraft.getInstance().player.getUUID());
+
         Minecraft.getInstance().getSkinManager().getOrLoad(getGameProfile()).thenAccept((textures) -> textures.ifPresent(skin -> playerSkin = skin));
 
         // Todo: Variant
