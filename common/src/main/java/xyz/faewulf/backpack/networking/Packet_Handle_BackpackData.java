@@ -91,9 +91,20 @@ public class Packet_Handle_BackpackData {
         if (Side.CLIENT.equals(ctx.side())) {
             // Client side
             String name = ctx.message().name;
+
+            if (ctx.message().backpackStatus == null)
+                return;
+
             BackpackStatus backpackStatus1 = ctx.message().backpackStatus;
             Constants.PLAYER_INV_STATUS.computeIfPresent(name, (k, v) -> {
-                v = backpackStatus1;
+                v.toolsList = backpackStatus1.toolsList;
+                v.banner = backpackStatus1.banner;
+                v.containerList = backpackStatus1.containerList;
+                v.hasLightSource = backpackStatus1.hasLightSource;
+                v.liquidList = backpackStatus1.liquidList;
+                v.pocketList = backpackStatus1.pocketList;
+                v.holdingSlot = backpackStatus1.holdingSlot;
+                v.invChanged = backpackStatus1.invChanged;
                 return v;
             });
         } else {
