@@ -50,7 +50,15 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
             if (!this.isAlive()) {
                 // If player died then reset all the status
                 Constants.PLAYER_INV.remove(this.getName().getString());
-                Constants.PLAYER_INV_STATUS.remove(this.getName().getString());
+                Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
+                    v.pocketList.clear();
+                    v.toolsList.clear();
+                    v.containerList.clear();
+                    v.liquidList.clear();
+                    v.hasLightSource = false;
+                    v.banner = null;
+                    return v;
+                });
             } else {
 
                 // This one runs once when player join the world
@@ -58,7 +66,6 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                 // Todo: System to make other player can see your backpack's customizations
                 if (Minecraft.getInstance().player != null && !client_Backpack$runOnce) {
                     client_Backpack$runOnce = true;
-
 
                     // Update backpack
                     //Constants.PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
@@ -101,6 +108,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
             BackpackStatus backpackStatus = new BackpackStatus();
             backpackStatus.backpackVariant = client_Backpack$variantType;
             backpackStatus.backpackType = client_Backpack$modelType;
+            backpackStatus.uuid = this.getStringUUID();
             backpackStatus.holdingSlot = this.getInventory().selected;
             return backpackStatus;
         });

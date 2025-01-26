@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.registry.ItemTagRegistry;
 
 @Mixin(ClientLevel.class)
@@ -26,8 +25,8 @@ public abstract class ClientLevelMixin extends Level {
     // Todo: remove duplicate when join nether
     @Inject(method = "<init>", at = @At("TAIL"))
     private void initInject(ClientPacketListener connection, ClientLevel.ClientLevelData levelData, ResourceKey dimension, Holder dimensionTypeRegistration, int viewDistance, int serverSimulationDistance, LevelRenderer levelRenderer, boolean isDebug, long biomeZoomSeed, int seaLevel, CallbackInfo ci) {
-        Constants.PLAYER_INV.clear();
-        Constants.PLAYER_INV_STATUS.clear();
+        //Constants.PLAYER_INV.clear();
+        //Constants.PLAYER_INV_STATUS.clear();
         ItemTagRegistry.loadAllBackpackItems();
     }
 }
