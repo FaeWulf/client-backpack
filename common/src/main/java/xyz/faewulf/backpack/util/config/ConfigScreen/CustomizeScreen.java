@@ -17,6 +17,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BannerPattern;
@@ -251,17 +252,18 @@ public class CustomizeScreen extends Screen {
 
                                     if (showTools) {
                                         Constants.PLAYER_INV_STATUS.computeIfPresent(Constants.DUMMY_PLAYER_NAME, (k, v) -> {
-                                            v.toolsList.clear();
-                                            v.toolsList.add(new ItemStack(Items.DIAMOND_SWORD));
-                                            v.toolsList.add(new ItemStack(Items.GOLDEN_PICKAXE));
-                                            v.toolsList.add(new ItemStack(Items.NETHERITE_HOE));
-                                            v.toolsList.add(new ItemStack(Items.STONE_AXE));
-                                            v.toolsList.add(new ItemStack(Items.BOW));
+                                            List<ItemStack> toolList = v.getToolsList();
+                                            toolList.clear();
+                                            toolList.add(new ItemStack(Items.DIAMOND_SWORD));
+                                            toolList.add(new ItemStack(Items.GOLDEN_PICKAXE));
+                                            toolList.add(new ItemStack(Items.NETHERITE_HOE));
+                                            toolList.add(new ItemStack(Items.STONE_AXE));
+                                            toolList.add(new ItemStack(Items.BOW));
                                             return v;
                                         });
                                     } else {
                                         Constants.PLAYER_INV_STATUS.computeIfPresent(Constants.DUMMY_PLAYER_NAME, (k, v) -> {
-                                            v.toolsList.clear();
+                                            v.getToolsList().clear();
                                             return v;
                                         });
                                     }
@@ -283,12 +285,12 @@ public class CustomizeScreen extends Screen {
 
                                     if (showLightSource) {
                                         Constants.PLAYER_INV_STATUS.computeIfPresent(Constants.DUMMY_PLAYER_NAME, (k, v) -> {
-                                            v.hasLightSource = true;
+                                            v.setHasLightSource(true);
                                             return v;
                                         });
                                     } else {
                                         Constants.PLAYER_INV_STATUS.computeIfPresent(Constants.DUMMY_PLAYER_NAME, (k, v) -> {
-                                            v.hasLightSource = false;
+                                            v.setHasLightSource(false);
                                             return v;
                                         });
                                     }
@@ -310,15 +312,16 @@ public class CustomizeScreen extends Screen {
 
                                     if (showContainer) {
                                         Constants.PLAYER_INV_STATUS.computeIfPresent(Constants.DUMMY_PLAYER_NAME, (k, v) -> {
-                                            v.containerList.clear();
-                                            v.containerList.add(new ItemStack(Items.SHULKER_BOX));
-                                            v.containerList.add(new ItemStack(Items.RED_SHULKER_BOX));
-                                            v.containerList.add(new ItemStack(Items.BUNDLE));
+                                            List<ItemStack> containerList = v.getContainerList();
+                                            containerList.clear();
+                                            containerList.add(new ItemStack(Items.SHULKER_BOX));
+                                            containerList.add(new ItemStack(Items.RED_SHULKER_BOX));
+                                            containerList.add(new ItemStack(Items.BUNDLE));
                                             return v;
                                         });
                                     } else {
                                         Constants.PLAYER_INV_STATUS.computeIfPresent(Constants.DUMMY_PLAYER_NAME, (k, v) -> {
-                                            v.containerList.clear();
+                                            v.getContainerList().clear();
                                             return v;
                                         });
                                     }
@@ -340,16 +343,16 @@ public class CustomizeScreen extends Screen {
 
                                     if (showBanner) {
                                         Constants.PLAYER_INV_STATUS.computeIfPresent(Constants.DUMMY_PLAYER_NAME, (k, v) -> {
-                                            v.banner = new ItemStack(Items.GREEN_BANNER);
+                                            v.setBanner(new ItemStack(Items.GREEN_BANNER));
                                             // Get banner registry
                                             // If can get then return custom banner
                                             Optional<Holder.Reference<Registry<BannerPattern>>> bannerPatternHolderGetter = this.dummyPlayer.registryAccess().get(Registries.BANNER_PATTERN);
-                                            bannerPatternHolderGetter.ifPresent(registryReference -> v.banner = misc.wardenBanner(registryReference.value()));
+                                            bannerPatternHolderGetter.ifPresent(registryReference -> v.setBanner(misc.wardenBanner(registryReference.value())));
                                             return v;
                                         });
                                     } else {
                                         Constants.PLAYER_INV_STATUS.computeIfPresent(Constants.DUMMY_PLAYER_NAME, (k, v) -> {
-                                            v.banner = null;
+                                            v.setBanner(null);
                                             return v;
                                         });
                                     }
@@ -486,8 +489,7 @@ public class CustomizeScreen extends Screen {
         if (Minecraft.getInstance().player != null) {
             // Create status for new player
             Constants.PLAYER_INV_STATUS.computeIfPresent(Minecraft.getInstance().player.getName().getString(), (k, v) -> {
-                v.backpackType = ModConfigs.backpack;
-                v.backpackVariant = ModConfigs.variant;
+                v.updateModelData(ModConfigs.backpack, ModConfigs.variant);
                 //backpackStatus.backpackVariant = client_Backpack$variantType;
                 return v;
             });

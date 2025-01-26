@@ -1,9 +1,6 @@
 package xyz.faewulf.backpack.mixin;
 
 import com.mojang.authlib.GameProfile;
-import commonnetwork.api.Dispatcher;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
@@ -18,9 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
-import xyz.faewulf.backpack.networking.Packet_Handle_BackpackData;
 import xyz.faewulf.backpack.util.compare;
-import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.converter;
 
 @Mixin(ServerPlayer.class)
@@ -49,9 +44,9 @@ public abstract class ServerPlayerMixin extends Player {
                 // Then update it into PLAYER_INV_STATUS
                 Constants.SERVER_PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
                     // if inv change
-                    if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.holdingSlot) {
-                        v.holdingSlot = this.getInventory().selected;
-                        v.invChanged = true;
+                    if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.getHoldingSlot()) {
+                        v.setHoldingSlot(this.getInventory().selected);
+                        v.setInvChanged(true);
                     }
                     return v;
                 });
@@ -66,7 +61,7 @@ public abstract class ServerPlayerMixin extends Player {
     private void client_Backpack$createNewStatus() {
         Constants.SERVER_PLAYER_INV_STATUS.computeIfAbsent(this.getName().getString(), k -> {
             BackpackStatus backpackStatus = new BackpackStatus();
-            backpackStatus.holdingSlot = this.getInventory().selected;
+            backpackStatus.setHoldingSlot(this.getInventory().selected);
             return backpackStatus;
         });
     }

@@ -11,27 +11,20 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import xyz.faewulf.backpack.Constants;
-import xyz.faewulf.backpack.feature.backpacks.basketBackpack.BasketBackpackModel;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IBackpackModel;
 import xyz.faewulf.backpack.inter.ItemDisplayTransform;
-import xyz.faewulf.backpack.platform.Services;
-import xyz.faewulf.backpack.util.ModelHelper;
 import xyz.faewulf.backpack.util.PoseHelper;
 import xyz.faewulf.backpack.util.compare;
-
-import java.util.Map;
 
 public class DefaultBackpackModel extends EntityModel<EntityRenderState> implements IBackpackModel {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
@@ -97,7 +90,7 @@ public class DefaultBackpackModel extends EntityModel<EntityRenderState> impleme
         model.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY);
 
         // holding emit light source
-        if (backpackStatus != null && backpackStatus.hasLightSource) {
+        if (backpackStatus != null && backpackStatus.isHasLightSource()) {
             poseStack.pushPose();
             //poseStack.translate(0f, 2f, 0f);
             poseStack.rotateAround(Axis.XP.rotationDegrees(180.0F), 0.0f, 0.0f, 0.0f);
@@ -110,18 +103,18 @@ public class DefaultBackpackModel extends EntityModel<EntityRenderState> impleme
         }
 
         // tools and weapons
-        if (backpackStatus != null && !backpackStatus.toolsList.isEmpty()) {
+        if (backpackStatus != null && !backpackStatus.getToolsList().isEmpty()) {
 
             boolean alreadyHasWeaponInTheBack = false;
             toolDisplay.reset();
 
-            for (int index = 0; index < backpackStatus.toolsList.size(); index++) {
+            for (int index = 0; index < backpackStatus.getToolsList().size(); index++) {
 
                 //max tool can be shown is 5
                 if (index == 5)
                     break;
 
-                ItemStack itemStack = backpackStatus.toolsList.get(index);
+                ItemStack itemStack = backpackStatus.getToolsList().get(index);
 
                 //first weapon will hold in the back
                 if (compare.isHasTagClient(itemStack.getItem(), "weapon") && !alreadyHasWeaponInTheBack) {
@@ -154,20 +147,20 @@ public class DefaultBackpackModel extends EntityModel<EntityRenderState> impleme
         }
 
         //banner
-        if (backpackStatus != null && backpackStatus.banner != null) {
+        if (backpackStatus != null && backpackStatus.getBanner() != null) {
             poseStack.pushPose();
             PoseHelper.scale(poseStack, 0.4f);
             PoseHelper.translate(poseStack, -1f, 18, 16);
             poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-            Minecraft.getInstance().getItemRenderer().renderStatic(backpackStatus.banner, ItemDisplayContext.HEAD, packedLight, OverlayTexture.NO_OVERLAY, poseStack, multiBufferSource, null, 0);
+            Minecraft.getInstance().getItemRenderer().renderStatic(backpackStatus.getBanner(), ItemDisplayContext.HEAD, packedLight, OverlayTexture.NO_OVERLAY, poseStack, multiBufferSource, null, 0);
             poseStack.popPose();
         }
 
         // container render
-        if (backpackStatus != null && !backpackStatus.containerList.isEmpty()) {
+        if (backpackStatus != null && !backpackStatus.getContainerList().isEmpty()) {
             containerDisplay.reset();
-            for (int index = 0; index < backpackStatus.containerList.size(); index++) {
-                ItemStack itemStack = backpackStatus.containerList.get(index);
+            for (int index = 0; index < backpackStatus.getContainerList().size(); index++) {
+                ItemStack itemStack = backpackStatus.getContainerList().get(index);
                 poseStack.pushPose();
                 if (containerDisplay.hasNextTransform()) {
                     containerDisplay.getNextTransform().accept(poseStack);

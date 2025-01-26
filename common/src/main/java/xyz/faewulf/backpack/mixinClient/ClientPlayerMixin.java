@@ -51,12 +51,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                 // If player died then reset all the status
                 Constants.PLAYER_INV.remove(this.getName().getString());
                 Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
-                    v.pocketList.clear();
-                    v.toolsList.clear();
-                    v.containerList.clear();
-                    v.liquidList.clear();
-                    v.hasLightSource = false;
-                    v.banner = null;
+                    v.resetInvData();
                     return v;
                 });
             } else {
@@ -88,9 +83,9 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                 if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getName().getString().equals(this.getName().getString())) {
                     Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
                         // if inv change
-                        if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.holdingSlot) {
-                            v.holdingSlot = this.getInventory().selected;
-                            v.invChanged = true;
+                        if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.getHoldingSlot()) {
+                            v.setHoldingSlot(this.getInventory().selected);
+                            v.setInvChanged(true);
                         }
                         return v;
                     });
@@ -106,10 +101,9 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
     private void client_Backpack$createNewStatus() {
         Constants.PLAYER_INV_STATUS.computeIfAbsent(this.getName().getString(), k -> {
             BackpackStatus backpackStatus = new BackpackStatus();
-            backpackStatus.backpackVariant = client_Backpack$variantType;
-            backpackStatus.backpackType = client_Backpack$modelType;
-            backpackStatus.uuid = this.getStringUUID();
-            backpackStatus.holdingSlot = this.getInventory().selected;
+            backpackStatus.updateModelData(client_Backpack$modelType, client_Backpack$variantType);
+            backpackStatus.setUuid(this.getStringUUID());
+            backpackStatus.setHoldingSlot(this.getInventory().selected);
             return backpackStatus;
         });
     }
@@ -125,7 +119,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
             this.client_Backpack$modelType = value;
             // Update status if present
             Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
-                v.backpackType = value;
+                v.setBackpackType(value);
                 return v;
             });
         } else
@@ -144,7 +138,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
             this.client_Backpack$variantType = value;
             // Update status if present
             Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
-                v.backpackVariant = value;
+                v.setBackpackVariant(value);
                 return v;
             });
         } else

@@ -50,7 +50,7 @@ public class converter {
         List<ItemStack> containers = new ArrayList<>();
         List<ItemStack> liquids = new ArrayList<>();
         ItemStack banner = null;
-        backpackStatus.hasLightSource = false;
+        backpackStatus.setHasLightSource(false);
 
         if (playerInv != null)
             for (int index = 0; index < playerInv.size(); index++) {
@@ -61,12 +61,12 @@ public class converter {
 
                 // if light source
                 if (Services.PLATFORM.isModLoaded("lambdynlights"))
-                    if (!backpackStatus.hasLightSource && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
-                        backpackStatus.hasLightSource = true;
+                    if (!backpackStatus.isHasLightSource() && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
+                        backpackStatus.setHasLightSource(true);
                     }
 
                 // if weapon or tool, and not holding it (main hand and offhand = 40)
-                if (backpackStatus.holdingSlot != index && index != 40) {
+                if (backpackStatus.getHoldingSlot() != index && index != 40) {
                     if (serverSide) {
                         if (compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":tool_and_weapon"))
                             tools.add(stack);
@@ -94,7 +94,7 @@ public class converter {
                 }
 
                 // if containers (shulker, bundle for example)
-                if (backpackStatus.holdingSlot != index && index != 40) {
+                if (backpackStatus.getHoldingSlot() != index && index != 40) {
                     if (serverSide) {
                         if (compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":container"))
                             containers.add(stack);
@@ -114,12 +114,12 @@ public class converter {
 
             }
 
-        backpackStatus.invChanged = false;
-        backpackStatus.toolsList = tools;
-        backpackStatus.pocketList = pockets;
-        backpackStatus.containerList = containers;
-        backpackStatus.liquidList = liquids;
-        backpackStatus.banner = banner;
+        backpackStatus.setInvChanged(false);
+        backpackStatus.setToolsList(tools);
+        backpackStatus.setPocketList(pockets);
+        backpackStatus.setContainerList(containers);
+        backpackStatus.setLiquidList(liquids);
+        backpackStatus.setBanner(banner);
 
         return backpackStatus;
     }

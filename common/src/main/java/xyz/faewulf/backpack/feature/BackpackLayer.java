@@ -63,13 +63,13 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
             return;
 
         // Handle backpack model based on model type and variant
-        if (BackpackModelRegistry.isValidModel(backpackStatus.backpackType))
-            this.model = BackpackModelRegistry.createBackpackModel(backpackStatus.backpackType, this.context);
+        if (BackpackModelRegistry.isValidModel(backpackStatus.getBackpackType()))
+            this.model = BackpackModelRegistry.createBackpackModel(backpackStatus.getBackpackType(), this.context);
 
         ResourceLocation variant = null;
         // handle backpack variant
-        if (BackpackModelRegistry.isValidVariant(backpackStatus.backpackType, backpackStatus.backpackVariant))
-            variant = BackpackModelRegistry.getVariant(backpackStatus.backpackType, backpackStatus.backpackVariant);
+        if (BackpackModelRegistry.isValidVariant(backpackStatus.getBackpackType(), backpackStatus.getBackpackVariant()))
+            variant = BackpackModelRegistry.getVariant(backpackStatus.getBackpackType(), backpackStatus.getBackpackVariant());
 
         //if no model then don't render
         if (this.model == null)
@@ -77,7 +77,7 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
         // Calculate backpack contents based on inv only if inv changed
         // Only for Local player
-        if (backpackStatus.invChanged && isLocalPLayer) {
+        if (backpackStatus.isInvChanged() && isLocalPLayer) {
             converter.updateBackpackStatus(backpackStatus, playerRenderState.name, false);
             Constants.PLAYER_INV_STATUS.put(playerRenderState.name, backpackStatus);
         }

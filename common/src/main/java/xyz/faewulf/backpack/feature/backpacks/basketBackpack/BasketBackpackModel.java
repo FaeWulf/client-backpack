@@ -80,7 +80,7 @@ public class BasketBackpackModel extends EntityModel<EntityRenderState> implemen
         model.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY);
 
         // holding emit light source
-        if (backpackStatus != null && backpackStatus.hasLightSource) {
+        if (backpackStatus != null && backpackStatus.isHasLightSource()) {
             poseStack.pushPose();
             //poseStack.translate(0f, 2f, 0f);
             poseStack.rotateAround(Axis.XP.rotationDegrees(180.0F), 0.0f, 0.0f, 0.0f);
@@ -93,18 +93,18 @@ public class BasketBackpackModel extends EntityModel<EntityRenderState> implemen
         }
 
         // tools and weapons
-        if (backpackStatus != null && !backpackStatus.toolsList.isEmpty()) {
+        if (backpackStatus != null && !backpackStatus.getToolsList().isEmpty()) {
 
             boolean alreadyHasWeaponInTheBack = false;
             toolDisplay.reset();
 
-            for (int index = 0; index < backpackStatus.toolsList.size(); index++) {
+            for (int index = 0; index < backpackStatus.getToolsList().size(); index++) {
 
                 //max tool can be shown is 5
                 if (index == 5)
                     break;
 
-                ItemStack itemStack = backpackStatus.toolsList.get(index);
+                ItemStack itemStack = backpackStatus.getToolsList().get(index);
 
                 //first weapon will hold in the back
                 if (compare.isHasTagClient(itemStack.getItem(), "weapon") && !alreadyHasWeaponInTheBack) {
@@ -137,20 +137,20 @@ public class BasketBackpackModel extends EntityModel<EntityRenderState> implemen
         }
 
         //banner
-        if (backpackStatus != null && backpackStatus.banner != null) {
+        if (backpackStatus != null && backpackStatus.getBanner() != null) {
             poseStack.pushPose();
             PoseHelper.scale(poseStack, 0.4f);
             PoseHelper.translate(poseStack, -1f, 18, 16);
             poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-            Minecraft.getInstance().getItemRenderer().renderStatic(backpackStatus.banner, ItemDisplayContext.HEAD, packedLight, OverlayTexture.NO_OVERLAY, poseStack, multiBufferSource, null, 0);
+            Minecraft.getInstance().getItemRenderer().renderStatic(backpackStatus.getBanner(), ItemDisplayContext.HEAD, packedLight, OverlayTexture.NO_OVERLAY, poseStack, multiBufferSource, null, 0);
             poseStack.popPose();
         }
 
         // container render
-        if (backpackStatus != null && !backpackStatus.containerList.isEmpty()) {
+        if (backpackStatus != null && !backpackStatus.getContainerList().isEmpty()) {
             containerDisplay.reset();
-            for (int index = 0; index < backpackStatus.containerList.size(); index++) {
-                ItemStack itemStack = backpackStatus.containerList.get(index);
+            for (int index = 0; index < backpackStatus.getContainerList().size(); index++) {
+                ItemStack itemStack = backpackStatus.getContainerList().get(index);
                 poseStack.pushPose();
                 if (containerDisplay.hasNextTransform()) {
                     containerDisplay.getNextTransform().accept(poseStack);

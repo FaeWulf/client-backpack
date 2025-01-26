@@ -36,22 +36,22 @@ public class Packet_Handle_BackpackData {
         buf.writeUtf(name);
 
         // Encode booleans
-        buf.writeBoolean(this.backpackStatus.invChanged);
-        buf.writeBoolean(this.backpackStatus.hasLightSource);
+        buf.writeBoolean(this.backpackStatus.isInvChanged());
+        buf.writeBoolean(this.backpackStatus.isHasLightSource());
 
         // Encode int
-        buf.writeInt(this.backpackStatus.holdingSlot);
+        buf.writeInt(this.backpackStatus.getHoldingSlot());
 
         // Encode lists of ItemStacks
-        writeItemList(buf, this.backpackStatus.toolsList);
-        writeItemList(buf, this.backpackStatus.liquidList);
-        writeItemList(buf, this.backpackStatus.containerList);
-        writeItemList(buf, this.backpackStatus.pocketList);
+        writeItemList(buf, this.backpackStatus.getToolsList());
+        writeItemList(buf, this.backpackStatus.getLiquidList());
+        writeItemList(buf, this.backpackStatus.getContainerList());
+        writeItemList(buf, this.backpackStatus.getPocketList());
 
         // Encode banner ItemStack (can be null)
-        if (this.backpackStatus.banner != null) {
+        if (this.backpackStatus.getBanner() != null) {
             buf.writeBoolean(true); // indicates the ItemStack is not null
-            ItemStack.OPTIONAL_STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, this.backpackStatus.banner); // Encoding ItemStack
+            ItemStack.OPTIONAL_STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, this.backpackStatus.getBanner()); // Encoding ItemStack
         } else {
             buf.writeBoolean(false); // indicates the ItemStack is null
         }
@@ -64,24 +64,27 @@ public class Packet_Handle_BackpackData {
         String name = buf.readUtf();
 
         // Decode booleans
-        status.invChanged = buf.readBoolean();
-        status.hasLightSource = buf.readBoolean();
+        status.setInvChanged(buf.readBoolean());
+        status.setHasLightSource(buf.readBoolean());
 
         // Decode int
-        status.holdingSlot = buf.readInt();
+        status.setHoldingSlot(buf.readInt());
 
         // Decode lists of ItemStacks
-        status.toolsList = readItemList(buf);
-        status.liquidList = readItemList(buf);
-        status.containerList = readItemList(buf);
-        status.pocketList = readItemList(buf);
+        status.setToolsList(readItemList(buf));
+        ;
+        status.setLiquidList(readItemList(buf));
+        ;
+        status.setContainerList(readItemList(buf));
+        ;
+        status.setPocketList(readItemList(buf));
 
 
         // Decode banner ItemStack (can be null)
         if (buf.readBoolean()) {
-            status.banner = ItemStack.OPTIONAL_STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf);
+            status.setBanner(ItemStack.OPTIONAL_STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf));
         } else {
-            status.banner = null;
+            status.setBanner(null);
         }
 
         return new Packet_Handle_BackpackData(name, status);
@@ -97,14 +100,7 @@ public class Packet_Handle_BackpackData {
 
             BackpackStatus backpackStatus1 = ctx.message().backpackStatus;
             Constants.PLAYER_INV_STATUS.computeIfPresent(name, (k, v) -> {
-                v.toolsList = backpackStatus1.toolsList;
-                v.banner = backpackStatus1.banner;
-                v.containerList = backpackStatus1.containerList;
-                v.hasLightSource = backpackStatus1.hasLightSource;
-                v.liquidList = backpackStatus1.liquidList;
-                v.pocketList = backpackStatus1.pocketList;
-                v.holdingSlot = backpackStatus1.holdingSlot;
-                v.invChanged = backpackStatus1.invChanged;
+                v.updateInvData(backpackStatus1);
                 return v;
             });
         } else {
@@ -122,7 +118,7 @@ public class Packet_Handle_BackpackData {
             }
 
             //if changed then recalculate
-            if (backpackStatus.invChanged)
+            if (backpackStatus.isInvChanged())
                 converter.updateBackpackStatus(backpackStatus, name, true);
 
             // Send data to requester

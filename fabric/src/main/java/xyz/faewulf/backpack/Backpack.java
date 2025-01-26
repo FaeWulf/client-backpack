@@ -78,8 +78,8 @@ public class Backpack implements ModInitializer {
                         if (DataSync.UPDATE_QUEUE.size() > 20)
                             return;
 
-                        if (!backpackStatus.hasUpdateBackpackType && backpackStatus.uuid != null) {
-                            DataSync.UPDATE_QUEUE.put(s, backpackStatus.uuid);
+                        if (!backpackStatus.isHasUpdateBackpackType() && backpackStatus.getUuid() != null) {
+                            DataSync.UPDATE_QUEUE.put(s, backpackStatus.getUuid());
                         }
                     });
 
