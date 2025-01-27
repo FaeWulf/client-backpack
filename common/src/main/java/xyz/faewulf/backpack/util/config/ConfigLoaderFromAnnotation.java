@@ -27,16 +27,13 @@ public class ConfigLoaderFromAnnotation {
                 boolean hidden = entry.hidden();
                 boolean require_restart = entry.require_restart();
 
-                if (hidden)
-                    continue;
-
                 // Add the field's value to the map
                 try {
                     Object value = field.get(null); // Access static field value
 
                     // If category map doesn't exist, create it
                     configMap.computeIfAbsent(category, k -> new LinkedHashMap<>());
-                    configMap.get(category).put(name, new EntryInfo(field, field.getName(), name, info, value, require_restart));
+                    configMap.get(category).put(name, new EntryInfo(field, field.getName(), name, info, value, require_restart, hidden));
 
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -62,15 +59,12 @@ public class ConfigLoaderFromAnnotation {
                 boolean hidden = entry.hidden();
                 boolean require_restart = entry.require_restart();
 
-                if (hidden)
-                    continue;
-
                 // Add the field's value to the map
                 try {
                     Object value = field.get(null); // Access static field value
 
                     // If category map doesn't exist, create it
-                    configMap.put(name, new EntryInfo(field, field.getName(), name, info, value, require_restart));
+                    configMap.put(name, new EntryInfo(field, field.getName(), name, info, value, require_restart, hidden));
 
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -115,14 +109,16 @@ public class ConfigLoaderFromAnnotation {
         public Field targetField;
         public String humanizeName;
         public Object value;
+        public boolean hidden;
 
-        public EntryInfo(Field field, String name, String humanizeName, String info, Object value, boolean require_restart) {
+        public EntryInfo(Field field, String name, String humanizeName, String info, Object value, boolean require_restart, boolean hidden) {
             this.name = name;
             this.info = info;
             this.require_restart = require_restart;
             this.targetField = field;
             this.humanizeName = humanizeName;
             this.value = value;
+            this.hidden = hidden;
         }
     }
 }

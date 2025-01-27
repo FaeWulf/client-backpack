@@ -121,7 +121,10 @@ public class ConfigScreen extends Screen {
         TabNavigationBar.Builder tabBuilder = TabNavigationBar.builder(this.tabManager, this.width);
 
         configMap.forEach((s, stringEntryTypeMap) -> { //create tab for each category
-            tabBuilder.addTabs(new ConfigTab(Component.literal(s), stringEntryTypeMap));
+            ConfigTab configTab = new ConfigTab(Component.literal(s), stringEntryTypeMap);
+
+            if (!configTab.isShouldHideFromConfigScreen())
+                tabBuilder.addTabs(configTab);
         });
 
         this.tabNavigationBar = tabBuilder.build();
@@ -298,7 +301,7 @@ public class ConfigScreen extends Screen {
                 Object pastValue = CONFIG_VALUES.get(entryInfo.name);
                 Object currentValue = entryInfo.targetField.get(null);
 
-                if (!pastValue.equals(currentValue)) {
+                if (pastValue != null && !pastValue.equals(currentValue)) {
                     isChanged = true;
                 }
 

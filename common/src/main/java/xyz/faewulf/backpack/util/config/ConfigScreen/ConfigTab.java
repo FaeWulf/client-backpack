@@ -30,6 +30,10 @@ public class ConfigTab implements Tab {
         //creating options buttons
         entry.forEach((s1, entryInfo) -> {
 
+            // If hidden from config screen
+            if (entryInfo.hidden)
+                return;
+
             List<Button> buttonList = new ArrayList<>();
 
             CONFIG_ENTRIES.add(entryInfo);
@@ -65,6 +69,11 @@ public class ConfigTab implements Tab {
             //CreateButton(Component.literal(s1), ));
             tabEntries.put(entryInfo, buttonList);
         });
+    }
+
+    // If no entries in the tab then hide the tab
+    public boolean isShouldHideFromConfigScreen() {
+        return tabEntries.isEmpty();
     }
 
     public static <E extends Enum<E>> E getNextEnumValue(Enum<?> currentValue) {
