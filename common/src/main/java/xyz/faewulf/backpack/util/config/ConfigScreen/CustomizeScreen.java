@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.FocusableTextWidget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -37,6 +38,7 @@ import xyz.faewulf.backpack.util.config.util.DummyPlayer;
 import xyz.faewulf.backpack.util.misc;
 
 import javax.xml.crypto.Data;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -225,17 +227,6 @@ public class CustomizeScreen extends Screen {
                 1
         );
 
-        button_Status = rightTabRowHelper.addChild(
-                Button.builder(
-                                Component.literal("..."),
-                                button -> {
-                                    updateOnlineStatus();
-                                })
-                        .width(20)
-                        .build(),
-                1
-        );
-
         // Preview buttons
         this.previewLayout = new GridLayout();
         GridLayout.RowHelper rowHelper = this.previewLayout.createRowHelper(1);
@@ -408,7 +399,6 @@ public class CustomizeScreen extends Screen {
                                         CompletableFuture.runAsync(() -> {
                                             try {
                                                 DataSync.sync(Minecraft.getInstance().player.getUUID().toString(), Constants.PLAYER_INV_STATUS.get(";-;"));
-                                                button.setMessage(Component.literal("syncing...."));
                                             } catch (Exception e) {
                                                 var actualException = e instanceof CompletionException ce ? ce.getCause() : e;
                                                 if (actualException instanceof SyncingTooFrequentlyException) {
@@ -417,7 +407,6 @@ public class CustomizeScreen extends Screen {
                                                     Constants.LOG.error("Failed to sync settings", actualException);
                                                 }
                                                 Constants.LOG.error("Failed to sync settings", actualException);
-                                                button.setMessage(Component.literal("Failed"));
                                             }
                                         });
 
@@ -428,6 +417,19 @@ public class CustomizeScreen extends Screen {
                         .build(),
                 1
         );
+
+        button_Status = rowHelper_QuitSaveLayout.addChild(
+                Button.builder(
+                                Component.literal("..."),
+                                button -> {
+                                    updateOnlineStatus();
+                                })
+                        .width(20)
+                        .build(),
+                1
+        );
+        button_Status.setAlpha(0.5f);
+
 
         //register each widget in right tab (buttons)
 
@@ -518,12 +520,13 @@ public class CustomizeScreen extends Screen {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-    }
-
-    @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+
+
+        // renderBackground()
+        if (this.minecraft == null || this.minecraft.level == null) {
+            this.renderPanorama(guiGraphics, partialTick);
+        }
 
         guiGraphics.fillGradient(
                 0, 0,
@@ -532,13 +535,14 @@ public class CustomizeScreen extends Screen {
                 0x99000000, 0x99000000
         );
 
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderBlurredBackground();
+        this.renderMenuBackground(guiGraphics);
+        // end of renderBackground()
+
+        // Render dummy player if possible
 
         ClientLevel clientLevel = Minecraft.getInstance().level;
-
-        // is selecting styling tab, then tweaking layout for the tab
         if (clientLevel != null) {
-
             this.dummyPlayer = DummyPlayer.createInstance(clientLevel);
             // Render the entity
             renderEntityInInventoryFollowsMouse(
@@ -551,6 +555,16 @@ public class CustomizeScreen extends Screen {
                     this.dummyPlayer
             );
         }
+
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+    }
+
+    // Prevent renderEntityInInventoryFollowsMouse draw before background
+    // In original code (super.render()) it calls renderBackground() but I have to render renderEntityInInventoryFollowsMouse() before the super.render()
+    // to prevent model render on top of buttons and tooltips
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        return;
     }
 
     @Override
@@ -562,7 +576,7 @@ public class CustomizeScreen extends Screen {
     }
 
     // From InventoryScreen.renderEntityInInventoryFollowsMouse
-    // Changed: vector3f -10f z for no clip issue with background
+    // Changed: vector3f -1f z for no clip issue with background
     // Reverse facing to show back instead of front (quaternionf)
     // Increase yBodyRot (before render) from 20f to 40f for better backpack preview.
     public static void renderEntityInInventoryFollowsMouse(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float yOffset, float mouseX, float mouseY, LivingEntity entity) {
@@ -585,7 +599,7 @@ public class CustomizeScreen extends Screen {
         entity.yHeadRot = entity.getYRot();
         entity.yHeadRotO = entity.getYRot();
         float f9 = entity.getScale();
-        Vector3f vector3f = new Vector3f(0.0F, entity.getBbHeight() / 2.0F + yOffset * f9, -10.0F);
+        Vector3f vector3f = new Vector3f(0.0F, entity.getBbHeight() / 2.0F + yOffset * f9, -1.0F);
         float f10 = (float) scale / f9;
         renderEntityInInventory(guiGraphics, f, f1, f10, vector3f, quaternionf, quaternionf1, entity);
         entity.yBodyRot = f4;
