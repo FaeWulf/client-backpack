@@ -8,9 +8,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
+import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.converter;
 
 import java.util.ArrayList;
@@ -132,7 +134,12 @@ public class Packet_Handle_BackpackData {
         for (ItemStack item : list) {
             if (item != null) {
                 buf.writeBoolean(true); // ItemStack is not null
-                ItemStack.OPTIONAL_STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, item); // Encode ItemStack
+
+                if (ModConfigs.hide_items_component_data) {
+                    ItemStack defaultItem = new ItemStack(item.getItem());
+                    ItemStack.OPTIONAL_STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, defaultItem); // Encode ItemStack
+                } else
+                    ItemStack.OPTIONAL_STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, item); // Encode ItemStack
             } else {
                 buf.writeBoolean(false); // ItemStack is null
             }
