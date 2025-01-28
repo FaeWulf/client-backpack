@@ -12,9 +12,11 @@
   "backpack.config.undo.tooltip": "Revert all options to their pre-edit state.",
   "backpack.config.cancel.tooltip": "Exit Config Screen without saving any changes.",
   "backpack.config.reset.tooltip": "Reset all options to their default, can be undo.",
-  "backpack.config._enable_mod.tooltip": "- Enable/Disable mod completely.",
+  "backpack.config.__enable_mod.tooltip": "- Enable/Disable mod completely.",
+  "backpack.config._enable_cloud-sync.tooltip": "- Enable/Disable Sync feature.\n- Enable this will upload your backpack data to API server. And everyone can see the type and variant of your backpack.",
   "backpack.config.enable_dynamiclight_compat.tooltip": "- Enable/Disable DynamicLight compatibility.",
   "backpack.config.hide_if_invisible.tooltip": "- Should backpack render on invisible player or not.",
+  "backpack.config.hide_items_component_data.tooltip": "- Server side only.\n- Should the server hide item data before sending it to the client?",
   "backpack.config.category.entity": "Entity features",
   "backpack.config.category.general": "General features",
   "backpack.config.category.style": "Customize",
@@ -44,5 +46,11 @@
   "backpack.customize.online_status.error": "Sync service not available, server you're connected to is in offline mode or you aren't currently logged into a valid Minecraft account",
   "backpack.customize.online_status.normal": "Sync service available!",
   "backpack.system.upload.cooldown": "Sync data on cooldown!",
-  "backpack.system.upload.cooldown.message": "Please try again after 10 seconds."
+  "backpack.system.upload.cooldown.message": "Please try again after 10 seconds.",
+  "backpack.infoScreen.configurations": "Configurations",
+  "backpack.infoScreen.customize.available": "Customize",
+  "backpack.infoScreen.customize.unavailable": "Customize...",
+  "backpack.infoScreen.customize.unavailable.tooltip": "Make sure you have joined a world/server before you try to use the this feature.",
+  "backpack.system.upload.cant_sync": "Sync failed",
+  "backpack.system.upload.cant_sync.message": "Sync service not available..."
 }

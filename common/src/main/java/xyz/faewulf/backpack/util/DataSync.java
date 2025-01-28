@@ -137,9 +137,14 @@ public class DataSync {
         return isAvailable() && ModConfigs._enable_cloud_sync;
     }
 
-
     public static CompletableFuture<Void> sync(String uuid, @NotNull BackpackStatus status) {
         if (!isEnabled()) {
+            if (ModConfigs._enable_cloud_sync)
+                misc.sendSystemToast(
+                        Component.translatable("backpack.system.upload.cant_sync"),
+                        Component.translatable("backpack.system.upload.cant_sync.message")
+                );
+
             return CompletableFuture.completedFuture(null);
         }
 

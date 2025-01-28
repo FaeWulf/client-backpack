@@ -8,10 +8,12 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -50,6 +52,7 @@ public class ModInfoScreen extends Screen {
     private GridLayout buttonLayout;
     private GridLayout infoLayout;
     private Button settingButton;
+    private Button customizeButton;
 
     private float time = 0.0f;  // Time variable to track animation
 
@@ -78,7 +81,7 @@ public class ModInfoScreen extends Screen {
             float x = (float) (Math.random() * this.width);
             float y = (float) (Math.random() * this.height);
             float velocityX = (float) (Math.random() * 1f) - 0.5f;  // Random blow speed
-            float velocityY = 1f + (float) (Math.random() * 1f);  // Random falling speed
+            float velocityY = 1.5f + (float) (Math.random() * 1f);  // Random falling speed
             float rotationSpeed = (float) ((Math.random() * 14) - 7);  // Random rotation speed
             fallingEntities.add(new rainITem(texture, x, y, velocityX, velocityY, rotationSpeed, this.width, this.height));
         }
@@ -90,15 +93,15 @@ public class ModInfoScreen extends Screen {
         GridLayout.RowHelper rowHelper = buttonLayout.createRowHelper(1);
         rowHelper.defaultCellSetting().padding(4);
 
-        rowHelper.addChild(
+        customizeButton = rowHelper.addChild(
                 Button.builder(
-                        Component.literal("Customize"),
+                        Component.translatable("backpack.infoScreen.customize.available"),
                         button -> this.client.setScreen(CustomizeScreen.getScreen(this))).build()
         );
 
         settingButton = rowHelper.addChild(
                 Button.builder(
-                        Component.literal("Configurations"),
+                        Component.translatable("backpack.infoScreen.configurations"),
                         button -> this.client.setScreen(ConfigScreen.getScreen(this))).build()
         );
 
@@ -135,10 +138,25 @@ public class ModInfoScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        //background
-        this.renderBackground(guiGraphics, mouseX, mouseY, delta);
+    public void tick() {
 
+        // Toggle customize button based on client available or not
+        ClientLevel clientLevel = Minecraft.getInstance().level;
+        if (clientLevel == null) {
+            customizeButton.active = false;
+            customizeButton.setTooltip(Tooltip.create(Component.translatable("backpack.infoScreen.customize.unavailable.tooltip")));
+            customizeButton.setMessage(Component.translatable("backpack.infoScreen.customize.unavailable"));
+        } else {
+            customizeButton.active = true;
+            customizeButton.setMessage(Component.translatable("backpack.infoScreen.customize.available"));
+            customizeButton.setTooltip(null);
+        }
+
+        super.tick();
+    }
+
+    @Override
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         // Render other screen elements (if any)
         super.render(guiGraphics, mouseX, mouseY, delta);
     }
@@ -158,7 +176,7 @@ public class ModInfoScreen extends Screen {
         );
 
         // Update time for animation (delta ensures smooth animation)
-        time += pPartialTick * 0.5f * 0.05f;
+        time += pPartialTick * 0.05f;
 
         // Draw the light rays behind the image
         drawLightRays(guiGraphics);
