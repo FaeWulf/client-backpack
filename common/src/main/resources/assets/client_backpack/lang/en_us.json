@@ -52,5 +52,7 @@
   "backpack.infoScreen.customize.unavailable": "Customize...",
   "backpack.infoScreen.customize.unavailable.tooltip": "Make sure you have joined a world/server before you try to use the this feature.",
   "backpack.system.upload.cant_sync": "Sync failed",
-  "backpack.system.upload.cant_sync.message": "Sync service not available..."
+  "backpack.system.upload.cant_sync.message": "Sync service not available...",
+  "backpack.system.upload.syncLocal": "Syncing data from cloud...",
+  "backpack.system.upload.syncLocal.done": "Sync completed!"
 }

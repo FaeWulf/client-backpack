@@ -30,7 +30,10 @@ public class DummyPlayer extends AbstractClientPlayer {
 
         Minecraft.getInstance().getSkinManager().getOrLoad(getGameProfile()).thenAccept((textures) -> textures.ifPresent(skin -> playerSkin = skin));
 
-        // Todo: Variant
+        refreshBackpackData();
+    }
+
+    public void refreshBackpackData() {
         if (this instanceof IClientPlayerBackpackData clientPlayerBackpackData) {
             clientPlayerBackpackData.client_Backpack$setModel(ModConfigs.backpack);
             clientPlayerBackpackData.client_Backpack$setVariant(ModConfigs.variant);

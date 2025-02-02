@@ -57,7 +57,7 @@ public class ModInfoScreen extends Screen {
     private float time = 0.0f;  // Time variable to track animation
 
     protected ModInfoScreen(Screen parent) {
-        super(Component.literal("Diversity info"));
+        super(Component.literal("Client backpack"));
         this.parent = parent;
         client = Minecraft.getInstance();
 

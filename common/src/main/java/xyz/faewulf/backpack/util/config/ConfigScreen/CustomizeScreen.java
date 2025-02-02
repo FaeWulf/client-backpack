@@ -5,20 +5,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.FocusableTextWidget;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Registry;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BannerPattern;
@@ -37,8 +33,6 @@ import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.config.util.DummyPlayer;
 import xyz.faewulf.backpack.util.misc;
 
-import javax.xml.crypto.Data;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -47,6 +41,8 @@ import java.util.concurrent.CompletionException;
 import static net.minecraft.client.gui.screens.inventory.InventoryScreen.renderEntityInInventory;
 
 public class CustomizeScreen extends Screen {
+    public static boolean updateRequest = false;
+
     private static final String translatePath = "backpack.config.";
 
     //client
@@ -102,20 +98,7 @@ public class CustomizeScreen extends Screen {
 
         // init vars
         // get model list from registry
-        modelList = BackpackModelRegistry.getModelList();
-
-        model_index = modelList.indexOf(ModConfigs.backpack); // retrieve index from registry Based on Modconfigs
-
-        // fallback index value
-        if (model_index == -1)
-            model_index = 0;
-
-        variantList = BackpackModelRegistry.getVariantList(modelList.get(model_index));
-        variant_index = variantList.indexOf(ModConfigs.variant);
-
-        // fallback index value
-        if (variant_index == -1)
-            variant_index = 0;
+        updateModelVariantVariable();
 
         //layout
         //textWidget = this.addRenderableWidget(new FocusableTextWidget(300, this.title, this.font, 12));
@@ -428,8 +411,6 @@ public class CustomizeScreen extends Screen {
                         .build(),
                 1
         );
-        button_Status.setAlpha(0.5f);
-
 
         //register each widget in right tab (buttons)
 
@@ -451,17 +432,51 @@ public class CustomizeScreen extends Screen {
         this.updateOnlineStatus();
     }
 
+    private void updateModelVariantVariable() {
+        modelList = BackpackModelRegistry.getModelList();
+
+        model_index = modelList.indexOf(ModConfigs.backpack); // retrieve index from registry Based on Modconfigs
+
+        // fallback index value
+        if (model_index == -1)
+            model_index = 0;
+
+        variantList = BackpackModelRegistry.getVariantList(modelList.get(model_index));
+        variant_index = variantList.indexOf(ModConfigs.variant);
+
+        // fallback index value
+        if (variant_index == -1)
+            variant_index = 0;
+
+        if (this.button_Variant != null)
+            this.button_Variant.setMessage(Component.literal(variantList.get(variant_index)));
+
+        if (this.button_Model != null)
+            this.button_Model.setMessage(Component.literal(modelList.get(model_index))); // update message
+
+    }
+
     private void updateOnlineStatus() {
         if (button_Status == null)
             return;
 
         SyncUnavailable result = DataSync.unavailableReason();
+
         if (result == null) {
             button_Status.setMessage(Component.literal("✔").withStyle(ChatFormatting.GREEN));
             button_Status.setTooltip(Tooltip.create(Component.translatable("backpack.customize.online_status.normal")));
+            syncCloudToLocal();
         } else {
             button_Status.setMessage(Component.literal("❌").withStyle(ChatFormatting.RED));
             button_Status.setTooltip(Tooltip.create(Component.translatable("backpack.customize.online_status.error")));
+        }
+    }
+
+    private void syncCloudToLocal() {
+        if (Minecraft.getInstance().player != null) {
+            DataSync.UPDATE_QUEUE.put(Minecraft.getInstance().player.getName().getString(), Minecraft.getInstance().player.getStringUUID());
+            DataSync.requestUpdateData();
+            misc.sendSystemToast(Component.translatable("backpack.system.upload.syncLocal"), null);
         }
     }
 
@@ -520,8 +535,19 @@ public class CustomizeScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void tick() {
 
+        // Request update outside Class
+        if (updateRequest) {
+            updateRequest = false;
+            updateModelVariantVariable();
+        }
+
+        super.tick();
+    }
+
+    @Override
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 
         // renderBackground()
         if (this.minecraft == null || this.minecraft.level == null) {
