@@ -9,6 +9,6 @@ import xyz.faewulf.backpack.Constants;
 @EventBusSubscriber(modid = Constants.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class onReloadResource {
     @SubscribeEvent
-    public static void onRegisterLayerDefinitions(AddPackFindersEvent event) {
+    public static void onReloadResourceEvent(AddPackFindersEvent event) {
     }
 }

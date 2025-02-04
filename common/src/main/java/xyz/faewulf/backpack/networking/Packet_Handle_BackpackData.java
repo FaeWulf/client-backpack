@@ -114,7 +114,6 @@ public class Packet_Handle_BackpackData {
             String name = ctx.message().name;
             BackpackStatus backpackStatus = Constants.SERVER_PLAYER_INV_STATUS.get(name);
 
-            // Todo: null handle
             if (backpackStatus == null) {
                 backpackStatus = new BackpackStatus();
             }
