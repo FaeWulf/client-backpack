@@ -86,6 +86,9 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
         //BlockModel blockModel = ModelHelper.loadBlockModel(ResourceLocation.tryBuild(Constants.MOD_ID, "models/block/backpack.json"));
         //System.out.println(ModelHelper.loadJsonModel(ResourceLocation.tryBuild(Constants.MOD_ID, "models/item/backpack.json")));
 
+        // Transforms the pose to player's body
+        this.getParentModel().body.translateAndRotate(poseStack);
+
         //Render backpack
         if (this.model instanceof IBackpackModel backpackModel) {
             backpackModel.render(poseStack, multiBufferSource, i, playerRenderState, backpackStatus, this.model, variant);
