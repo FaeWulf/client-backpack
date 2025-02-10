@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.block.entity.BannerPatterns;
 import org.jetbrains.annotations.Nullable;
 
-public class misc {
+public class Misc {
     public static ItemStack wardenBanner(HolderGetter<BannerPattern> bannerPatternLookup) {
         ItemStack itemStack = new ItemStack(Items.LIGHT_BLUE_BANNER);
         BannerPatternLayers bannerPatternsComponent = new BannerPatternLayers.Builder()
