@@ -1,4 +1,4 @@
-package xyz.faewulf.backpack.inter;
+package xyz.faewulf.backpack.inter.API;
 
 import java.util.List;
 

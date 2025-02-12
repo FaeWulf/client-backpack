@@ -1,4 +1,4 @@
-package xyz.faewulf.backpack.inter;
+package xyz.faewulf.backpack.inter.API;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -8,7 +8,7 @@ import xyz.faewulf.backpack.util.config.Config;
 import xyz.faewulf.backpack.util.config.ConfigScreen.CustomizeScreen;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.config.util.DummyPlayer;
-import xyz.faewulf.backpack.util.misc;
+import xyz.faewulf.backpack.util.Misc;
 
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public record DataBackPack(String name, String uuid, String model_id, String var
             }
             CustomizeScreen.updateRequest = true;
 
-            misc.sendSystemToast(Component.translatable("backpack.system.upload.syncLocal.done"), null);
+            Misc.sendSystemToast(Component.translatable("backpack.system.upload.syncLocal.done"), null);
         }
 
         Constants.PLAYER_INV_STATUS.computeIfPresent(name, (k, v) -> {

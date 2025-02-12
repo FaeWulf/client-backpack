@@ -1,4 +1,4 @@
-package xyz.faewulf.backpack.inter;
+package xyz.faewulf.backpack.inter.API;
 
 import net.minecraft.client.Minecraft;
 
