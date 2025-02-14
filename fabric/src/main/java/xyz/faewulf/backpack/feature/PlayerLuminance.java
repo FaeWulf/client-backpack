@@ -9,6 +9,10 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Range;
+import xyz.faewulf.backpack.Constants;
+import xyz.faewulf.backpack.inter.BackpackModelRecord.DetailBackpack;
+import xyz.faewulf.backpack.inter.BackpackStatus;
+import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 
 public record PlayerLuminance(boolean invert) implements EntityLuminance {
@@ -43,6 +47,18 @@ public record PlayerLuminance(boolean invert) implements EntityLuminance {
             return maxLight;
 
         if (entity instanceof AbstractClientPlayer abstractClientPlayer) {
+
+            BackpackStatus backpackStatus = Constants.PLAYER_INV_STATUS.get(abstractClientPlayer.getName().getString());
+
+            if (backpackStatus == null)
+                return maxLight;
+
+            DetailBackpack detailBackpack = BackpackModelRegistry.getBackpackDetail(backpackStatus.getBackpackType(), backpackStatus.getBackpackVariant());
+
+            // If the current backpack doesn't have light source module
+            if (detailBackpack == null || detailBackpack.light_source == null)
+                return maxLight;
+
             for (ItemStack item : abstractClientPlayer.getInventory().items) {
                 int lightValue = itemLightSourceManager.getLuminance(item);
                 if (lightValue > maxLight)
@@ -50,7 +66,6 @@ public record PlayerLuminance(boolean invert) implements EntityLuminance {
             }
         }
 
-        //return isNight ? 10 : 0;
         return maxLight;
     }
 }
