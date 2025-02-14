@@ -16,9 +16,9 @@ import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
-import xyz.faewulf.backpack.util.compare;
+import xyz.faewulf.backpack.util.Compare;
+import xyz.faewulf.backpack.util.Converter;
 import xyz.faewulf.backpack.util.config.ModConfigs;
-import xyz.faewulf.backpack.util.converter;
 
 @Mixin(AbstractClientPlayer.class)
 public abstract class ClientPlayerMixin extends Player implements IClientPlayerBackpackData {
@@ -39,7 +39,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
     @Inject(method = "<init>", at = @At("TAIL"))
     private void initInject(ClientLevel clientLevel, GameProfile gameProfile, CallbackInfo ci) {
         // init InV
-        Constants.PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
+        Constants.PLAYER_INV.put(this.getName().getString(), Converter.takeInventorySnapshot(this));
         // Create status for new player
         this.client_Backpack$createNewStatus();
     }
@@ -63,7 +63,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                     client_Backpack$runOnce = true;
 
                     // Update backpack
-                    //Constants.PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
+                    //Constants.PLAYER_INV.put(this.getName().getString(), Converter.takeInventorySnapshot(this));
 
                     // Create status for player just joined the level
                     this.client_Backpack$createNewStatus();
@@ -83,7 +83,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                 if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getName().getString().equals(this.getName().getString())) {
                     Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
                         // if inv change
-                        if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.getHoldingSlot()) {
+                        if (Compare.hasInventoryChanged(this) || this.getInventory().selected != v.getHoldingSlot()) {
                             v.setHoldingSlot(this.getInventory().selected);
                             v.setInvChanged(true);
                         }
@@ -91,7 +91,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                     });
 
                     //update Inventory
-                    Constants.PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
+                    Constants.PLAYER_INV.put(this.getName().getString(), Converter.takeInventorySnapshot(this));
                 }
             }
         }
@@ -115,7 +115,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
 
     @Override
     public void client_Backpack$setModel(String value) {
-        if (BackpackModelRegistry.isValidModel(value)) {
+        if (BackpackModelRegistry.isValidBackpack(value)) {
             this.client_Backpack$modelType = value;
             // Update status if present
             Constants.PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
@@ -133,7 +133,7 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
 
     @Override
     public void client_Backpack$setVariant(String value) {
-        if (BackpackModelRegistry.isValidVariant(this.client_Backpack$modelType, value)) {
+        if (BackpackModelRegistry.isValidBackpack(this.client_Backpack$modelType, value)) {
 
             this.client_Backpack$variantType = value;
             // Update status if present

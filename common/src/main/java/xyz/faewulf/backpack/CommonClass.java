@@ -15,9 +15,6 @@ public class CommonClass {
         //Constants.LOG.info("Hello from Common init on {}! we are currently in a {} environment!", Services.PLATFORM.getPlatformName(), Services.PLATFORM.getEnvironmentName());
         //Constants.LOG.info("The ID for diamonds is {}", BuiltInRegistries.ITEM.getKey(Items.DIAMOND));
 
-        if (Services.PLATFORM.isClientSide())
-            BackpackModelRegistry.register();
-
         networkConstants.init();
 
         //for debug/testing

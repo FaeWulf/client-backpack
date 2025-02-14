@@ -8,13 +8,13 @@ import com.mojang.util.InstantTypeAdapter;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
-import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Blocking;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.*;
+import xyz.faewulf.backpack.inter.API.*;
 import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 
@@ -140,7 +140,7 @@ public class DataSync {
     public static CompletableFuture<Void> sync(String uuid, @NotNull BackpackStatus status) {
         if (!isEnabled()) {
             if (ModConfigs._enable_cloud_sync)
-                misc.sendSystemToast(
+                Misc.sendSystemToast(
                         Component.translatable("backpack.system.upload.cant_sync"),
                         Component.translatable("backpack.system.upload.cant_sync.message")
                 );
@@ -154,7 +154,7 @@ public class DataSync {
                 var future = new CompletableFuture<Void>();
                 future.completeExceptionally(new SyncingTooFrequentlyException());
 
-                misc.sendSystemToast(
+                Misc.sendSystemToast(
                         Component.translatable("backpack.system.upload.cooldown"),
                         Component.translatable("backpack.system.upload.cooldown.message")
                 );
@@ -163,7 +163,7 @@ public class DataSync {
             lastSync = Instant.now();
         }
 
-        misc.sendSystemToast(
+        Misc.sendSystemToast(
                 Component.translatable("backpack.system.upload.syncing"),
                 null
         );
@@ -246,7 +246,7 @@ public class DataSync {
 
             Constants.LOG.debug("Server responded to update: {}", response.body());
             Constants.LOG.info("Upload data success");
-            misc.sendSystemToast(
+            Misc.sendSystemToast(
                     Component.translatable("backpack.system.upload.success"),
                     null
             );

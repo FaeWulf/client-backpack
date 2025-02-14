@@ -22,9 +22,6 @@ public class onClientTickEvent {
         timer++;
 
         if (timer >= 100) {
-
-            System.out.println("ticking");
-
             timer = 0;
 
             Constants.PLAYER_INV_STATUS.forEach((s, backpackStatus) -> {
