@@ -9,7 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import xyz.faewulf.backpack.Constants;
-import xyz.faewulf.backpack.util.compare;
+import xyz.faewulf.backpack.util.Compare;
 
 import java.io.InputStreamReader;
 import java.util.*;
@@ -68,7 +68,7 @@ public class ItemTagRegistry {
 
                 BuiltInRegistries.ITEM.stream() // forEach Item and check tag :/ at least it works
                         .forEach(item -> {
-                            if (compare.isHasTag(item, tagId)) {
+                            if (Compare.isHasTag(item, tagId)) {
                                 itemList.add(item);
                             }
                         });

@@ -1,27 +1,18 @@
 package xyz.faewulf.backpack;
 
-import com.mojang.datafixers.kinds.Const;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
-import xyz.faewulf.backpack.feature.backpacks.basketBackpack.BasketBackpackModel;
-import xyz.faewulf.backpack.feature.backpacks.defaultBackPack.DefaultBackpackModel;
+import xyz.faewulf.backpack.feature.fabric.BackpackPrepareModelLoading;
 import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.registry.ItemTagRegistry;
 import xyz.faewulf.backpack.util.DataSync;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.WeakHashMap;
 
 public class Backpack implements ModInitializer {
 
@@ -30,11 +21,6 @@ public class Backpack implements ModInitializer {
     @Override
     public void onInitialize() {
         Constants.LOG.info("Loading");
-
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            EntityModelLayerRegistry.registerModelLayer(DefaultBackpackModel.LAYER_LOCATION, DefaultBackpackModel::createBodyLayer);
-            EntityModelLayerRegistry.registerModelLayer(BasketBackpackModel.LAYER_LOCATION, BasketBackpackModel::createBodyLayer);
-        }
 
         loadCommand();
         loadEvent();
@@ -100,7 +86,9 @@ public class Backpack implements ModInitializer {
                 }
             });
 
-
+            // Test for new model loading
+            // Todo: fix the problerm
+            PreparableModelLoadingPlugin.register(BackpackPrepareModelLoading.LOADER, new BackpackPrepareModelLoading());
         }
 
 

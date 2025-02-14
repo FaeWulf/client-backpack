@@ -1,98 +1,135 @@
 package xyz.faewulf.backpack.registry;
 
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 import xyz.faewulf.backpack.Constants;
-import xyz.faewulf.backpack.feature.backpacks.basketBackpack.BasketBackpackModel;
-import xyz.faewulf.backpack.feature.backpacks.defaultBackPack.DefaultBackpackModel;
+import xyz.faewulf.backpack.inter.BackpackModelRecord.DetailBackpack;
+import xyz.faewulf.backpack.platform.Services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 
 public class BackpackModelRegistry {
-    private static final Map<String, Function<EntityRendererProvider.Context, EntityModel<EntityRenderState>>> MODEL_REGISTRY = new HashMap<>();
-    private static final Map<String, Map<String, ResourceLocation>> VARIANT_REGISTRY = new HashMap<>();
+    // backpack id: -> (variant's id, variant's ResourceLocation)
+    private static final Map<String, Map<String, ResourceLocation>> BACKPACK_LIST = new HashMap<>();
+    private static final Map<String, Map<String, DetailBackpack>> BACKPACK_DETAIL_LIST = new HashMap<>();
 
-    public static void register() {
-        BackpackModelRegistry.registerModel("default", (ctx) -> new DefaultBackpackModel(ctx.bakeLayer(DefaultBackpackModel.LAYER_LOCATION)));
-        BackpackModelRegistry.registerModel("basket", (ctx) -> new BasketBackpackModel(ctx.bakeLayer(BasketBackpackModel.LAYER_LOCATION)));
-
-        registerVariant("default", "default", "textures/block/default/default.png");
-        registerVariant("default", "green", "textures/block/default/green.png");
-        registerVariant("basket", "bamboo", "textures/block/basket/basket.png");
-        registerVariant("basket", "barrel", "textures/block/basket/barrel.png");
-    }
-
-    // Register a backpack model
-    public static void registerModel(String id, Function<EntityRendererProvider.Context, EntityModel<EntityRenderState>> fn) {
-        MODEL_REGISTRY.put(id, fn);
-    }
-
-    public static void registerVariant(String modelId, String variantId, String textureLocation) {
-        if (!isValidModel(modelId)) {
-            Constants.LOG.error("No backpack model registered for identifier: " + modelId);
-            return;
-        }
-
-        if (!VARIANT_REGISTRY.containsKey(modelId))
-            VARIANT_REGISTRY.put(modelId, new HashMap<>());
-
-        VARIANT_REGISTRY.get(modelId).put(variantId, ResourceLocation.tryBuild(Constants.MOD_ID, textureLocation));
-    }
-
-    // Get a backpack model by identifier
-    public static Function<EntityRendererProvider.Context, EntityModel<EntityRenderState>> getModelClass(String id) {
-        return MODEL_REGISTRY.get(id);
-    }
-
-    public static ResourceLocation getVariant(String modelId, String variantId) {
-        if (VARIANT_REGISTRY.containsKey(modelId))
-            return VARIANT_REGISTRY.get(modelId).get(variantId);
-        else
-            return null;
-    }
-
-    public static EntityModel<EntityRenderState> createBackpackModel(String id, EntityRendererProvider.Context context) {
-        Function<EntityRendererProvider.Context, EntityModel<EntityRenderState>> modelClass = BackpackModelRegistry.getModelClass(id);
-
-        if (modelClass == null) {
-            Constants.LOG.error("No backpack model registered for identifier: " + id);
-            return null;
-        }
-
-        try {
-            return modelClass.apply(context);
-
-        } catch (Exception e) {
-            Constants.LOG.error("Failed to create backpack model for identifier: " + id, e);
-            return null;
-        }
-    }
 
     public static List<String> getModelList() {
-        return MODEL_REGISTRY.keySet().stream().toList();
+        // Sort and bring default to the head
+
+        List<String> list = new ArrayList<>(BACKPACK_LIST.keySet().stream().sorted().toList());
+
+        if (list.contains("default")) {
+            list.remove("default");
+            list.addFirst("default");
+        }
+
+        // Make immutable
+        return list.stream().toList();
     }
 
     public static List<String> getVariantList(String modelId) {
-        if (VARIANT_REGISTRY.containsKey(modelId))
-            return VARIANT_REGISTRY.get(modelId).keySet().stream().toList();
+        if (BACKPACK_LIST.containsKey(modelId)) {
+            // Sort and bring default to the head
 
+            List<String> list = new ArrayList<>(BACKPACK_LIST.get(modelId).keySet().stream().sorted().toList());
+
+            if (list.contains("default")) {
+                list.remove("default");
+                list.addFirst("default");
+            }
+
+            return list.stream().toList();
+        }
         return new ArrayList<>();
     }
 
-    public static boolean isValidModel(String id) {
-        return MODEL_REGISTRY.containsKey(id.toLowerCase());
+    public static void addBackpack(String id, String variant, ResourceLocation location) {
+        BACKPACK_LIST.computeIfAbsent(id, k -> new HashMap<>()).put(variant, location);
     }
 
-    public static boolean isValidVariant(String modelId, String variantId) {
-        if (VARIANT_REGISTRY.containsKey(modelId))
-            return VARIANT_REGISTRY.get(modelId).containsKey(variantId);
-        return false;
+    public static void addBackpackDetail(String id, String variant, DetailBackpack detailBackpack) {
+        BACKPACK_DETAIL_LIST.computeIfAbsent(id, k -> new HashMap<>()).put(variant, detailBackpack);
+    }
+
+    public static void debugBackpackList() {
+        if (Services.PLATFORM.isDevelopmentEnvironment()) {
+            BACKPACK_LIST.forEach((s, stringResourceLocationMap) -> {
+                        Constants.LOG.info("==== Backpack list ===== {}", s);
+
+                        stringResourceLocationMap.forEach((s1, resourceLocation) -> {
+                            Constants.LOG.info("{} : {}", s1, resourceLocation);
+                        });
+                    }
+            );
+
+            BACKPACK_DETAIL_LIST.forEach((s, stringResourceLocationMap) -> {
+                        Constants.LOG.info("==== Detail list ===== {}", s);
+
+                        stringResourceLocationMap.forEach((s1, detailBackpack) -> {
+                            Constants.LOG.info("{} : {}", s1, detailBackpack);
+                        });
+                    }
+            );
+        }
+
+    }
+
+    @Nullable
+    public static ResourceLocation getBackpackModel(String id, String variant) {
+
+        if (!isValidBackpack(id, variant))
+            return null;
+
+        try {
+            return BACKPACK_LIST.get(id).get(variant);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static DetailBackpack getBackpackDetail(String id, String variant) {
+
+        if (!isValidBackpackDetail(id, variant))
+            return null;
+
+        try {
+            return BACKPACK_DETAIL_LIST.get(id).get(variant);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    public static boolean isValidBackpack(String id) {
+        return BACKPACK_LIST.containsKey(id);
+    }
+
+    public static boolean isValidBackpack(String id, String variant) {
+
+        if (!BACKPACK_LIST.containsKey(id))
+            return false;
+
+        try {
+            return BACKPACK_LIST.get(id).containsKey(variant);
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
+    public static boolean isValidBackpackDetail(String id, String variant) {
+
+        if (!BACKPACK_DETAIL_LIST.containsKey(id))
+            return false;
+
+        try {
+            return BACKPACK_DETAIL_LIST.get(id).containsKey(variant);
+        } catch (NullPointerException e) {
+            return false;
+        }
     }
 }

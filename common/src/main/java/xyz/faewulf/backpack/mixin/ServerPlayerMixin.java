@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
-import xyz.faewulf.backpack.util.compare;
-import xyz.faewulf.backpack.util.converter;
+import xyz.faewulf.backpack.util.Compare;
+import xyz.faewulf.backpack.util.Converter;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
@@ -27,7 +27,7 @@ public abstract class ServerPlayerMixin extends Player {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void initInject(MinecraftServer server, ServerLevel level, GameProfile gameProfile, ClientInformation clientInformation, CallbackInfo ci) {
         // init InV
-        Constants.SERVER_PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
+        Constants.SERVER_PLAYER_INV.put(this.getName().getString(), Converter.takeInventorySnapshot(this));
         // Create status for new player
         this.client_Backpack$createNewStatus();
     }
@@ -44,7 +44,7 @@ public abstract class ServerPlayerMixin extends Player {
                 // Then update it into PLAYER_INV_STATUS
                 Constants.SERVER_PLAYER_INV_STATUS.computeIfPresent(this.getName().getString(), (k, v) -> {
                     // if inv change
-                    if (compare.hasInventoryChanged(this) || this.getInventory().selected != v.getHoldingSlot()) {
+                    if (Compare.hasInventoryChanged(this) || this.getInventory().selected != v.getHoldingSlot()) {
                         v.setHoldingSlot(this.getInventory().selected);
                         v.setInvChanged(true);
                     }
@@ -52,7 +52,7 @@ public abstract class ServerPlayerMixin extends Player {
                 });
 
                 //update Inventory
-                Constants.SERVER_PLAYER_INV.put(this.getName().getString(), converter.takeInventorySnapshot(this));
+                Constants.SERVER_PLAYER_INV.put(this.getName().getString(), Converter.takeInventorySnapshot(this));
             }
         }
     }

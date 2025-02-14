@@ -8,12 +8,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
+import xyz.faewulf.backpack.util.Converter;
 import xyz.faewulf.backpack.util.config.ModConfigs;
-import xyz.faewulf.backpack.util.converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +119,7 @@ public class Packet_Handle_BackpackData {
 
             //if changed then recalculate
             if (backpackStatus.isInvChanged())
-                converter.updateBackpackStatus(backpackStatus, name, true);
+                Converter.updateBackpackStatus(backpackStatus, name, true);
 
             // Send data to requester
             Dispatcher.sendToClient(new Packet_Handle_BackpackData(name, backpackStatus), ctx.sender());
