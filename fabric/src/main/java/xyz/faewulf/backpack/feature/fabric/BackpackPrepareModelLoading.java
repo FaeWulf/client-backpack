@@ -51,13 +51,7 @@ public class BackpackPrepareModelLoading implements PreparableModelLoadingPlugin
 
     @Override
     public void initialize(Collection<ResourceLocation> resourceLocations, ModelLoadingPlugin.Context context) {
-        resourceLocations.forEach(resourceLocation -> System.out.println(resourceLocation.toString()));
         context.addModels(resourceLocations);
-    }
-
-    private static void addModels(ModelLoadingPlugin.Context context, String id, String variant, ResourceLocation resourceLocation) {
-        context.addModels(resourceLocation);
-        BackpackModelRegistry.addBackpack(id, variant, resourceLocation);
     }
 
     // Todo: port for neoforge
