@@ -58,6 +58,7 @@ public class Converter {
         List<ItemStack> containers = new ArrayList<>();
         List<ItemStack> liquids = new ArrayList<>();
         ItemStack banner = null;
+
         backpackStatus.setHasLightSource(false);
 
         if (playerInv != null)
@@ -68,10 +69,18 @@ public class Converter {
                     continue;
 
                 // if light source
-                if (Services.PLATFORM.isModLoaded("lambdynlights"))
-                    if (!backpackStatus.isHasLightSource() && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
+                if (serverSide) {
+                    if (Compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":emit_light")) {
                         backpackStatus.setHasLightSource(true);
                     }
+                } else {
+                    if (Services.PLATFORM.isModLoaded("lambdynlights")) {
+                        if (!backpackStatus.isHasLightSource() && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
+                            backpackStatus.setHasLightSource(true);
+                        }
+                    }
+                }
+
 
                 // if weapon or tool, and not holding it (main hand and offhand = 40)
                 if (backpackStatus.getHoldingSlot() != index && index != 40) {
