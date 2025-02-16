@@ -158,18 +158,4 @@ public class Converter {
         }
         return Optional.empty();
     }
-
-    public static Holder<Enchantment> getEnchant(Level world, ResourceKey<Enchantment> enchant) {
-        HolderGetter<Enchantment> registryEntryLookup = world.registryAccess()
-                .lookupOrThrow(Registries.ENCHANTMENT);
-
-        return registryEntryLookup.getOrThrow(enchant);
-    }
-
-    public static Holder<Enchantment> getEnchant(Level world, String namespace, String path) {
-        return world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
-                .get(ResourceLocation.fromNamespaceAndPath(namespace, path))
-                .orElse(null);
-
-    }
 }

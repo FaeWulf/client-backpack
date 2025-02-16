@@ -5,19 +5,20 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import commonnetwork.api.Dispatcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import xyz.faewulf.backpack.Constants;
@@ -31,18 +32,14 @@ import xyz.faewulf.backpack.util.Compare;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.Converter;
 
-public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
-    private EntityModel<EntityRenderState> model;
-    private final EntityRendererProvider.Context context;
-
-    public BackpackLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
+public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
+    public BackpackLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent, EntityRendererProvider.Context context) {
         super(parent);
-        this.context = context;
     }
 
-    @Override
-    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, @NotNull PlayerRenderState playerRenderState, float v, float v1) {
 
+    @Override
+    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource multiBufferSource, int i, @NotNull AbstractClientPlayer abstractClientPlayer, float v, float v1, float v2, float v3, float v4, float v5) {
         // Toggle mod
         if (!ModConfigs.__enable_mod)
             return;
@@ -51,22 +48,23 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
         // Exception:
         // DummyPlayer have to bypass this setting,
         // then when toggle HidePlayer when previewing backpack won't affect by this setting.
-        if (ModConfigs.hide_if_invisible && playerRenderState.isInvisible && !playerRenderState.name.equals(Constants.DUMMY_PLAYER_NAME)) {
+        String playerName = abstractClientPlayer.getName().getString();
+        if (ModConfigs.hide_if_invisible && abstractClientPlayer.isInvisible() && !playerName.equals(Constants.DUMMY_PLAYER_NAME)) {
             return;
         }
 
-        boolean isLocalPLayer = Minecraft.getInstance().player != null && Minecraft.getInstance().player.getName().getString().equals(playerRenderState.name);
+        boolean isLocalPLayer = Minecraft.getInstance().player != null && Minecraft.getInstance().player.getName().getString().equals(playerName);
         BackpackStatus backpackStatus = null;
 
         // Local player check
         // Outsider players will handle differently
-        if (isLocalPLayer || playerRenderState.name.equals(Constants.DUMMY_PLAYER_NAME)) {
+        if (isLocalPLayer || playerName.equals(Constants.DUMMY_PLAYER_NAME)) {
             // Local player
-            backpackStatus = Constants.PLAYER_INV_STATUS.get(playerRenderState.name);
+            backpackStatus = Constants.PLAYER_INV_STATUS.get(playerName);
         } else {
             // Outsider will send request to server
-            Dispatcher.sendToServer(new Packet_Handle_BackpackData(playerRenderState.name, new BackpackStatus()));
-            backpackStatus = Constants.PLAYER_INV_STATUS.get(playerRenderState.name);
+            Dispatcher.sendToServer(new Packet_Handle_BackpackData(playerName, new BackpackStatus()));
+            backpackStatus = Constants.PLAYER_INV_STATUS.get(playerName);
         }
 
         // Get BackpackStatus
@@ -84,19 +82,19 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
         // Calculate backpack contents based on inv only if inv changed
         // Only for Local player
         if (backpackStatus.isInvChanged() && isLocalPLayer) {
-            Converter.updateBackpackStatus(backpackStatus, playerRenderState.name, false);
-            Constants.PLAYER_INV_STATUS.put(playerRenderState.name, backpackStatus);
+            Converter.updateBackpackStatus(backpackStatus, playerName, false);
+            Constants.PLAYER_INV_STATUS.put(playerName, backpackStatus);
         }
 
         // Transforms the pose to player's body, match with all transforms (ex: crouching)
         this.getParentModel().body.translateAndRotate(poseStack);
 
         //Render backpack
-        renderBackpack(poseStack, multiBufferSource, i, playerRenderState, backpackStatus, backpackStatus.getBackpackType(), backpackStatus.getBackpackVariant(), v, v1);
+        renderBackpack(poseStack, multiBufferSource, i, abstractClientPlayer, backpackStatus, backpackStatus.getBackpackType(), backpackStatus.getBackpackVariant(), v, v1);
 
     }
 
-    private void renderBackpack(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, PlayerRenderState playerRenderState, BackpackStatus backpackStatus, String id, String variant, float v, float v1) {
+    private void renderBackpack(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, AbstractClientPlayer abstractClientPlayer, BackpackStatus backpackStatus, String id, String variant, float v, float v1) {
         // Get model from model manager (registered via platform's ModelLoadingPlugin or ModelEvent.RegisterAdditional
         BakedModel model = Services.CLIENT_HELPER.getCustomBakedModel(BackpackModelRegistry.getBackpackModel(id, variant));
 
@@ -200,23 +198,25 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
                 var blockReference = BuiltInRegistries.BLOCK.get(item);
                 // If can get a block model
-                if (blockReference.isPresent()) {
+                if (blockReference != Blocks.AIR) {
                     poseStack.pushPose();
                     detailBackpack.light_source.transform.applyTransform(poseStack, false);
-                    BlockState light = blockReference.get().value().defaultBlockState();
+                    BlockState light = blockReference.defaultBlockState();
                     Minecraft.getInstance().getBlockRenderer().renderSingleBlock(light, poseStack, multiBufferSource, packedLight, OverlayTexture.NO_OVERLAY);
                     poseStack.popPose();
                 } else {
                     // If not, then try item
-                    BuiltInRegistries.ITEM.get(item).ifPresent(itemReference -> {
+                    var itemRef = BuiltInRegistries.ITEM.get(item);
+
+                    if(itemRef != Items.AIR) {
                         poseStack.pushPose();
 
                         detailBackpack.light_source.transform.applyTransform(poseStack, false);
 
-                        ItemStack itemStack = new ItemStack(itemReference.value());
+                        ItemStack itemStack = new ItemStack(itemRef);
                         Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, ItemDisplayContext.HEAD, packedLight, OverlayTexture.NO_OVERLAY, poseStack, multiBufferSource, null, 0);
                         poseStack.popPose();
-                    });
+                    };
                 }
             }
         }
@@ -245,4 +245,5 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
         poseStack.popPose();
     }
+
 }

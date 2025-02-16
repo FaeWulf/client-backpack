@@ -411,10 +411,8 @@ public class ConfigScreen extends Screen {
                 int tileX = (tileIndex % tilesPerRow) * TILE_SIZE;  // X offset in the atlas
                 int tileY = (tileIndex / tilesPerRow) * TILE_SIZE;  // Y offset in the atlas
 
-                //Todo: might have to watch the unknown issue
-                //Draw the tile from the atlas
+                // Draw the tile from the atlas
                 guiGraphics.blit(
-                        RenderType::guiOpaqueTexturedBackground,
                         ATLAS_TEXTURE,
                         x * TILE_SIZE,  // X position on the screen
                         y * TILE_SIZE,  // Y position on the screen

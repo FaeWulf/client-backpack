@@ -53,7 +53,7 @@ public class BackpackPrepareModelLoading implements PreparableModelLoadingPlugin
             );
 
     @Override
-    public void initialize(Collection<ResourceLocation> resourceLocations, ModelLoadingPlugin.Context context) {
+    public void onInitializeModelLoader(Collection<ResourceLocation> resourceLocations, ModelLoadingPlugin.Context context) {
         context.addModels(resourceLocations);
     }
 
@@ -88,4 +88,5 @@ public class BackpackPrepareModelLoading implements PreparableModelLoadingPlugin
         }
 
     }
+
 }

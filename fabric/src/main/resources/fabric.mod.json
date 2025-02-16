@@ -28,7 +28,7 @@
     "modmenu": [
       "xyz.faewulf.backpack.config.ModMenuIntegration"
     ],
-    "lambdynlights:initializer": [
+    "dynamiclights": [
       "xyz.faewulf.backpack.feature.DynamicLightInitializer"
     ]
   },

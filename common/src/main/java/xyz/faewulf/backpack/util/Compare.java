@@ -28,14 +28,8 @@ public class Compare {
 
         try {
             // Check if the block is in the specified tag.
-            return BuiltInRegistries.BLOCK
-                    .get(BuiltInRegistries.BLOCK
-                            .getResourceKey(block)
-                            .orElseThrow()
-                    )
-                    .orElseThrow()
+            return BuiltInRegistries.BLOCK.getHolderOrThrow(BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow())
                     .is(blockTag);
-
         } catch (IllegalStateException e) {
             return false;
         }
@@ -55,12 +49,7 @@ public class Compare {
 
         try {
             // Check if the block is in the specified tag.
-            return BuiltInRegistries.ITEM
-                    .get(BuiltInRegistries.ITEM
-                            .getResourceKey(item)
-                            .orElseThrow()
-                    )
-                    .orElseThrow()
+            return BuiltInRegistries.ITEM.getHolderOrThrow(BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow())
                     .is(itemTag);
         } catch (IllegalStateException e) {
             return false;

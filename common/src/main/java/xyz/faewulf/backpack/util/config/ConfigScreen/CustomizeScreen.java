@@ -11,6 +11,7 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -94,9 +95,6 @@ public class CustomizeScreen extends Screen {
 
     @Override
     protected void init() {
-
-        System.out.println("init!");
-
         // init vars
         // get model list from registry
         updateModelVariantVariable();
@@ -321,8 +319,8 @@ public class CustomizeScreen extends Screen {
                                             v.setBanner(new ItemStack(Items.GREEN_BANNER));
                                             // Get banner registry
                                             // If can get then return custom banner
-                                            Optional<Holder.Reference<Registry<BannerPattern>>> bannerPatternHolderGetter = this.dummyPlayer.registryAccess().get(Registries.BANNER_PATTERN);
-                                            bannerPatternHolderGetter.ifPresent(registryReference -> v.setBanner(Misc.wardenBanner(registryReference.value())));
+                                            Optional<HolderLookup.RegistryLookup<BannerPattern>> bannerPatternHolderGetter = this.dummyPlayer.registryAccess().lookup(Registries.BANNER_PATTERN);
+                                            bannerPatternHolderGetter.ifPresent(registryReference -> v.setBanner(Misc.wardenBanner(registryReference)));
                                             return v;
                                         });
                                     } else {
@@ -569,7 +567,7 @@ public class CustomizeScreen extends Screen {
                 0x99000000, 0x99000000
         );
 
-        this.renderBlurredBackground();
+        this.renderBlurredBackground(partialTick);
         this.renderMenuBackground(guiGraphics);
         // end of renderBackground()
 

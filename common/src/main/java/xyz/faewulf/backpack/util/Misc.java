@@ -34,10 +34,10 @@ public class Misc {
     }
 
     public static void sendSystemToast(Component title, @Nullable Component message) {
-
         if (Minecraft.getInstance() != null)
             SystemToast.add(
-                    Minecraft.getInstance().getToastManager(), SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                    Minecraft.getInstance().getToasts(),
+                    SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
                     title, message
             );
 

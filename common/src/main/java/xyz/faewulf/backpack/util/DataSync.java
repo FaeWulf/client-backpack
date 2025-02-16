@@ -42,7 +42,7 @@ public class DataSync {
     private static Instant lastSync = Instant.EPOCH;
     private static final Object AUTH_LOCK = new Object();
     private static final Object SYNC_LOCK = new Object();
-    private static final Executor EXECUTOR = Util.ioPool().forName(Constants.MOD_ID + "$syncData");
+    private static final Executor EXECUTOR = Util.ioPool();
     private static Auth auth;
 
     public static Map<String, String> UPDATE_QUEUE = new HashMap<>();

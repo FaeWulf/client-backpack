@@ -67,6 +67,9 @@ public class rainITem {
 
     public void render(GuiGraphics guiGraphics, float delta) {
 
+        if(RAIN_ITEM == null)
+            return;
+
         // Apply transformations
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
@@ -77,7 +80,6 @@ public class rainITem {
         // Draw the texture
 
         guiGraphics.blit(
-                RenderType::guiTextured,
                 RAIN_ITEM,
                 0,  // X position on the screen
                 0,  // Y position on the screen
