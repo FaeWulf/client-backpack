@@ -24,14 +24,14 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
-import xyz.faewulf.backpack.inter.SyncUnavailable;
-import xyz.faewulf.backpack.inter.SyncingTooFrequentlyException;
+import xyz.faewulf.backpack.inter.API.SyncUnavailable;
+import xyz.faewulf.backpack.inter.API.SyncingTooFrequentlyException;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.DataSync;
 import xyz.faewulf.backpack.util.config.Config;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.config.util.DummyPlayer;
-import xyz.faewulf.backpack.util.misc;
+import xyz.faewulf.backpack.util.Misc;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +73,6 @@ public class CustomizeScreen extends Screen {
     //vars
     private List<String> modelList;
     private List<String> variantList;
-    private String model_type;
     private int model_index = -1;
     private int variant_index = -1;
 
@@ -95,6 +94,8 @@ public class CustomizeScreen extends Screen {
 
     @Override
     protected void init() {
+
+        System.out.println("init!");
 
         // init vars
         // get model list from registry
@@ -321,7 +322,7 @@ public class CustomizeScreen extends Screen {
                                             // Get banner registry
                                             // If can get then return custom banner
                                             Optional<Holder.Reference<Registry<BannerPattern>>> bannerPatternHolderGetter = this.dummyPlayer.registryAccess().get(Registries.BANNER_PATTERN);
-                                            bannerPatternHolderGetter.ifPresent(registryReference -> v.setBanner(misc.wardenBanner(registryReference.value())));
+                                            bannerPatternHolderGetter.ifPresent(registryReference -> v.setBanner(Misc.wardenBanner(registryReference.value())));
                                             return v;
                                         });
                                     } else {
@@ -454,6 +455,7 @@ public class CustomizeScreen extends Screen {
         if (this.button_Model != null)
             this.button_Model.setMessage(Component.literal(modelList.get(model_index))); // update message
 
+        updateDummyStatus();
     }
 
     private void updateOnlineStatus() {
@@ -476,12 +478,18 @@ public class CustomizeScreen extends Screen {
         if (Minecraft.getInstance().player != null) {
             DataSync.UPDATE_QUEUE.put(Minecraft.getInstance().player.getName().getString(), Minecraft.getInstance().player.getStringUUID());
             DataSync.requestUpdateData();
-            misc.sendSystemToast(Component.translatable("backpack.system.upload.syncLocal"), null);
+            Misc.sendSystemToast(Component.translatable("backpack.system.upload.syncLocal"), null);
         }
     }
 
     // Method for update dummy status after its value changed
     private void updateDummyStatus() {
+
+        ClientLevel clientLevel = Minecraft.getInstance().level;
+        if (clientLevel != null) {
+            this.dummyPlayer = DummyPlayer.createInstance(clientLevel);
+        }
+
         // Update dummy player
         if (this.dummyPlayer instanceof IClientPlayerBackpackData clientPlayerBackpackDat) {
             clientPlayerBackpackDat.client_Backpack$setModel(modelList.get(model_index));
