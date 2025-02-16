@@ -15,6 +15,8 @@ import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 
+import java.util.List;
+
 public record PlayerLuminance(boolean invert) implements EntityLuminance {
     // The Codec of this entity luminance provider,
     // this describes how to parse the JSON file.
@@ -49,6 +51,7 @@ public record PlayerLuminance(boolean invert) implements EntityLuminance {
         if (entity instanceof AbstractClientPlayer abstractClientPlayer) {
 
             BackpackStatus backpackStatus = Constants.PLAYER_INV_STATUS.get(abstractClientPlayer.getName().getString());
+            List<ItemStack> itemStackList = Constants.PLAYER_INV.get(abstractClientPlayer.getName().getString());
 
             if (backpackStatus == null)
                 return maxLight;
@@ -59,11 +62,20 @@ public record PlayerLuminance(boolean invert) implements EntityLuminance {
             if (detailBackpack == null || detailBackpack.light_source == null)
                 return maxLight;
 
-            for (ItemStack item : abstractClientPlayer.getInventory().items) {
-                int lightValue = itemLightSourceManager.getLuminance(item);
-                if (lightValue > maxLight)
-                    maxLight = lightValue;
-            }
+            // If not wearing any backpack
+            if (!backpackStatus.isWearingBackpack())
+                return maxLight;
+
+            // Infomation from serverside
+            if (backpackStatus.isHasLightSource())
+                maxLight = 10;
+
+            if (itemStackList != null)
+                for (ItemStack item : itemStackList) {
+                    int lightValue = itemLightSourceManager.getLuminance(item);
+                    if (lightValue > maxLight)
+                        maxLight = lightValue;
+                }
         }
 
         return maxLight;
