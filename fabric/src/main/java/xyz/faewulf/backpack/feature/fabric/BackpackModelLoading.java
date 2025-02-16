@@ -48,7 +48,6 @@ public class BackpackModelLoading implements ModelLoadingPlugin {
         BackpackModelRegistry.addBackpack(id, variant, resourceLocation);
     }
 
-    // Todo: port for neoforge
     private void tryGetBackPackDetail(ResourceManager manager, String path, String nameSpace, String id, String variant) {
         // File name is the same as model's file name + .placement
         String placementDetailPath = "models/" + path.concat(".placement");

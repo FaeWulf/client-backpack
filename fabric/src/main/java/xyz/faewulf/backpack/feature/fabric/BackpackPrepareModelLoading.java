@@ -1,5 +1,7 @@
 package xyz.faewulf.backpack.feature.fabric;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -14,6 +16,7 @@ import xyz.faewulf.backpack.util.Converter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+@Environment(EnvType.CLIENT)
 public class BackpackPrepareModelLoading implements PreparableModelLoadingPlugin<Collection<ResourceLocation>> {
 
     public static final DataLoader<Collection<ResourceLocation>> LOADER = (resourceManager, executor) ->
@@ -54,7 +57,6 @@ public class BackpackPrepareModelLoading implements PreparableModelLoadingPlugin
         context.addModels(resourceLocations);
     }
 
-    // Todo: port for neoforge
     private static void tryGetBackPackDetail(ResourceManager manager, String path, String nameSpace, String id, String variant) {
         // File name is the same as model's file name + .placement
         String placementDetailPath = "models/" + path.concat(".placement");
