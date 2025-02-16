@@ -29,7 +29,7 @@
       "xyz.faewulf.backpack.config.ModMenuIntegration"
     ],
     "dynamiclights": [
-      "xyz.faewulf.backpack.feature.DynamicLightInitializer"
+      "xyz.faewulf.backpack.feature.fabric.LambDynLights.DynamicLightInitializer"
     ]
   },
   "custom": {

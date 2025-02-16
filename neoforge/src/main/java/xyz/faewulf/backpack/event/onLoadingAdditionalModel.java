@@ -36,7 +36,7 @@ public class onLoadingAdditionalModel {
             if (splitID.length >= 3) {
 
                 //register model
-                event.register(location.id());
+                event.register(location);
 
                 BackpackModelRegistry.addBackpack(splitID[1], splitID[2], location.id());
 

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.DetailTransform;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.LightSourceDetail;
 import xyz.faewulf.backpack.inter.BackpackStatus;
+import xyz.faewulf.backpack.inter.IDynamicLightCompatLayer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,4 +31,6 @@ public class Constants {
 
     public static final Map<String, BackpackStatus> SERVER_PLAYER_INV_STATUS = new HashMap<>();
     public static final Map<String, List<ItemStack>> SERVER_PLAYER_INV = new HashMap<>();
+
+    public static IDynamicLightCompatLayer DYNAMIC_LIGHT_COMPAT_LAYER = null;
 }

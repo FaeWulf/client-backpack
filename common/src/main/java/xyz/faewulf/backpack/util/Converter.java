@@ -74,8 +74,14 @@ public class Converter {
                         backpackStatus.setHasLightSource(true);
                     }
                 } else {
+                    // Todo: to other dynamic light mod
                     if (Services.PLATFORM.isModLoaded("lambdynlights")) {
                         if (!backpackStatus.isHasLightSource() && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
+                            backpackStatus.setHasLightSource(true);
+                        }
+                    }
+                    else {
+                        if (!backpackStatus.isHasLightSource() && Compare.isHasTagClient(stack.getItem(),"emit_light")) {
                             backpackStatus.setHasLightSource(true);
                         }
                     }

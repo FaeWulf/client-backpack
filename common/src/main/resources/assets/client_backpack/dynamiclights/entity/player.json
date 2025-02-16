@@ -1,9 +1,0 @@
-{
-  "match": {
-    "type": "minecraft:player"
-  },
-  "luminance": {
-    "type": "client_backpack:light_module",
-    "invert": false
-  }
-}
