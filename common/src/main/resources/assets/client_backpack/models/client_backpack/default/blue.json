@@ -1,0 +1,6 @@
+{
+  "parent": "client_backpack:client_backpack/default/default",
+  "textures": {
+    "1": "client_backpack:backpack/default/blue"
+  }
+}

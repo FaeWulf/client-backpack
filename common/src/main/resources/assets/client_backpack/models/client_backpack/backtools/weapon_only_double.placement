@@ -1,0 +1,14 @@
+{
+  "back_tool": [
+    {
+      "translation": [0, 12, 3],
+      "scale": [1.1, 1.1, 1.1],
+      "rotation": [0, 0, -90]
+    },
+    {
+      "translation": [0, 12, 4],
+      "scale": [1.1, 1.1, 1.1],
+      "rotation": [0, 0, 0]
+    }
+  ]
+}

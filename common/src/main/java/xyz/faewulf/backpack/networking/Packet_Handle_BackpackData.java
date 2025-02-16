@@ -37,6 +37,8 @@ public class Packet_Handle_BackpackData {
         buf.writeUtf(name);
 
         // Encode booleans
+        buf.writeBoolean(this.backpackStatus.isWearingBackpack());
+
         buf.writeBoolean(this.backpackStatus.isInvChanged());
         buf.writeBoolean(this.backpackStatus.isHasLightSource());
 
@@ -65,6 +67,7 @@ public class Packet_Handle_BackpackData {
         String name = buf.readUtf();
 
         // Decode booleans
+        status.setWearingBackpack(buf.readBoolean());
         status.setInvChanged(buf.readBoolean());
         status.setHasLightSource(buf.readBoolean());
 
@@ -73,11 +76,8 @@ public class Packet_Handle_BackpackData {
 
         // Decode lists of ItemStacks
         status.setToolsList(readItemList(buf));
-        ;
         status.setLiquidList(readItemList(buf));
-        ;
         status.setContainerList(readItemList(buf));
-        ;
         status.setPocketList(readItemList(buf));
 
 
@@ -100,6 +100,7 @@ public class Packet_Handle_BackpackData {
                 return;
 
             BackpackStatus backpackStatus1 = ctx.message().backpackStatus;
+
             Constants.PLAYER_INV_STATUS.computeIfPresent(name, (k, v) -> {
                 v.updateInvData(backpackStatus1);
                 return v;

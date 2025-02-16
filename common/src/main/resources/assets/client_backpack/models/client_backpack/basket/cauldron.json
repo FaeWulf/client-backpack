@@ -1,0 +1,6 @@
+{
+  "parent": "client_backpack:client_backpack/basket/default",
+  "textures": {
+    "2": "client_backpack:backpack/basket/cauldron"
+  }
+}
