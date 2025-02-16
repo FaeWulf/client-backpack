@@ -7,6 +7,7 @@ import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -15,8 +16,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
+import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.util.Compare;
 import xyz.faewulf.backpack.util.Converter;
+
+import java.util.List;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
@@ -47,12 +51,21 @@ public abstract class ServerPlayerMixin extends Player {
                     if (Compare.hasInventoryChanged(this) || this.getInventory().selected != v.getHoldingSlot()) {
                         v.setHoldingSlot(this.getInventory().selected);
                         v.setInvChanged(true);
+
                     }
+
+                    // Mod support
+                    v.setWearingBackpack(Services.SERVER_HELPER.isWearingBackpack(this));
                     return v;
                 });
 
                 //update Inventory
-                Constants.SERVER_PLAYER_INV.put(this.getName().getString(), Converter.takeInventorySnapshot(this));
+                List<ItemStack> inv = Converter.takeInventorySnapshot(this);
+
+                if (Services.SERVER_HELPER.isWearingBackpack(this))
+                    inv.addAll(Services.SERVER_HELPER.getBackpackInventory(this));
+
+                Constants.SERVER_PLAYER_INV.put(this.getName().getString(), inv);
             }
         }
     }

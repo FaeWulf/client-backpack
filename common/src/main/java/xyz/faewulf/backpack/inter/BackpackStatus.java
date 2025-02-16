@@ -11,6 +11,9 @@ public class BackpackStatus {
     String backpackVariant = "default";
     boolean hasUpdateBackpackType = false;
 
+    // Mod support
+    boolean isWearingBackpack = true;
+
     String uuid = null;
     boolean invChanged = true;
     boolean hasLightSource = false;
@@ -38,6 +41,7 @@ public class BackpackStatus {
         this.liquidList.clear();
         this.hasLightSource = false;
         this.banner = null;
+        this.isWearingBackpack = true;
     }
 
     // Only update data related to inv
@@ -50,6 +54,7 @@ public class BackpackStatus {
         this.holdingSlot = backpackStatus.holdingSlot;
         this.hasLightSource = backpackStatus.hasLightSource;
         this.invChanged = backpackStatus.invChanged;
+        this.isWearingBackpack = backpackStatus.isWearingBackpack;
     }
 
     // Only update data related to model
@@ -164,5 +169,13 @@ public class BackpackStatus {
 
     public void setBackpackType(String backpackType) {
         this.backpackType = backpackType;
+    }
+
+    public boolean isWearingBackpack() {
+        return isWearingBackpack;
+    }
+
+    public void setWearingBackpack(boolean wearingBackpack) {
+        isWearingBackpack = wearingBackpack;
     }
 }

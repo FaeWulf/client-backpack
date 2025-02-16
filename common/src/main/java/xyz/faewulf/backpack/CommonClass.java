@@ -18,7 +18,7 @@ public class CommonClass {
         networkConstants.init();
 
         //for debug/testing
-        if (Services.PLATFORM.isDevelopmentEnvironment())
+        if (Services.PLATFORM.isDevelopmentEnvironment() && Services.PLATFORM.isClientSide())
             SharedConstants.IS_RUNNING_IN_IDE = true;
 
         //load config, moved to util.mixinPlugin.ConditionalMixinPlugin method: onLoad()

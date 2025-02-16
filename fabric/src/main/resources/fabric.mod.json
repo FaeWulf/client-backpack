@@ -19,6 +19,9 @@
     "main": [
       "xyz.faewulf.backpack.Backpack"
     ],
+    "client": [
+      "xyz.faewulf.backpack.BackpackClient"
+    ],
     "fabric-gametest": [
       "xyz.faewulf.backpack.util.gameTests.registerGameTests"
     ],

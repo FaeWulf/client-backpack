@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import xyz.faewulf.backpack.Constants;
+import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.registry.ItemTagRegistry;
 
 import java.util.List;
@@ -109,6 +110,21 @@ public class Compare {
             ItemStack previousItem = previousSnapshot.get(slot);
 
             if (!ItemStack.matches(currentItem, previousItem)) {
+                return true; // Inventory has changed
+            }
+        }
+
+        // For backpack
+        int slotIndex = player.getInventory().getContainerSize();
+        for (ItemStack itemStack : Services.SERVER_HELPER.getBackpackInventory(player)) {
+
+            if (slotIndex >= previousSnapshot.size())
+                continue;
+
+            ItemStack previousItem = previousSnapshot.get(slotIndex);
+            slotIndex++;
+
+            if (!ItemStack.matches(itemStack, previousItem)) {
                 return true; // Inventory has changed
             }
         }

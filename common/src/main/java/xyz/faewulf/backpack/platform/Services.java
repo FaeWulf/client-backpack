@@ -4,6 +4,7 @@ import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.platform.services.IClientHelper;
 import xyz.faewulf.backpack.platform.services.IDynamicLightHelper;
 import xyz.faewulf.backpack.platform.services.IPlatformHelper;
+import xyz.faewulf.backpack.platform.services.IServerHelper;
 
 import java.util.ServiceLoader;
 
@@ -18,6 +19,7 @@ public class Services {
     public static final IPlatformHelper PLATFORM = load(IPlatformHelper.class);
     public static final IDynamicLightHelper DYNAMIC_LIGHT_HELPER = load(IDynamicLightHelper.class);
     public static final IClientHelper CLIENT_HELPER = load(IClientHelper.class);
+    public static final IServerHelper SERVER_HELPER = load(IServerHelper.class);
 
     // This code is used to load a service for the current environment. Your implementation of the service must be defined
     // manually by including a text file in META-INF/services named with the fully qualified class name of the service.

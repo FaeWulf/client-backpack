@@ -73,6 +73,9 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
         if (backpackStatus == null)
             return;
 
+        if (!backpackStatus.isWearingBackpack())
+            return;
+
         // Handle backpack model based on model type and variant
         // if no model then don't render
         if (!BackpackModelRegistry.isValidBackpack(backpackStatus.getBackpackType(), backpackStatus.getBackpackVariant()))

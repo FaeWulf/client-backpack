@@ -6,6 +6,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -15,10 +16,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
+import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.Compare;
 import xyz.faewulf.backpack.util.Converter;
 import xyz.faewulf.backpack.util.config.ModConfigs;
+
+import java.util.List;
 
 @Mixin(AbstractClientPlayer.class)
 public abstract class ClientPlayerMixin extends Player implements IClientPlayerBackpackData {
@@ -86,12 +90,22 @@ public abstract class ClientPlayerMixin extends Player implements IClientPlayerB
                         if (Compare.hasInventoryChanged(this) || this.getInventory().selected != v.getHoldingSlot()) {
                             v.setHoldingSlot(this.getInventory().selected);
                             v.setInvChanged(true);
+
                         }
+
+                        // Mod backpack support
+                        v.setWearingBackpack(Services.SERVER_HELPER.isWearingBackpack(this));
+
                         return v;
                     });
 
-                    //update Inventory
-                    Constants.PLAYER_INV.put(this.getName().getString(), Converter.takeInventorySnapshot(this));
+                    // update Inventory
+                    List<ItemStack> inv = Converter.takeInventorySnapshot(this);
+
+                    if (Services.SERVER_HELPER.isWearingBackpack(this))
+                        inv.addAll(Services.SERVER_HELPER.getBackpackInventory(this));
+
+                    Constants.PLAYER_INV.put(this.getName().getString(), inv);
                 }
             }
         }
