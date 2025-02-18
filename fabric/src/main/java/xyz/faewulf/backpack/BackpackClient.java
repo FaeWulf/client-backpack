@@ -11,6 +11,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import xyz.faewulf.backpack.feature.fabric.BackpackPrepareModelLoading;
+import xyz.faewulf.backpack.feature.fabric.LambDynLights.LambDynLightsModule;
+import xyz.faewulf.backpack.feature.fabric.RyoamicDynLights.RyoamicDynLightsModule;
+import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.registry.ItemTagRegistry;
 import xyz.faewulf.backpack.util.DataSync;
 
@@ -30,6 +33,15 @@ public class BackpackClient implements ClientModInitializer {
 
         // resource reload event
         registerClientTickEvent();
+
+        if(Services.PLATFORM.isModLoaded("lambdynlights")) {
+            LambDynLightsModule.init();
+        }
+        else
+        if(Services.PLATFORM.isModLoaded("ryoamiclights")) {
+            RyoamicDynLightsModule.init();
+        }
+
     }
 
     private static void registerModelLoader() {
