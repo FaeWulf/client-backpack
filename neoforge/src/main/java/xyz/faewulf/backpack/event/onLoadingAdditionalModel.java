@@ -28,7 +28,7 @@ public class onLoadingAdditionalModel {
 
         models.forEach((key, resource) -> {
             String path = key.getPath().substring("models/".length(), key.getPath().length() - ".json".length());
-            ModelResourceLocation location = new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(key.getNamespace(), path), "");
+            ModelResourceLocation location = new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(key.getNamespace(), path), "standalone");
 
 
             String[] splitID = path.split("/");
