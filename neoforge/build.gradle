@@ -10,16 +10,26 @@ repositories {
     maven {
         url = "https://jm.gserv.me/repository/maven-public/"
     }
+    maven {
+        name = "Curios"
+        url = uri("https://maven.theillusivec4.top/")
+    }
 }
 
 dependencies {
     //implementation("com.moulberry:mixinconstraints:1.0.1")
 
+    // mods
     compileOnly("maven.modrinth:travelersbackpack:${travelersbackpack_neoforge}")
+    compileOnly("maven.modrinth:sophisticated-backpacks:Z6CXO9sQ")
+    compileOnly("maven.modrinth:ryoamiclights:tApwsw9C")
+
+    compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}")
 
     //lib
     implementation("com.electronwill.night-config:toml:3.6.0")
     jarJar(implementation "mysticdrew:common-networking-neoforge:${common_networking}")
+
 }
 
 neoForge {

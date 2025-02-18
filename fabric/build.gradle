@@ -12,11 +12,8 @@ repositories {
         url = "https://maven.terraformersmc.com/"
     }
     maven {
-        name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-            includeGroup("software.bernie.geckolib")
-        }
+        name = "Ladysnake Libs"
+        url = 'https://maven.ladysnake.org/releases'
     }
     maven {
         url = "https://jm.gserv.me/repository/maven-public/"
@@ -41,8 +38,15 @@ dependencies {
     include(modImplementation "com.electronwill.night-config:core:3.6.0")
     include(modImplementation "com.electronwill.night-config:toml:3.6.0")
     include(modImplementation "mysticdrew:common-networking-fabric:${common_networking}")
-    modCompileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:${lambdynamiclights}")
 
+    modCompileOnly("dev.emi:trinkets:${trinkets_version}")
+
+    //mods
+    modCompileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:${lambdynamiclights}")
+    modCompileOnly("maven.modrinth:ryoamiclights:eFFsHtIr")
+    modCompileOnly("maven.modrinth:inmis:le0fuSb3")
+
+    modCompileOnly("maven.modrinth:sophisticated-backpacks-(unoffical-fabric-port):gpSJccbD")
     modCompileOnly("maven.modrinth:travelersbackpack:${travelersbackpack_fabric}")
 }
 

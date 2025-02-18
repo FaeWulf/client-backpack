@@ -1,5 +1,6 @@
 package xyz.faewulf.backpack;
 
+import com.mojang.datafixers.kinds.Const;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Item;
@@ -23,5 +24,12 @@ public class CommonClass {
 
         //load config, moved to util.mixinPlugin.ConditionalMixinPlugin method: onLoad()
         //Config.init();
+
+        // For mod load
+        Constants.CURIOS_LOADED = Services.PLATFORM.isModLoaded("curios");
+        Constants.TRINKETS_LOADED = Services.PLATFORM.isModLoaded("trinkets");
+        Constants.SOPHISTICATED_BACKPACKS_LOADED = Services.PLATFORM.isModLoaded("sophisticatedbackpacks");
+        Constants.TRAVELERS_BACKPACK_LOADED = Services.PLATFORM.isModLoaded("travelersbackpack");
+        Constants.INMIS_BACKPACK_LOADED = Services.PLATFORM.isModLoaded("inmis");
     }
 }

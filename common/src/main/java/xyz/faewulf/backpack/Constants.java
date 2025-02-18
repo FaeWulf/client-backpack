@@ -33,4 +33,13 @@ public class Constants {
     public static final Map<String, List<ItemStack>> SERVER_PLAYER_INV = new HashMap<>();
 
     public static IDynamicLightCompatLayer DYNAMIC_LIGHT_COMPAT_LAYER = null;
+
+    public static boolean CURIOS_LOADED = false;
+    public static boolean TRINKETS_LOADED = false;
+    public static boolean SOPHISTICATED_BACKPACKS_LOADED = false;
+    public static boolean TRAVELERS_BACKPACK_LOADED = false;
+    public static boolean INMIS_BACKPACK_LOADED = false;
+
+    public static boolean LAMBDYN_LIGHTS_LOADED = false;
+    public static boolean RYOAMMIC_LIGHTS_LOADED = false;
 }
