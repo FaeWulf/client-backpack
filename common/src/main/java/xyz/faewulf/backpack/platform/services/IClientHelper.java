@@ -11,5 +11,4 @@ public interface IClientHelper {
         ModelManager manager = Minecraft.getInstance().getModelManager();
         return manager.getModel(new ModelResourceLocation(location, ""));
     }
-
 }

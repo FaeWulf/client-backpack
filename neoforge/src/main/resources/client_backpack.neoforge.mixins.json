@@ -4,10 +4,9 @@
   "package": "xyz.faewulf.backpack.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ItemStackHandlerInvoker",
-    "compat.travelerbackpack.AttachmentUtilsInvoker"
+    "ItemStackHandlerInvoker"
   ],
-  "client": ["compat.travelerbackpack.BackpackLayerMixin"],
+  "client": ["compat.sophisticatedBackpacks.BackpackLayerRendererMixin", "compat.travelerbackpack.BackpackLayerMixin"],
   "server": [],
   "injectors": {
     "defaultRequire": 1

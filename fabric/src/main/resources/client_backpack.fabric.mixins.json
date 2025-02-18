@@ -5,10 +5,14 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "compat.travelerbackpack.ComponentUtilsInvoker",
     "events.BlockItemMixin"
   ],
-  "client": ["compat.travelerbackpack.BackpackLayerMixin"],
+  "client": [
+    "compat.inmis.BackpackFeatureMixin",
+    "compat.inmis.TrinketBackpackRendererMixin",
+    "compat.sophisticatedBackpacks.BackpackLayerRendererMixin",
+    "compat.travelerbackpack.BackpackLayerMixin"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

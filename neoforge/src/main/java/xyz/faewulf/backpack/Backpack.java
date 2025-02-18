@@ -12,8 +12,6 @@ public class Backpack {
     public Backpack(IEventBus eventBus) {
         Constants.LOG.info("Loading");
 
-        //MidnightConfig.init(Constants.MOD_ID, ModConfigs.class);
-
         CommonClass.init();
 
         //config
