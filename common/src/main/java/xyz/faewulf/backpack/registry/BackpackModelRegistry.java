@@ -25,7 +25,7 @@ public class BackpackModelRegistry {
 
         if (list.contains("default")) {
             list.remove("default");
-            list.addFirst("default");
+            list.add(0, "default");
         }
 
         // Make immutable
@@ -40,7 +40,7 @@ public class BackpackModelRegistry {
 
             if (list.contains("default")) {
                 list.remove("default");
-                list.addFirst("default");
+                list.add(0, "default");
             }
 
             return list.stream().toList();

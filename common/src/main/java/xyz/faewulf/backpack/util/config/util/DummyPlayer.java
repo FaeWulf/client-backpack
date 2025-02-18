@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.resources.PlayerSkin;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
 import xyz.faewulf.backpack.util.config.ModConfigs;
@@ -13,7 +12,6 @@ import java.util.UUID;
 
 public class DummyPlayer extends AbstractClientPlayer {
     private static DummyPlayer instance;
-    private PlayerSkin playerSkin = null;
 
     public static DummyPlayer createInstance(ClientLevel clientLevel) {
         if (instance == null || instance.clientLevel != clientLevel) instance = new DummyPlayer(clientLevel);
@@ -27,8 +25,6 @@ public class DummyPlayer extends AbstractClientPlayer {
 
         if (Minecraft.getInstance().player != null)
             setUUID(Minecraft.getInstance().player.getUUID());
-
-        Minecraft.getInstance().getSkinManager().getOrLoad(getGameProfile()).thenAccept((textures) -> playerSkin = textures);
 
         refreshBackpackData();
     }

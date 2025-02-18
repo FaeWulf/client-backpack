@@ -89,7 +89,7 @@ public class DataSync {
                 User session = client.getUser();
 
                 try {
-                    client.getMinecraftSessionService().joinServer(Objects.requireNonNull(session.getProfileId()), session.getAccessToken(), serverId);
+                    client.getMinecraftSessionService().joinServer(session.getGameProfile(), session.getAccessToken(), serverId);
                 } catch (AuthenticationException e) {
                     //throw new RuntimeException(e);
                 }

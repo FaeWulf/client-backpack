@@ -42,11 +42,11 @@ dependencies {
     modCompileOnly("dev.emi:trinkets:${trinkets_version}")
 
     //mods
-    modCompileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-runtime:${lambdynamiclights}")
-    modCompileOnly("maven.modrinth:ryoamiclights:eFFsHtIr")
-    modCompileOnly("maven.modrinth:inmis:le0fuSb3")
+    modCompileOnly("dev.lambdaurora:lambdynamiclights:${lambdynamiclights}")
+    modCompileOnly("maven.modrinth:ryoamiclights:VTzHz71U")
+    modCompileOnly("maven.modrinth:inmis:ed738xvb")
 
-    modCompileOnly("maven.modrinth:sophisticated-backpacks-(unoffical-fabric-port):gpSJccbD")
+    modCompileOnly("maven.modrinth:sophisticated-backpacks-(unoffical-fabric-port):g7vm5J1t")
     modCompileOnly("maven.modrinth:travelersbackpack:${travelersbackpack_fabric}")
 }
 

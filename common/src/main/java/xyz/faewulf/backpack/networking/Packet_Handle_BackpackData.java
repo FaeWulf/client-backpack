@@ -4,9 +4,6 @@ import commonnetwork.api.Dispatcher;
 import commonnetwork.networking.data.PacketContext;
 import commonnetwork.networking.data.Side;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import xyz.faewulf.backpack.Constants;
@@ -19,18 +16,13 @@ import java.util.List;
 
 public class Packet_Handle_BackpackData {
     public static final ResourceLocation CHANNEL = ResourceLocation.tryBuild(Constants.MOD_ID, "packet_backpack_status");
-    public static final StreamCodec<FriendlyByteBuf, Packet_Handle_BackpackData> STREAM_CODEC = StreamCodec.ofMember(Packet_Handle_BackpackData::encode, Packet_Handle_BackpackData::decode);
 
-    private String name;
-    private BackpackStatus backpackStatus;
+    private final String name;
+    private final BackpackStatus backpackStatus;
 
     public Packet_Handle_BackpackData(String name, BackpackStatus backpackStatus) {
         this.name = name;
         this.backpackStatus = backpackStatus;
-    }
-
-    public static CustomPacketPayload.Type<CustomPacketPayload> type() {
-        return new CustomPacketPayload.Type<>(CHANNEL);
     }
 
     public void encode(FriendlyByteBuf buf) {
@@ -54,7 +46,7 @@ public class Packet_Handle_BackpackData {
         // Encode banner ItemStack (can be null)
         if (this.backpackStatus.getBanner() != null) {
             buf.writeBoolean(true); // indicates the ItemStack is not null
-            ItemStack.OPTIONAL_STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, this.backpackStatus.getBanner()); // Encoding ItemStack
+            buf.writeItem(this.backpackStatus.getBanner());
         } else {
             buf.writeBoolean(false); // indicates the ItemStack is null
         }
@@ -83,7 +75,7 @@ public class Packet_Handle_BackpackData {
 
         // Decode banner ItemStack (can be null)
         if (buf.readBoolean()) {
-            status.setBanner(ItemStack.OPTIONAL_STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf));
+            status.setBanner(buf.readItem());
         } else {
             status.setBanner(null);
         }
@@ -136,9 +128,9 @@ public class Packet_Handle_BackpackData {
 
                 if (ModConfigs.hide_items_component_data) {
                     ItemStack defaultItem = new ItemStack(item.getItem());
-                    ItemStack.OPTIONAL_STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, defaultItem); // Encode ItemStack
+                    buf.writeItem(defaultItem); // Encode ItemStack
                 } else
-                    ItemStack.OPTIONAL_STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, item); // Encode ItemStack
+                    buf.writeItem(item); // Encode ItemStack
             } else {
                 buf.writeBoolean(false); // ItemStack is null
             }
@@ -151,7 +143,7 @@ public class Packet_Handle_BackpackData {
         List<ItemStack> list = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             if (buf.readBoolean()) {
-                list.add(ItemStack.OPTIONAL_STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf));
+                list.add(buf.readItem());
             }
         }
         return list;

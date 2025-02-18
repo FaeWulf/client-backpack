@@ -4,25 +4,18 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.FocusableTextWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BannerPattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.IClientPlayerBackpackData;
 import xyz.faewulf.backpack.inter.API.SyncUnavailable;
@@ -35,7 +28,6 @@ import xyz.faewulf.backpack.util.config.util.DummyPlayer;
 import xyz.faewulf.backpack.util.Misc;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
@@ -67,9 +59,6 @@ public class CustomizeScreen extends Screen {
     private Button button_Variant;
     @Nullable
     private Button button_Status;
-
-    @Nullable
-    private FocusableTextWidget textWidget;
 
     //vars
     private List<String> modelList;
@@ -316,11 +305,7 @@ public class CustomizeScreen extends Screen {
 
                                     if (showBanner) {
                                         Constants.PLAYER_INV_STATUS.computeIfPresent(Constants.DUMMY_PLAYER_NAME, (k, v) -> {
-                                            v.setBanner(new ItemStack(Items.GREEN_BANNER));
-                                            // Get banner registry
-                                            // If can get then return custom banner
-                                            Optional<HolderLookup.RegistryLookup<BannerPattern>> bannerPatternHolderGetter = this.dummyPlayer.registryAccess().lookup(Registries.BANNER_PATTERN);
-                                            bannerPatternHolderGetter.ifPresent(registryReference -> v.setBanner(Misc.wardenBanner(registryReference)));
+                                            v.setBanner(Misc.wardenBanner());
                                             return v;
                                         });
                                     } else {
@@ -556,19 +541,11 @@ public class CustomizeScreen extends Screen {
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
 
         // renderBackground()
-        if (this.minecraft == null || this.minecraft.level == null) {
-            this.renderPanorama(guiGraphics, partialTick);
+        if (this.minecraft.level != null) {
+            guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+        } else {
+            this.renderDirtBackground(guiGraphics);
         }
-
-        guiGraphics.fillGradient(
-                0, 0,
-                this.width,
-                this.height,
-                0x99000000, 0x99000000
-        );
-
-        this.renderBlurredBackground(partialTick);
-        this.renderMenuBackground(guiGraphics);
         // end of renderBackground()
 
         // Render dummy player if possible
@@ -595,8 +572,8 @@ public class CustomizeScreen extends Screen {
     // In original code (super.render()) it calls renderBackground() but I have to render renderEntityInInventoryFollowsMouse() before the super.render()
     // to prevent model render on top of buttons and tooltips
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        return;
+    public void renderBackground(GuiGraphics guiGraphics) {
+        super.renderBackground(guiGraphics);
     }
 
     @Override
@@ -608,37 +585,39 @@ public class CustomizeScreen extends Screen {
     }
 
     // From InventoryScreen.renderEntityInInventoryFollowsMouse
-    // Changed: vector3f -1f z for no clip issue with background
+    // Layering guiGraphics.pose() to translate forward a little bit, to resolve clipping with back ground issue.
     // Reverse facing to show back instead of front (quaternionf)
     // Increase yBodyRot (before render) from 20f to 40f for better backpack preview.
     public static void renderEntityInInventoryFollowsMouse(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float yOffset, float mouseX, float mouseY, LivingEntity entity) {
-        float f = (float) (x1 + x2) / 2.0F;
-        float f1 = (float) (y1 + y2) / 2.0F;
-        guiGraphics.enableScissor(x1, y1, x2, y2);
-        float f2 = (float) Math.atan((double) ((f - mouseX) / 40.0F));
-        float f3 = -(float) Math.atan((double) ((f1 - mouseY) / 40.0F));
+        float x = (float) (x1 + x2) / 2.0F;
+        float y = (float) (y1 + y2) / 2.0F;
+
+        //float f = (float) Math.atan((double) (mouseX / 40.0F));
+        //float g = (float) Math.atan((double) (mouseY / 40.0F));
+        float f = (float) Math.atan((double) ((x - mouseX) / 40.0F));
+        float g = -(float) Math.atan((double) ((y - mouseY) / 40.0F));
+        //Quaternionf quaternionf = new Quaternionf().rotateZ((float) Math.PI);
         Quaternionf quaternionf = (new Quaternionf()).rotateXYZ((float) Math.PI, 0.0f, (float) Math.PI * 2);
-        Quaternionf quaternionf1 = (new Quaternionf()).rotateX(f3 * 20.0F * 0.017453292F);
-        quaternionf.mul(quaternionf1);
-        float f4 = entity.yBodyRot;
-        float f5 = entity.getYRot();
-        float f6 = entity.getXRot();
-        float f7 = entity.yHeadRotO;
-        float f8 = entity.yHeadRot;
-        entity.yBodyRot = 180.0F + f2 * 40.0F;
-        entity.setYRot(180.0F + f2 * 40.0F);
-        entity.setXRot(-f3 * 20.0F);
+        Quaternionf quaternionf2 = new Quaternionf().rotateX(g * 20.0F * (float) (Math.PI / 180.0));
+        quaternionf.mul(quaternionf2);
+        float h = entity.yBodyRot;
+        float i = entity.getYRot();
+        float j = entity.getXRot();
+        float k = entity.yHeadRotO;
+        float l = entity.yHeadRot;
+        entity.yBodyRot = 180.0F + f * 40.0F;
+        entity.setYRot(180.0F + f * 40.0F);
+        entity.setXRot(-g * 20.0F);
         entity.yHeadRot = entity.getYRot();
         entity.yHeadRotO = entity.getYRot();
-        float f9 = entity.getScale();
-        Vector3f vector3f = new Vector3f(0.0F, entity.getBbHeight() / 2.0F + yOffset * f9, -1.0F);
-        float f10 = (float) scale / f9;
-        renderEntityInInventory(guiGraphics, f, f1, f10, vector3f, quaternionf, quaternionf1, entity);
-        entity.yBodyRot = f4;
-        entity.setYRot(f5);
-        entity.setXRot(f6);
-        entity.yHeadRotO = f7;
-        entity.yHeadRot = f8;
-        guiGraphics.disableScissor();
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 50f);
+        renderEntityInInventory(guiGraphics, (int) x, (int) y2, scale, quaternionf, quaternionf2, entity);
+        guiGraphics.pose().popPose();
+        entity.yBodyRot = h;
+        entity.setYRot(i);
+        entity.setXRot(j);
+        entity.yHeadRotO = k;
+        entity.yHeadRot = l;
     }
 }

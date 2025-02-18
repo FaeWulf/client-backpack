@@ -4,14 +4,11 @@ import commonnetwork.networking.data.PacketContext;
 import commonnetwork.networking.data.Side;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import xyz.faewulf.backpack.Constants;
 
 public class Packet_Handle_BackpackModel {
     public static final ResourceLocation CHANNEL = ResourceLocation.tryBuild(Constants.MOD_ID, "packet_backpack_model");
-    public static final StreamCodec<FriendlyByteBuf, Packet_Handle_BackpackModel> STREAM_CODEC = StreamCodec.ofMember(Packet_Handle_BackpackModel::encode, Packet_Handle_BackpackModel::decode);
 
     private String name;
     private String model;
@@ -21,10 +18,6 @@ public class Packet_Handle_BackpackModel {
         this.name = name;
         this.model = model;
         this.variant = variant;
-    }
-
-    public static CustomPacketPayload.Type<CustomPacketPayload> type() {
-        return new CustomPacketPayload.Type<>(CHANNEL);
     }
 
     public void encode(FriendlyByteBuf buf) {

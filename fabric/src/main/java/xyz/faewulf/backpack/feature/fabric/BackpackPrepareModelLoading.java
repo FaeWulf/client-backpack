@@ -26,16 +26,16 @@ public class BackpackPrepareModelLoading implements PreparableModelLoadingPlugin
                         List<ResourceLocation> modelIDs = new ArrayList<>();
                         models.forEach((key, resource) -> {
                             String path = key.getPath().substring("models/".length(), key.getPath().length() - ".json".length());
-                            ModelResourceLocation location = new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(key.getNamespace(), path), "");
+                            ResourceLocation location = ResourceLocation.tryBuild(key.getNamespace(), path);
 
                             String[] splitID = path.split("/");
 
                             if (splitID.length >= 3) {
 
                                 //register model
-                                modelIDs.add(location.id());
+                                modelIDs.add(location);
 
-                                BackpackModelRegistry.addBackpack(splitID[1], splitID[2], location.id());
+                                BackpackModelRegistry.addBackpack(splitID[1], splitID[2], location);
 
                                 // Try get backpack's placement data on the same dir
                                 tryGetBackPackDetail(resourceManager, path, key.getNamespace(), splitID[1], splitID[2]);
@@ -62,7 +62,7 @@ public class BackpackPrepareModelLoading implements PreparableModelLoadingPlugin
         String placementDetailPath = "models/" + path.concat(".placement");
 
         // Make ResourceLocation out of current namespace and path
-        ResourceLocation placementDetailResourceLocation = ResourceLocation.fromNamespaceAndPath(nameSpace, placementDetailPath);
+        ResourceLocation placementDetailResourceLocation = ResourceLocation.tryBuild(nameSpace, placementDetailPath);
 
         // Try get data
         Optional<DetailBackpack> detailBackpack = Converter.tryGetBackpackPlacementData(manager, placementDetailResourceLocation);
@@ -83,7 +83,7 @@ public class BackpackPrepareModelLoading implements PreparableModelLoadingPlugin
 
             Constants.LOG.warn(" Replace {}'s Detail data with {} if possible...", placementDetailPath, placementDetailDefaultPath);
 
-            Converter.tryGetBackpackPlacementData(manager, ResourceLocation.fromNamespaceAndPath(nameSpace, placementDetailDefaultPath))
+            Converter.tryGetBackpackPlacementData(manager, ResourceLocation.tryBuild(nameSpace, placementDetailDefaultPath))
                     .ifPresent(detailBackpack1 -> BackpackModelRegistry.addBackpackDetail(id, variant, detailBackpack1));
         }
 

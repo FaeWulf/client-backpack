@@ -3,7 +3,6 @@ package xyz.faewulf.backpack.mixin;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +28,7 @@ public abstract class ServerPlayerMixin extends Player {
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void initInject(MinecraftServer server, ServerLevel level, GameProfile gameProfile, ClientInformation clientInformation, CallbackInfo ci) {
+    private void initInject(MinecraftServer p_254143_, ServerLevel p_254435_, GameProfile p_253651_, CallbackInfo ci) {
         // init InV
         Constants.SERVER_PLAYER_INV.put(this.getName().getString(), Converter.takeInventorySnapshot(this));
         // Create status for new player

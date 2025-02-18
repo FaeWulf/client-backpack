@@ -208,7 +208,7 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
                     // If not, then try item
                     var itemRef = BuiltInRegistries.ITEM.get(item);
 
-                    if(itemRef != Items.AIR) {
+                    if (itemRef != Items.AIR) {
                         poseStack.pushPose();
 
                         detailBackpack.light_source.transform.applyTransform(poseStack, false);
@@ -216,7 +216,8 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
                         ItemStack itemStack = new ItemStack(itemRef);
                         Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, ItemDisplayContext.HEAD, packedLight, OverlayTexture.NO_OVERLAY, poseStack, multiBufferSource, null, 0);
                         poseStack.popPose();
-                    };
+                    }
+                    ;
                 }
             }
         }

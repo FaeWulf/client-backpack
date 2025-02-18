@@ -1,5 +1,6 @@
 package xyz.faewulf.backpack.util.gameTests;
 
+
 import net.minecraft.gametest.framework.*;
 import net.minecraft.world.level.block.Rotation;
 import xyz.faewulf.backpack.Constants;
@@ -25,7 +26,7 @@ public class registerGameTests {
         List<TestFunction> functions = new ArrayList<>();
 
         try {
-            List<Class<?>> testClassList = Services.PLATFORM.findClasses("xyz.faewulf.backpack.util.gameTests.entry");
+            List<Class<?>> testClassList = Services.PLATFORM.findClasses("xyz.faewulf.diversity.util.gameTests.entry");
 
             testClassList.forEach(aClass -> {
                 if (aClass.isAnnotationPresent(TestGroup.class)) {
@@ -50,7 +51,7 @@ public class registerGameTests {
 
                         ModifingConsumer consumer = new ModifingConsumer(aClass, method, Modifier.from(method));
 
-                        functions.add(new TestFunction(annotation.batch(), testName, template, rotation, annotation.timeoutTicks(), annotation.setupTicks(), annotation.required(), annotation.manualOnly(), annotation.attempts(), annotation.requiredSuccesses(), annotation.skyAccess(), consumer));
+                        functions.add(new TestFunction(annotation.batch(), testName, template, rotation, annotation.timeoutTicks(), annotation.setupTicks(), annotation.required(), annotation.requiredSuccesses(), annotation.attempts(), consumer));
                     }
                 }
             });
@@ -65,7 +66,7 @@ public class registerGameTests {
             return functions;
 
         } catch (IllegalArgumentException a) {
-            return null;
+            return new ArrayList<>();
         }
     }
 

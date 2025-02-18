@@ -2,7 +2,7 @@ plugins {
     // see https://fabricmc.net/develop/ for new versions
     id 'fabric-loom' version "${loom_version}" apply false
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
-    id 'net.neoforged.moddev' version "${mdg_version}" apply false
+    id 'net.neoforged.moddev.legacyforge' version "${mdg_version}" apply false
 
     //publisher
     id "com.hypherionmc.modutils.modpublisher" version "2.1.6" apply false
@@ -11,14 +11,14 @@ plugins {
 //custom task
 tasks.register('copyJars', Copy) {
 
-    dependsOn ':fabric:build', ':neoforge:build' // Make sure subprojects are built
+    dependsOn ':fabric:build', ':forge:build' // Make sure subprojects are built
 
     from('fabric/build/libs') {
         include("*${project.version}.jar")
         exclude('*-javadoc.jar', '*-sources.jar', '*-orphaned.jar')
     }
 
-    from('neoforge/build/libs') {
+    from('forge/build/libs') {
         include("*${project.version}.jar")
         exclude('*-javadoc.jar', '*-sources.jar', '*-orphaned.jar')
     }
@@ -28,7 +28,7 @@ tasks.register('copyJars', Copy) {
 
 // Trigger the copyJars task after the subprojects' builds are done
 gradle.projectsEvaluated {
-    copyJars.mustRunAfter ':fabric:build', ':neoforge:build'
+    copyJars.mustRunAfter ':fabric:build', ':forge:build'
 }
 
 // Add a custom task to trigger the copy process
@@ -37,7 +37,7 @@ tasks.register('buildAll') {
     description = 'Builds and copies the main JARs from subprojects to the root build folder.'
 
     //delete(fileTree("build/"))
-    dependsOn ':fabric:build', ':neoforge:build', copyJars
+    dependsOn ':fabric:build', ':forge:build', copyJars
 }
 
 // Tasks for publish
@@ -46,7 +46,7 @@ tasks.register('publishAllToModrinth') {
     description = 'Publish all subproject artifacts to Modrinth'
 
     //delete(fileTree("build/"))
-    dependsOn ':fabric:publishModrinth', ':neoforge:publishModrinth'
+    dependsOn ':fabric:publishModrinth', ':forge:publishModrinth'
 }
 
 tasks.register('publishAllToCurseforge') {
@@ -54,7 +54,7 @@ tasks.register('publishAllToCurseforge') {
     description = 'Publish all subproject artifacts to Curseforge'
 
     //delete(fileTree("build/"))
-    dependsOn ':fabric:publishCurseforge', ':neoforge:publishCurseforge'
+    dependsOn ':fabric:publishCurseforge', ':forge:publishCurseforge'
 }
 
 tasks.register('publishAllToAll') {

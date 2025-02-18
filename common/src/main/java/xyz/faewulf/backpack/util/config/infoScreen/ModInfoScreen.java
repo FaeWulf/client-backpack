@@ -22,21 +22,23 @@ import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.util.config.ConfigScreen.ConfigScreen;
 import xyz.faewulf.backpack.util.config.ConfigScreen.CustomizeScreen;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class ModInfoScreen extends Screen {
 
-    private static final ResourceLocation MAIN_IMAGE = ResourceLocation.tryBuild(Constants.MOD_ID, "textures/gui/d.png");
-    private static final ResourceLocation LIGHT_RAYS = ResourceLocation.tryBuild(Constants.MOD_ID, "textures/gui/light_rays.png");
+    private static final ResourceLocation MAIN_IMAGE = new ResourceLocation(Constants.MOD_ID, "textures/gui/d.png");
+    private static final ResourceLocation LIGHT_RAYS = new ResourceLocation(Constants.MOD_ID, "textures/gui/light_rays.png");
     private final Screen parent;
     private final Minecraft client;
 
     private final List<rainITem> fallingEntities = new ArrayList<>();
 
     //background
-    public static final ResourceLocation ATLAS_TEXTURE = ResourceLocation.tryBuild(Constants.MOD_ID, "textures/gui/atlas_background.png");
+    public static final ResourceLocation ATLAS_TEXTURE = new ResourceLocation(Constants.MOD_ID, "textures/gui/atlas_background.png");
 
     //background
     private final int ATLAS_SIZE = 32 * 3; // number of atlas tile
@@ -57,7 +59,7 @@ public class ModInfoScreen extends Screen {
     private float time = 0.0f;  // Time variable to track animation
 
     protected ModInfoScreen(Screen parent) {
-        super(Component.literal("Client backpack"));
+        super(Component.literal("Diversity info"));
         this.parent = parent;
         client = Minecraft.getInstance();
 
@@ -76,17 +78,16 @@ public class ModInfoScreen extends Screen {
         generateRandomTileMap();
 
         //rain
-        for (int i = 0; i < 25; i++) {  // Example for 100 falling entities
+        for (int i = 0; i < 20; i++) {  // Example for 100 falling entities
             int texture = i % rainITem.itemSize;
             float x = (float) (Math.random() * this.width);
             float y = (float) (Math.random() * this.height);
             float velocityX = (float) (Math.random() * 1f) - 0.5f;  // Random blow speed
-            float velocityY = 1.5f + (float) (Math.random() * 1f);  // Random falling speed
+            float velocityY = 2f + (float) (Math.random() * 1.5f);  // Random falling speed
             float rotationSpeed = (float) ((Math.random() * 14) - 7);  // Random rotation speed
             fallingEntities.add(new rainITem(texture, x, y, velocityX, velocityY, rotationSpeed, this.width, this.height));
         }
 
-        //buttons
         this.buttonLayout = new GridLayout();
         this.infoLayout = new GridLayout();
 
@@ -101,10 +102,9 @@ public class ModInfoScreen extends Screen {
 
         settingButton = rowHelper.addChild(
                 Button.builder(
-                        Component.translatable("backpack.infoScreen.configurations"),
+                        Component.literal("Configuration..."),
                         button -> this.client.setScreen(ConfigScreen.getScreen(this))).build()
         );
-
 
         rowHelper.addChild(
                 Button.builder(
@@ -125,7 +125,7 @@ public class ModInfoScreen extends Screen {
         rowHelperInfoLayout.addChild(
                 Button.builder(
                                 Component.literal("Discord").withStyle(ChatFormatting.BLUE),
-                                button -> this.openWebLink("https://faewulf.xyz/discord"))
+                                button -> this.openWebLink("https://discord.com/invite/xZneCTcEvb"))
                         .width(50).build()
         );
 
@@ -156,16 +156,10 @@ public class ModInfoScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        // Render other screen elements (if any)
-        super.render(guiGraphics, mouseX, mouseY, delta);
-    }
-
-    @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        drawRandomTiledBackground(guiGraphics);
-
-        randomShtShowering(guiGraphics, pPartialTick);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        //background
+        this.renderBackground(guiGraphics);
+        randomShtShowering(guiGraphics, delta);
 
         guiGraphics.fillGradient(
                 0,
@@ -175,14 +169,26 @@ public class ModInfoScreen extends Screen {
                 0xaa000000, 0x80000000
         );
 
+        //end of background
+
         // Update time for animation (delta ensures smooth animation)
-        time += pPartialTick * 0.05f;
+        time += delta * 0.05f;
 
         // Draw the light rays behind the image
         drawLightRays(guiGraphics);
 
         // Draw the wobbling main image in the center
         drawWobblingImage(guiGraphics);
+
+        settingButton.setFocused(false);
+
+        // Render other screen elements (if any)
+        super.render(guiGraphics, mouseX, mouseY, delta);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics) {
+        drawRandomTiledBackground(guiGraphics);
     }
 
     private void drawLightRays(GuiGraphics guiGraphics) {
@@ -209,7 +215,7 @@ public class ModInfoScreen extends Screen {
 
         // Draw light rays, slightly scaled up and centered
         RenderSystem.enableBlend();
-
+        RenderSystem.defaultBlendFunc();
         guiGraphics.blit(
                 LIGHT_RAYS,
                 0, 0,
@@ -332,7 +338,12 @@ public class ModInfoScreen extends Screen {
                 confirmed -> {
                     if (confirmed) {
                         // Open the URL if the player confirms
-                        Util.getPlatform().openUri(url);
+                        try {
+                            Util.getPlatform().openUrl(new URL(url));
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
                     }
                     // Return to the previous screen if canceled
                     this.client.setScreen(this);

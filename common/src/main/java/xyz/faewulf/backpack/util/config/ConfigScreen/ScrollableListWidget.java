@@ -18,17 +18,10 @@ public class ScrollableListWidget extends ContainerObjectSelectionList<Scrollabl
 
     private static final int SCROLLBAR_OFFSET = 7;
 
-    public ScrollableListWidget(Minecraft $$0, int $$1, int $$2, int $$3, int $$4, int $$5) {
-        super($$0, $$1, $$2, $$4, $$5);
+    public ScrollableListWidget(Minecraft minecraft, int width, int height, int y0, int y1, int itemHeight) {
+        super(minecraft, width, height, y0, y1, itemHeight);
 
-        //this.setRenderBackground(false);
-    }
-
-    public void setSize(int x, int y, int width, int height) {
-        this.setX(x);
-        this.setY(y);
-        this.setWidth(width);
-        this.setHeight(height);
+        this.setRenderBackground(false);
     }
 
     public void clear() {

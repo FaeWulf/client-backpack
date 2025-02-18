@@ -267,9 +267,7 @@ public class ConfigScreen extends Screen {
             ScreenRectangle screenRectangle = new ScreenRectangle(0, i, this.width - this.rightTab.getWidth() - RIGHT_TAB_PADDING, this.height);
 
             //resize and reposition
-
-            HeaderAndFooterLayout headerAndFooterLayout = new HeaderAndFooterLayout(this, i, 0);
-            this.slw.updateSize(screenRectangle.width(), headerAndFooterLayout);
+            this.slw.updateSize(screenRectangle.width(), screenRectangle.height(), screenRectangle.top(), screenRectangle.height());
 
             //this.slw.setSize(screenRectangle.width(), screenRectangle.height(), screenRectangle.top(), screenRectangle.height());
             this.tabManager.setTabArea(screenRectangle);
@@ -386,9 +384,18 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int $$1, int $$2, float $$3) {
-        this.renderBackground(guiGraphics, $$1, $$2, $$3);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderBackground(guiGraphics);
         drawRandomTiledBackground(guiGraphics);
+
+        guiGraphics.fillGradient(
+                0,
+                0,
+                this.width,
+                this.height,
+                0x80000000, 0x80000000
+        );
+
         //extra layer for right tab
         guiGraphics.fillGradient(
                 this.rightTab.getX() - RIGHT_TAB_PADDING,
@@ -398,7 +405,7 @@ public class ConfigScreen extends Screen {
                 0xbb000000, 0xbb000000
         );
 
-        super.render(guiGraphics, $$1, $$2, $$3);
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     private void drawRandomTiledBackground(GuiGraphics guiGraphics) {
