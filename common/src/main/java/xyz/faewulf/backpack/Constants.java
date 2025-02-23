@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.DetailTransform;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.LightSourceDetail;
+import xyz.faewulf.backpack.inter.BackpackModelRecord.Strap;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IDynamicLightCompatLayer;
 
@@ -22,6 +23,7 @@ public class Constants {
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(LightSourceDetail.class, new LightSourceDetail.LightSourceDeserializer())
             .registerTypeAdapter(DetailTransform.class, new DetailTransform.Deserializer())
+            .registerTypeAdapter(Strap.class, new Strap.StrapDeserializer())
             .create();
 
     public static final String DUMMY_PLAYER_NAME = ";-;";
