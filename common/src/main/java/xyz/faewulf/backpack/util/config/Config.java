@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class Config {
 
-    public static final String path = "config/backpack.toml";
-    public static final String old_path = "config/backpack.json";
+    public static final String path = "config/client_backpack.toml";
+    public static final String old_path = "config/client_backpack.json";
 
     public static final Class<?> configClass = ModConfigs.class;
     public static final String translatePath = "backpack.config.";
@@ -85,7 +85,7 @@ public class Config {
     private static void loadFromFile(String filePath) {
 
         if (Files.exists(Path.of(old_path))) {
-            Constants.LOG.warn("Detected the old configuration file 'Diversity.json'. Starting from version 2.0.1, the mod has transitioned to using 'Diversity.toml' for configuration. Sorry for the inconvenient!");
+            Constants.LOG.warn("Detected the old configuration file 'backpack.json'. Starting from version 2.0.1, the mod has transitioned to using 'backpack.toml' for configuration. Sorry for the inconvenient!");
         }
 
         try (FileConfig reader = FileConfig.of(filePath)) {
