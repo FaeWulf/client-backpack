@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Pseudo
-@Mixin(targets = "com.tiviacz.travelersbackpack.capability.AttachmentUtils")
+@Mixin(targets = "com.tiviacz.travelersbackpack.component.ComponentUtils")
 public interface ComponentUtilsInvoker {
     @Invoker("isWearingBackpack")
     public static boolean isWearingBackpackInvoked(Player player) {
@@ -31,4 +31,3 @@ public interface ComponentUtilsInvoker {
         throw new AssertionError();
     }
 }
-

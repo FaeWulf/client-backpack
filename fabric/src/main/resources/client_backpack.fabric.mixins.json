@@ -5,8 +5,7 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "compat.travelerbackpack.ComponentUtilsInvoker",
-    "events.BlockItemMixin"
+    "compat.travelerbackpack.ComponentUtilsInvoker"
   ],
   "client": ["compat.travelerbackpack.BackpackLayerMixin"],
   "server": [],
