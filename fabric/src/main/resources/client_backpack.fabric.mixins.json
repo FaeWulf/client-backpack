@@ -5,6 +5,10 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "compat.travelerbackpack.ComponentUtilsInvoker"
+  ],
   "client": [
     "compat.inmis.BackpackFeatureMixin",
     "compat.inmis.TrinketBackpackRendererMixin",
