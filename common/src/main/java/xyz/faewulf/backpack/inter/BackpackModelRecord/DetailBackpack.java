@@ -21,6 +21,8 @@ public class DetailBackpack {
     public List<DetailTransform> container;
     @Nullable
     public List<DetailTransform> pocket;
+    @Nullable
+    public Strap strap;
 
     @Override
     public String toString() {
