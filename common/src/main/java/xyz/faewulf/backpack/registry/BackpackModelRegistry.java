@@ -23,6 +23,8 @@ public class BackpackModelRegistry {
 
         List<String> list = new ArrayList<>(BACKPACK_LIST.keySet().stream().sorted().toList());
 
+        list.remove("strap");
+
         if (list.contains("default")) {
             list.remove("default");
             list.addFirst("default");

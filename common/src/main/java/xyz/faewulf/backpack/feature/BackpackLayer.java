@@ -6,6 +6,7 @@ import commonnetwork.api.Dispatcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -107,6 +108,9 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
             return;
         }
 
+        // render strap
+        renderStrap(poseStack, multiBufferSource, packedLight, detailBackpack);
+
         // Global transform
         poseStack.pushPose();
 
@@ -123,8 +127,8 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
         }
 
         // Render backpack
-        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(Sheets.translucentItemSheet());
-        Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(), vertexconsumer, null, model, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
+        VertexConsumer vertexconsumer2 = multiBufferSource.getBuffer(Sheets.translucentItemSheet());
+        Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(), vertexconsumer2, null, model, 1.0F, 1.0F, 1.0F, packedLight, OverlayTexture.NO_OVERLAY);
 
         // End backpack transform
         poseStack.popPose();
@@ -244,5 +248,30 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
         }
 
         poseStack.popPose();
+    }
+
+    private void renderStrap(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, DetailBackpack detailBackpack) {
+
+        if (detailBackpack.strap == null || !detailBackpack.strap.visible())
+            return;
+
+        // Strap render
+        BakedModel strapModel = Services.CLIENT_HELPER.getCustomBakedModel(BackpackModelRegistry.getBackpackModel("strap", "default"));
+        DetailBackpack strapDetail = BackpackModelRegistry.getBackpackDetail("strap", detailBackpack.strap.id());
+
+        poseStack.pushPose();
+
+        if (strapDetail != null && strapDetail.base != null && strapDetail.global != null) {
+            strapDetail.global.applyTransform(poseStack, true);
+            PoseHelper.standardizePoseForBackpack(poseStack);
+            strapDetail.base.applyTransform(poseStack, false);
+        }
+
+        // Render strap
+        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(Sheets.translucentItemSheet());
+        Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(poseStack.last(), vertexconsumer, null, strapModel, 1.0f, 1.0f, 1.00f, packedLight, OverlayTexture.NO_OVERLAY);
+
+        poseStack.popPose();
+        // End strap render
     }
 }
