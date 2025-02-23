@@ -1,15 +1,17 @@
-package xyz.faewulf.backpack.util.config.ConfigScreen;
+package xyz.faewulf.backpack.util.config.ConfigScreen.Components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
 public class DefaultButton extends Button {
     public DefaultButton(int x, int y, int width, int height, Component Text, OnPress onPress) {
         super(x, y, width, height, Text, onPress, DEFAULT_NARRATION);
+        this.setTooltip(Tooltip.create(Component.translatable("backpack.config.default.tooltip")));
     }
 
     @Override

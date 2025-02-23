@@ -12,24 +12,18 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.util.config.Config;
 import xyz.faewulf.backpack.util.config.ConfigLoaderFromAnnotation;
 import xyz.faewulf.backpack.util.config.ModConfigs;
-import xyz.faewulf.backpack.util.config.util.DummyPlayer;
 
 import java.util.*;
 
-import static net.minecraft.client.gui.screens.inventory.InventoryScreen.renderEntityInInventory;
 import static xyz.faewulf.backpack.util.config.Config.configClass;
 
 public class ConfigScreen extends Screen {
@@ -78,6 +72,7 @@ public class ConfigScreen extends Screen {
 
     public static GridLayout infoTab;
     public static String currentInfo;
+    public static boolean updateCall = false;
 
     //part components
 
@@ -121,11 +116,12 @@ public class ConfigScreen extends Screen {
         TabNavigationBar.Builder tabBuilder = TabNavigationBar.builder(this.tabManager, this.width);
 
         configMap.forEach((s, stringEntryTypeMap) -> { //create tab for each category
-            ConfigTab configTab = new ConfigTab(Component.literal(s), stringEntryTypeMap);
+            ConfigTab configTab = new ConfigTab(s, stringEntryTypeMap);
 
             if (!configTab.isShouldHideFromConfigScreen())
                 tabBuilder.addTabs(configTab);
         });
+
 
         this.tabNavigationBar = tabBuilder.build();
 
@@ -287,6 +283,12 @@ public class ConfigScreen extends Screen {
             pushList(this.searchBar.getValue());
         }
 
+        // To handle re render when using group buttons
+        if (updateCall) {
+            updateCall = false;
+            this.pushListWithoutSetScroll(this.searchBar == null ? null : this.searchBar.getValue());
+        }
+
         //checking for save
         //checking between CONFIG_VALUES and CONFIG_ENTRIES, if different then trigger save button and cancel button
         //CONFIG_VALUES is for reference only, don't change it here
@@ -358,6 +360,13 @@ public class ConfigScreen extends Screen {
     private void pushList(String filter) {
         if (this.slw == null)
             return;
+        pushListWithoutSetScroll(filter);
+        this.slw.setScrollAmount(0);
+    }
+
+    private void pushListWithoutSetScroll(@Nullable String filter) {
+        if (this.slw == null || this.searchBar == null)
+            return;
 
         this.selectedTab = this.tabManager.getCurrentTab();
         this.slw.clear();
@@ -365,16 +374,19 @@ public class ConfigScreen extends Screen {
         if (this.selectedTab instanceof ConfigTab configTab) {
             configTab.tabEntries.forEach((entryType, buttons) -> {
 
-                if (filter == null || filter.isEmpty()) {
+                if (!entryType.visibleInConfig) {
+                    return;
+                }
+
+                if (entryType.pseudoEntry) {
+                    this.slw.addRow(entryType, buttons.toArray(new AbstractWidget[]{}));
+                } else if (filter == null || filter.isEmpty()) {
                     this.slw.addRow(entryType, buttons.toArray(new AbstractWidget[]{}));
                 } else if (entryType.name.contains(filter.toLowerCase())) {
                     this.slw.addRow(entryType, buttons.toArray(new AbstractWidget[]{}));
                 }
-
             });
         }
-
-        this.slw.setScrollAmount(0);
     }
 
     @Override
