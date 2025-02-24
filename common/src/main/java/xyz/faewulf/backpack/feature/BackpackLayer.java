@@ -35,7 +35,7 @@ import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.Converter;
 
 public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
-    public BackpackLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent, EntityRendererProvider.Context context) {
+    public BackpackLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent) {
         super(parent);
     }
 
