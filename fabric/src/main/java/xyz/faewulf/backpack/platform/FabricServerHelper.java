@@ -1,6 +1,5 @@
 package xyz.faewulf.backpack.platform;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import dev.emi.trinkets.api.TrinketsApi;
@@ -11,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.p3pp3rf1y.sophisticatedbackpacks.util.PlayerInventoryProvider;
 import xyz.faewulf.backpack.Constants;
+import xyz.faewulf.backpack.mixin.compat.travelerbackpack.ComponentUtilsInvoker;
 import xyz.faewulf.backpack.platform.services.IServerHelper;
 
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class FabricServerHelper implements IServerHelper {
 
         // Travelers backpack
         if (!resultOutsideTrinket && Constants.TRAVELERS_BACKPACK_LOADED) {
-            resultOutsideTrinket = ComponentUtils.isWearingBackpack(player);
+            resultOutsideTrinket = ComponentUtilsInvoker.isWearingBackpackInvoked(player);
         }
 
         return resultOutsideTrinket;
@@ -94,11 +94,11 @@ public class FabricServerHelper implements IServerHelper {
 
         // Traveler backpack compat
         if (Constants.TRAVELERS_BACKPACK_LOADED) {
-            ItemStack backpack = ComponentUtils.getWearingBackpack(player);
-            if (ComponentUtils.getBackpackWrapper(player, backpack) != null) {
+            ItemStack backpack = ComponentUtilsInvoker.getWearingBackpackInvoked(player);
+            if (ComponentUtilsInvoker.getBackpackWrapper(player, backpack) != null) {
                 List<ItemStack> itemStackList = new ArrayList<>();
 
-                BackpackWrapper backpackWrapper = ComponentUtils.getBackpackWrapper(player, backpack);
+                BackpackWrapper backpackWrapper = ComponentUtilsInvoker.getBackpackWrapper(player, backpack);
 
                 if (backpackWrapper != null) {
 
