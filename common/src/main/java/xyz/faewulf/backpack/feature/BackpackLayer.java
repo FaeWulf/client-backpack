@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.DetailBackpack;
 import xyz.faewulf.backpack.inter.BackpackStatus;
@@ -33,12 +34,9 @@ import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.Converter;
 
 public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
-    private EntityModel<EntityRenderState> model;
-    private final EntityRendererProvider.Context context;
 
-    public BackpackLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
+    public BackpackLayer(RenderLayerParent<PlayerRenderState, PlayerModel> parent) {
         super(parent);
-        this.context = context;
     }
 
     @Override
@@ -250,9 +248,9 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
         poseStack.popPose();
     }
 
-    private void renderStrap(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, DetailBackpack detailBackpack) {
+    private void renderStrap(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, @Nullable DetailBackpack detailBackpack) {
 
-        if (detailBackpack.strap == null || !detailBackpack.strap.visible())
+        if (detailBackpack == null || detailBackpack.strap == null || !detailBackpack.strap.visible())
             return;
 
         // Strap render
