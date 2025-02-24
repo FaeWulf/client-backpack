@@ -26,7 +26,7 @@ public class registerGameTests {
         List<TestFunction> functions = new ArrayList<>();
 
         try {
-            List<Class<?>> testClassList = Services.PLATFORM.findClasses("xyz.faewulf.diversity.util.gameTests.entry");
+            List<Class<?>> testClassList = Services.PLATFORM.findClasses("xyz.faewulf.backpack.util.gameTests.entry");
 
             testClassList.forEach(aClass -> {
                 if (aClass.isAnnotationPresent(TestGroup.class)) {

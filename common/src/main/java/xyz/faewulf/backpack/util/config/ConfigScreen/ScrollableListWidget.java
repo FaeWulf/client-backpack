@@ -9,6 +9,8 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import xyz.faewulf.backpack.util.config.ConfigLoaderFromAnnotation;
+import xyz.faewulf.backpack.util.config.ConfigScreen.Components.DefaultButton;
+import xyz.faewulf.backpack.util.config.ConfigScreen.Components.GroupButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +54,11 @@ public class ScrollableListWidget extends ContainerObjectSelectionList<Scrollabl
             this.entryInfo = entryInfo;
             elements.addAll(Arrays.asList(e));
 
+            if (entryInfo.pseudoEntry) {
+                this.defaultButton = null;
+                return;
+            }
+
             this.defaultButton = new DefaultButton(
                     20,
                     20,
@@ -87,6 +94,7 @@ public class ScrollableListWidget extends ContainerObjectSelectionList<Scrollabl
         @Override
         public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 
+            // Render all buttons except default button
             for (int i = 0; i < elements.size() - 1; i++) {
                 AbstractWidget abstractWidget = elements.get(i);
                 int width = (entryWidth - 2 - DEFAULT_BUTTON_SIZE) / (elements.size() - 1);
@@ -95,6 +103,19 @@ public class ScrollableListWidget extends ContainerObjectSelectionList<Scrollabl
                 abstractWidget.setX(x + i * width + 2 - SCROLLBAR_OFFSET / 2);
                 abstractWidget.setY(y);
                 abstractWidget.render(context, mouseX, mouseY, tickDelta);
+            }
+
+            // Basically, when elements only contain GroupButton, the for loop above simple skip the loop
+            // (Because int the init<>, when entryInfo == null (GroupButton doesn't have entryInfo), it doesn't put default button to the elements list
+            // So below is a special render handler for GroupButton
+            if (entryInfo.pseudoEntry) {
+                if (elements.get(0) instanceof GroupButton groupButton) {
+                    groupButton.setWidth(entryWidth);
+                    groupButton.setX(x);
+                    groupButton.setY(y);
+                    groupButton.render(context, mouseX, mouseY, tickDelta);
+                }
+                return;
             }
 
             this.defaultButton.setWidth(20);

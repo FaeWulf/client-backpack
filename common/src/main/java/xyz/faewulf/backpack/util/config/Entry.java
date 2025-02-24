@@ -14,6 +14,8 @@ public @interface Entry {
 
     String info() default "";  // Extra information or tooltip
 
+    String group() default "Others"; // Category to group similar configs
+
     boolean hidden() default false;
 
     boolean require_restart() default false;

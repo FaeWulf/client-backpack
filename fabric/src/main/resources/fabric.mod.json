@@ -9,8 +9,8 @@
   ],
   "contact": {
     "homepage": "https://faewulf.xyz",
-    "sources": "https://github.com/FaeWulf/Diversity",
-    "issues": "https://github.com/FaeWulf/Diversity/issues"
+    "sources": "https://github.com/FaeWulf/client-backpack",
+    "issues": "https://github.com/FaeWulf/client-backpack/issues"
   },
   "license": "${license}",
   "icon": "${mod_id}.png",

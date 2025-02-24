@@ -8,8 +8,11 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -31,6 +34,11 @@ public class ModInfoScreen extends Screen {
 
     private static final ResourceLocation MAIN_IMAGE = new ResourceLocation(Constants.MOD_ID, "textures/gui/d.png");
     private static final ResourceLocation LIGHT_RAYS = new ResourceLocation(Constants.MOD_ID, "textures/gui/light_rays.png");
+
+    // Icon
+    private static final ResourceLocation ICON_DISCORD = ResourceLocation.tryBuild(Constants.MOD_ID, "textures/gui/sprites/icon/discord.png");
+    private static final ResourceLocation ICON_KOFI = ResourceLocation.tryBuild(Constants.MOD_ID, "textures/gui/sprites/icon/kofi.png");
+    private static final ResourceLocation ICON_GITHUB = ResourceLocation.tryBuild(Constants.MOD_ID, "textures/gui/sprites/icon/github.png");
     private final Screen parent;
     private final Minecraft client;
 
@@ -47,18 +55,19 @@ public class ModInfoScreen extends Screen {
     private int tilesY;
 
     //logo
-    private final float logo_offset_Y = 0.6f;
+    private final float logo_offset_Y = 0.5f;
 
     //comps
-    private GridLayout buttonLayout;
-    private GridLayout infoLayout;
+    private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this, 100, 50);
+    private GridLayout contentLayout;
+    private GridLayout footerLayout;
     private Button settingButton;
     private Button customizeButton;
 
     private float time = 0.0f;  // Time variable to track animation
 
     protected ModInfoScreen(Screen parent) {
-        super(Component.literal("Diversity info"));
+        super(Component.literal("backpack info"));
         this.parent = parent;
         client = Minecraft.getInstance();
 
@@ -87,10 +96,11 @@ public class ModInfoScreen extends Screen {
             fallingEntities.add(new rainITem(texture, x, y, velocityX, velocityY, rotationSpeed, this.width, this.height));
         }
 
-        this.buttonLayout = new GridLayout();
-        this.infoLayout = new GridLayout();
+        //buttons
+        this.contentLayout = new GridLayout();
+        this.footerLayout = new GridLayout();
 
-        GridLayout.RowHelper rowHelper = buttonLayout.createRowHelper(1);
+        GridLayout.RowHelper rowHelper = contentLayout.createRowHelper(1);
         rowHelper.defaultCellSetting().padding(4);
 
         customizeButton = rowHelper.addChild(
@@ -105,32 +115,52 @@ public class ModInfoScreen extends Screen {
                         button -> this.client.setScreen(ConfigScreen.getScreen(this))).build()
         );
 
-        rowHelper.addChild(
-                Button.builder(
-                        Component.literal("Close"),
-                        button -> this.onClose()).build()
-        );
+        GridLayout.RowHelper rowHelperFooterLayout = footerLayout.createRowHelper(5);
+        rowHelperFooterLayout.defaultCellSetting().alignHorizontallyCenter().padding(2);
 
-        GridLayout.RowHelper rowHelperInfoLayout = infoLayout.createRowHelper(2);
-        rowHelperInfoLayout.defaultCellSetting().padding(2);
-
-        rowHelperInfoLayout.addChild(
+        rowHelperFooterLayout.addChild(
                 Button.builder(
-                                Component.literal("Website"),
+                                Component.literal("🌐"),
                                 button -> this.openWebLink("https://faewulf.xyz/"))
-                        .width(50).build()
+
+                        .width(20)
+                        .tooltip(Tooltip.create(Component.translatable("backpack.info.website.tooltip")))
+                        .build()
         );
 
-        rowHelperInfoLayout.addChild(
+        var iconButton = new ImageButton(20, 20, 20, 20, 0, 0, 20, ICON_KOFI, 32, 64, button -> this.openWebLink("https://ko-fi.com/faewulf"));
+
+        iconButton.setTooltip(Tooltip.create(Component.translatable("backpack.info.kofi.tooltip")));
+
+        rowHelperFooterLayout.addChild(iconButton, 1);
+
+        rowHelperFooterLayout.addChild(
                 Button.builder(
-                                Component.literal("Discord").withStyle(ChatFormatting.BLUE),
-                                button -> this.openWebLink("https://discord.com/invite/xZneCTcEvb"))
-                        .width(50).build()
+                                Component.literal("Close"),
+                                button -> this.onClose())
+                        .width(100).build()
+                , 1
         );
+
+        iconButton = new ImageButton(20, 20, 20, 20, 0, 0, 20, ICON_DISCORD, 32, 64, button -> this.openWebLink("https://faewulf.xyz/discord"));
+
+        iconButton.setTooltip(Tooltip.create(Component.translatable("backpack.info.discord.tooltip")));
+
+        rowHelperFooterLayout.addChild(iconButton, 1);
+
+        iconButton = new ImageButton(20, 20, 20, 20, 0, 0, 20, ICON_GITHUB, 32, 64, button -> this.openWebLink("https://github.com/FaeWulf/client-backpack"));
+
+        iconButton.setTooltip(Tooltip.create(Component.translatable("backpack.info.github.tooltip")));
+
+        rowHelperFooterLayout.addChild(iconButton, 1);
 
         //add comp to screen renderer
-        buttonLayout.visitWidgets(this::addRenderableWidget);
-        infoLayout.visitWidgets(this::addRenderableWidget);
+        //buttonLayout.visitWidgets(this::addRenderableWidget);
+        //infoLayout.visitWidgets(this::addRenderableWidget);
+
+        this.layout.addToContents(contentLayout);
+        this.layout.addToFooter(footerLayout);
+        this.layout.visitWidgets(this::addRenderableWidget);
 
         //init reposition
         repositionElements();
@@ -265,12 +295,7 @@ public class ModInfoScreen extends Screen {
 
         generateRandomTileMap();
 
-        if (this.buttonLayout != null && this.infoLayout != null) {
-            this.buttonLayout.arrangeElements();
-            this.infoLayout.arrangeElements();
-            FrameLayout.alignInRectangle(this.buttonLayout, 0, 0, this.width, this.height, 0.5f, 0.8f);
-            FrameLayout.alignInRectangle(this.infoLayout, 0, 0, this.width, this.height, 1f, 1f);
-        }
+        this.layout.arrangeElements();
 
         fallingEntities.forEach(rainITem -> rainITem.updateScreenSize(this.width, this.height));
     }

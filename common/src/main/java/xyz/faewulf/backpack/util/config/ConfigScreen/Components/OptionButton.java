@@ -1,4 +1,4 @@
-package xyz.faewulf.backpack.util.config.ConfigScreen;
+package xyz.faewulf.backpack.util.config.ConfigScreen.Components;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -9,7 +9,9 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.NotNull;
+import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.util.config.ConfigLoaderFromAnnotation;
+import xyz.faewulf.backpack.util.config.ConfigScreen.ConfigScreen;
 
 import java.util.Objects;
 
@@ -41,35 +43,17 @@ public class OptionButton extends Button {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-        super.renderWidget(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
-
-        if (isMouseOver(pMouseX, pMouseY) && !Objects.equals(this.entryInfo.name, ConfigScreen.currentInfo)) {
-
-            ConfigScreen.infoTab_Title.setMessage(Component.literal(this.entryInfo.humanizeName).withStyle(ChatFormatting.BOLD));
-
-            MutableComponent info = Component.translatable("backpack.config." + this.entryInfo.name + ".tooltip");
-
-            if (this.entryInfo.require_restart)
-                info.append(Component.literal("\n\n").append(Component.translatable("backpack.config.require_restart").withStyle(ChatFormatting.GOLD)));
-
-            ConfigScreen.infoTab_Info.setMessage(info);
-            ConfigScreen.infoTab.arrangeElements();
-            ConfigScreen.currentInfo = this.entryInfo.name;
-        }
-    }
-
-    @Override
     public void renderString(GuiGraphics graphics, @NotNull Font textRenderer, int color) {
         Font font = Minecraft.getInstance().font;
 
         String leftValue = getMessage().getString();
-        String rightValue;
+        String rightValue = "";
         try {
             Object object = entryInfo.targetField.get(null);
             rightValue = object.toString();
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            Constants.LOG.error("[backpack] Something went wrong with the Option button...");
+            e.printStackTrace();
         }
 
         Component component = Component.literal(rightValue);
@@ -80,8 +64,8 @@ public class OptionButton extends Button {
         }
 
         if (rightValue.equalsIgnoreCase("false")) {
-            component = Component.literal("❌").withStyle(ChatFormatting.RED);
-            rightValue = "❌";
+            component = Component.literal("\u274C").withStyle(ChatFormatting.RED);
+            rightValue = "\u274C";
         }
 
         // Calculate text positions for left and right values
@@ -102,12 +86,34 @@ public class OptionButton extends Button {
         graphics.drawString(font, leftTextComp, leftTextX, textY, 0xFFFFFF);  // Left value
     }
 
+    @Override
+    public void render(GuiGraphics $$0, int $$1, int $$2, float $$3) {
+        super.render($$0, $$1, $$2, $$3);
+
+        //hover effect
+        if (isMouseOver($$1, $$2) && !Objects.equals(this.entryInfo.name, ConfigScreen.currentInfo)) {
+
+            ConfigScreen.infoTab_Title.setMessage(Component.literal(this.entryInfo.humanizeName).withStyle(ChatFormatting.BOLD));
+
+            MutableComponent info = Component.translatable("backpack.config." + this.entryInfo.name + ".tooltip");
+
+            if (this.entryInfo.require_restart)
+                info.append(Component.literal("\n\n").append(Component.translatable("backpack.config.require_restart").withStyle(ChatFormatting.GOLD)));
+
+            ConfigScreen.infoTab_Info.setMessage(info);
+            ConfigScreen.infoTab.arrangeElements();
+            ConfigScreen.currentInfo = this.entryInfo.name;
+        }
+    }
+
     private boolean isChanging() {
         Object value;
         try {
             value = this.entryInfo.targetField.get(null);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            Constants.LOG.error("[backpack] Something went wrong with the Option button...");
+            e.printStackTrace();
+            return false;
         }
 
         Object lastValue = CONFIG_VALUES.get(this.entryInfo.name);

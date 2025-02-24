@@ -1,17 +1,21 @@
 package xyz.faewulf.backpack.util.config.ConfigScreen;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
+import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.util.config.ConfigLoaderFromAnnotation;
+import xyz.faewulf.backpack.util.config.ConfigScreen.Components.GroupButton;
+import xyz.faewulf.backpack.util.config.ConfigScreen.Components.NumberButton;
+import xyz.faewulf.backpack.util.config.ConfigScreen.Components.NumberButtonInfo;
+import xyz.faewulf.backpack.util.config.ConfigScreen.Components.OptionButton;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static xyz.faewulf.backpack.util.config.ConfigScreen.ConfigScreen.CONFIG_ENTRIES;
@@ -19,61 +23,100 @@ import static xyz.faewulf.backpack.util.config.ConfigScreen.ConfigScreen.CONFIG_
 
 public class ConfigTab implements Tab {
 
-    public Map<ConfigLoaderFromAnnotation.EntryInfo, List<Button>> tabEntries = new LinkedHashMap<>();
+    public Map<ConfigLoaderFromAnnotation.EntryInfo, List<AbstractWidget>> tabEntries = new LinkedHashMap<>();
 
     Component Title;
 
-    public ConfigTab(Component Text, Map<String, ConfigLoaderFromAnnotation.EntryInfo> entry) {
+    public ConfigTab(String title, Map<String, ConfigLoaderFromAnnotation.EntryInfo> entry) {
 
-        this.Title = Text;
+        this.Title = Component.translatable("backpack.config.category." + title);
 
         //creating options buttons
-        entry.forEach((s1, entryInfo) -> {
+        ConfigLoaderFromAnnotation.getGroups(title).forEach(group -> {
 
-            // If hidden from config screen
-            if (entryInfo.hidden)
-                return;
+            // Add GroupButton to the tab's Widget List
+            GroupButton groupButton = new GroupButton(Component.literal(group));
 
-            List<Button> buttonList = new ArrayList<>();
+            tabEntries.put(new ConfigLoaderFromAnnotation.EntryInfo(group), new ArrayList<>() {{
+                add(groupButton);
+            }});
 
-            CONFIG_ENTRIES.add(entryInfo);
-            CONFIG_VALUES.put(entryInfo.name, entryInfo.value);
+            entry.forEach((s1, entryInfo) -> {
 
-            buttonList.add(
-                    new OptionButton(20, 20, 20, 20,
-                            Component.literal(s1),
-                            button -> {
-                                //System.out.println("Button " + s1 + ": " + entryInfo.info + ", " + entryInfo.value + ", " + entryInfo.require_restart);
+                if (entryInfo.hidden)
+                    return;
 
-                                //modconfig field
-                                Field field = entryInfo.targetField;
-                                try {
-                                    Object value = field.get(null);
+                // If not the same group then return
+                if (!Objects.equals(entryInfo.group, group))
+                    return;
 
-                                    if (value instanceof Boolean b) {
-                                        field.set(null, !b);
-                                    }
+                List<AbstractWidget> buttonList = new ArrayList<>();
 
-                                    if (value instanceof Enum<?> enumValue) {
-                                        field.set(null, getNextEnumValue(enumValue));
-                                    }
-
-                                } catch (IllegalAccessException e) {
-                                    e.printStackTrace();
-                                }
+                CONFIG_ENTRIES.add(entryInfo);
+                CONFIG_VALUES.put(entryInfo.name, entryInfo.value);
 
 
-                            },
-                            entryInfo
-                    ));
-            //CreateButton(Component.literal(s1), ));
-            tabEntries.put(entryInfo, buttonList);
+                try {
+                    Object ref = entryInfo.targetField.get(null);
+                    // Handle for: Number
+                    if (ref instanceof Number) {
+                        buttonList.add(
+                                new NumberButtonInfo(0, 20, Component.literal(s1), Minecraft.getInstance().font, entryInfo).alignLeft()
+                        );
+                        buttonList.add(
+                                new NumberButton(Minecraft.getInstance().font, 0, 20, Component.literal(s1), entryInfo)
+                        );
+                    } else
+                        // Handle for: boolean and enum
+                        buttonList.add(
+                                new OptionButton(20, 20, 20, 20,
+                                        Component.literal(s1),
+                                        button -> {
+                                            //System.out.println("Button " + s1 + ": " + entryInfo.info + ", " + entryInfo.value + ", " + entryInfo.require_restart);
+
+                                            // modconfig field
+                                            Field field = entryInfo.targetField;
+                                            Object value;
+                                            try {
+                                                value = field.get(null);
+
+                                                if (value instanceof Boolean b) {
+                                                    field.set(null, !b);
+                                                }
+
+                                                if (value instanceof Enum<?> enumValue) {
+                                                    field.set(null, getNextEnumValue(enumValue));
+                                                }
+
+                                            } catch (IllegalAccessException e) {
+                                                Constants.LOG.error("[Backpack] Something went wrong with the config system...");
+                                                e.printStackTrace();
+                                            }
+
+                                        },
+                                        entryInfo
+                                ));
+
+                } catch (IllegalAccessException e) {
+                    Constants.LOG.error("[Backpack] Something went wrong with the config system...");
+                    e.printStackTrace();
+                }
+                //CreateButton(Component.literal(s1), ));
+                tabEntries.put(entryInfo, buttonList);
+                groupButton.addToControlList(entryInfo);
+            });
         });
     }
 
     // If no entries in the tab then hide the tab
     public boolean isShouldHideFromConfigScreen() {
-        return tabEntries.isEmpty();
+        AtomicInteger realEntry = new AtomicInteger();
+        tabEntries.forEach((entryInfo, abstractWidgets) -> {
+            if (!entryInfo.pseudoEntry)
+                realEntry.getAndIncrement();
+        });
+
+        return tabEntries.isEmpty() || realEntry.get() == 0;
     }
 
     public static <E extends Enum<E>> E getNextEnumValue(Enum<?> currentValue) {

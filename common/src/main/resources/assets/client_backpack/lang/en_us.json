@@ -1,11 +1,12 @@
 {
-  "backpack.config.title": "Diversity's Configs",
+  "backpack.config.title": "Backpack's Configs",
   "backpack.config.searchbar.hint": "Search...",
   "backpack.config.save": "Save",
   "backpack.config.exit": "Back",
   "backpack.config.undo": "Undo",
   "backpack.config.cancel": "Quit without Save",
   "backpack.config.reset": "Reset",
+  "backpack.config.default.tooltip": "Reset this field to it's default value.",
   "backpack.config.selectType.tooltip": "Select backpack model",
   "backpack.config.save.tooltip": "Save all changes.",
   "backpack.config.exit.tooltip": "Exit Config Screen.",
@@ -54,5 +55,11 @@
   "backpack.system.upload.cant_sync": "Sync failed",
   "backpack.system.upload.cant_sync.message": "Sync service not available...",
   "backpack.system.upload.syncLocal": "Syncing data from cloud...",
-  "backpack.system.upload.syncLocal.done": "Sync completed!"
+  "backpack.system.upload.syncLocal.done": "Sync completed!",
+  "backpack.info.website.tooltip": "Visit mod's website",
+  "backpack.info.kofi.tooltip": "Visit author's Ko-fi",
+  "backpack.info.discord.tooltip": "Visit mod's discord server",
+  "backpack.info.github.tooltip": "Visit mod's github",
+  "backpack.config.category.Client": "Client",
+  "backpack.config.category.Server": "Server"
 }
