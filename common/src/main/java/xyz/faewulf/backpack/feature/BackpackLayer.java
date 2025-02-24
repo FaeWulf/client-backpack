@@ -22,6 +22,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.DetailBackpack;
 import xyz.faewulf.backpack.inter.BackpackStatus;
@@ -251,9 +252,9 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
         poseStack.popPose();
     }
 
-    private void renderStrap(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, DetailBackpack detailBackpack) {
+    private void renderStrap(PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, @Nullable DetailBackpack detailBackpack) {
 
-        if (detailBackpack.strap == null || !detailBackpack.strap.visible())
+        if (detailBackpack == null || detailBackpack.strap == null || !detailBackpack.strap.visible())
             return;
 
         // Strap render
