@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.faewulf.backpack.util.config.ModConfigs;
 
 @Pseudo
 @Mixin(targets = "com.tiviacz.travelersbackpack.client.renderer.BackpackLayer")
