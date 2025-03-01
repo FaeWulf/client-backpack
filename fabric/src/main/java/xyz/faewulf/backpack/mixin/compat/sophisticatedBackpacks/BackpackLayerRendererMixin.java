@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.faewulf.backpack.util.config.ModConfigs;
 
 @Pseudo
 @Mixin(targets = "net.p3pp3rf1y.sophisticatedbackpacks.client.render.BackpackLayerRenderer")
@@ -28,10 +29,10 @@ public abstract class BackpackLayerRendererMixin<T extends LivingEntity, M exten
             at = @At(
                     value = "HEAD"
             ), cancellable = true)
-    private static  <T extends LivingEntity, M extends EntityModel<T>>  void renderInject(M parentModel, LivingEntity livingEntity, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, ItemStack backpack, boolean wearsArmor, IBackpackModel model, CallbackInfo ci) {
-        // Todo: port for neoforge
-        if(livingEntity instanceof AbstractClientPlayer) {
-            ci.cancel();
-        }
+    private static <T extends LivingEntity, M extends EntityModel<T>> void renderInject(M parentModel, LivingEntity livingEntity, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, ItemStack backpack, boolean wearsArmor, IBackpackModel model, CallbackInfo ci) {
+        if (ModConfigs.__enable_mod)
+            if (livingEntity instanceof AbstractClientPlayer) {
+                ci.cancel();
+            }
     }
 }

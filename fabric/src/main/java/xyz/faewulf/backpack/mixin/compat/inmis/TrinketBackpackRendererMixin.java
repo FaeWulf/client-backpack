@@ -11,12 +11,14 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.faewulf.backpack.util.config.ModConfigs;
 
 @Pseudo
 @Mixin(targets = "draylar.inmis.client.TrinketBackpackRenderer")
 public class TrinketBackpackRendererMixin {
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void renderInject(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel, PoseStack matrices, MultiBufferSource vertexConsumers, int light, LivingEntity player, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch, CallbackInfo ci) {
-        ci.cancel();
+        if (ModConfigs.__enable_mod)
+            ci.cancel();
     }
 }
