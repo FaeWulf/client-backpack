@@ -18,6 +18,7 @@ import xyz.faewulf.backpack.util.config.ModConfigs;
 public class BackpackLayerMixin {
     @Inject(method = "renderBackpackLayer", at = @At("HEAD"), cancellable = true)
     private static void renderBackpackLayerInjection(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack, CallbackInfo ci) {
-        ci.cancel();
+        if (ModConfigs.__enable_mod)
+            ci.cancel();
     }
 }
