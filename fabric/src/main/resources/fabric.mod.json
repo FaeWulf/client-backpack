@@ -22,9 +22,6 @@
     "client": [
       "xyz.faewulf.backpack.BackpackClient"
     ],
-    "fabric-gametest": [
-      "xyz.faewulf.backpack.util.gameTests.registerGameTests"
-    ],
     "modmenu": [
       "xyz.faewulf.backpack.config.ModMenuIntegration"
     ]
@@ -48,7 +45,8 @@
     "fabricloader": ">=${fabric_loader_version}",
     "fabric-api": ">=${fabric_version}",
     "minecraft": ">=${minecraft_version} <=${minecraft_version_max}",
-    "java": ">=${java_version}"
+    "java": ">=${java_version}",
+    "faewulf_lib": ">=${faewulfs_lib_version}"
   }
 }
   

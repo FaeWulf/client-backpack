@@ -29,6 +29,7 @@ dependencies {
     //lib
     implementation("com.electronwill.night-config:toml:3.6.0")
     jarJar(implementation "mysticdrew:common-networking-neoforge:${common_networking}")
+    implementation "maven.modrinth:faewulfslib:${faewulfs_lib_version}-neoforge,1.21.1"
 
 }
 

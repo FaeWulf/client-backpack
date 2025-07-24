@@ -1,21 +1,16 @@
 package xyz.faewulf.backpack.util;
 
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.Level;
 import xyz.faewulf.backpack.Constants;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.DetailBackpack;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.platform.Services;
+import xyz.faewulf.lib.util.Compare;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -79,9 +74,8 @@ public class Converter {
                         if (!backpackStatus.isHasLightSource() && Services.DYNAMIC_LIGHT_HELPER.getLuminance(stack) > 0) {
                             backpackStatus.setHasLightSource(true);
                         }
-                    }
-                    else {
-                        if (!backpackStatus.isHasLightSource() && Compare.isHasTagClient(stack.getItem(),"emit_light")) {
+                    } else {
+                        if (!backpackStatus.isHasLightSource() && Compare.isHasTagClient(stack.getItem(), Constants.RESOURCE_LOCATION + ":" + "emit_light")) {
                             backpackStatus.setHasLightSource(true);
                         }
                     }
@@ -93,7 +87,7 @@ public class Converter {
                     if (serverSide) {
                         if (Compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":tool_and_weapon"))
                             tools.add(stack);
-                    } else if (Compare.isHasTagClient(stack.getItem(), "tool_and_weapon"))
+                    } else if (Compare.isHasTagClient(stack.getItem(), Constants.RESOURCE_LOCATION + ":" + "tool_and_weapon"))
                         tools.add(stack);
                 }
 
@@ -102,7 +96,7 @@ public class Converter {
                     if (Compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":pocket_item")) {
                         pockets.add(stack);
                     }
-                } else if (Compare.isHasTagClient(stack.getItem(), "pocket_item")) {
+                } else if (Compare.isHasTagClient(stack.getItem(), Constants.RESOURCE_LOCATION + ":" + "pocket_item")) {
                     pockets.add(stack);
                 }
 
@@ -112,7 +106,7 @@ public class Converter {
                     if (Compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":banner")) {
                         banner = stack;
                     }
-                } else if (Compare.isHasTagClient(stack.getItem(), "banner")) {
+                } else if (Compare.isHasTagClient(stack.getItem(), Constants.RESOURCE_LOCATION + ":" + "banner")) {
                     banner = stack;
                 }
 
@@ -121,7 +115,7 @@ public class Converter {
                     if (serverSide) {
                         if (Compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":container"))
                             containers.add(stack);
-                    } else if (Compare.isHasTagClient(stack.getItem(), "container")) {
+                    } else if (Compare.isHasTagClient(stack.getItem(), Constants.RESOURCE_LOCATION + ":" + "container")) {
                         containers.add(stack);
                     }
                 }
@@ -131,7 +125,7 @@ public class Converter {
                     if (Compare.isHasTag(stack.getItem(), Constants.MOD_ID + ":liquid")) {
                         liquids.add(stack);
                     }
-                } else if (Compare.isHasTagClient(stack.getItem(), "liquid")) {
+                } else if (Compare.isHasTagClient(stack.getItem(), Constants.RESOURCE_LOCATION + ":" + "liquid")) {
                     liquids.add(stack);
                 }
 

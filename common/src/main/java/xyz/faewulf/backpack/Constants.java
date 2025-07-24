@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.DetailTransform;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.LightSourceDetail;
 import xyz.faewulf.backpack.inter.BackpackModelRecord.Strap;
 import xyz.faewulf.backpack.inter.BackpackStatus;
 import xyz.faewulf.backpack.inter.IDynamicLightCompatLayer;
+import xyz.faewulf.lib.api.v1.dev.LoggerHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,9 @@ import java.util.Map;
 public class Constants {
     public static final String MOD_ID = "client_backpack";
     public static final String MOD_NAME = "Client Backpack";
-    public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
+    public static final Logger LOG = LoggerHelper.createLogger(MOD_NAME);
+
+    public static final String RESOURCE_LOCATION = "client_backpack/item";
 
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(LightSourceDetail.class, new LightSourceDetail.LightSourceDeserializer())
@@ -44,4 +46,7 @@ public class Constants {
 
     public static boolean LAMBDYN_LIGHTS_LOADED = false;
     public static boolean RYOAMMIC_LIGHTS_LOADED = false;
+
+    public static final String WEBSITE = "https://faewulf.xyz/";
+    public static final String SOURCE_CODE = "https://github.com/FaeWulf/";
 }

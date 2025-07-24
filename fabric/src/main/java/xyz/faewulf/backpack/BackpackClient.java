@@ -5,16 +5,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ResourceManager;
 import xyz.faewulf.backpack.feature.fabric.BackpackPrepareModelLoading;
 import xyz.faewulf.backpack.feature.fabric.LambDynLights.LambDynLightsModule;
 import xyz.faewulf.backpack.feature.fabric.RyoamicDynLights.RyoamicDynLightsModule;
 import xyz.faewulf.backpack.platform.Services;
-import xyz.faewulf.backpack.registry.ItemTagRegistry;
 import xyz.faewulf.backpack.util.DataSync;
 
 @Environment(EnvType.CLIENT)
@@ -34,11 +28,9 @@ public class BackpackClient implements ClientModInitializer {
         // resource reload event
         registerClientTickEvent();
 
-        if(Services.PLATFORM.isModLoaded("lambdynlights")) {
+        if (Services.PLATFORM.isModLoaded("lambdynlights")) {
             LambDynLightsModule.init();
-        }
-        else
-        if(Services.PLATFORM.isModLoaded("ryoamiclights")) {
+        } else if (Services.PLATFORM.isModLoaded("ryoamiclights")) {
             RyoamicDynLightsModule.init();
         }
 
@@ -49,17 +41,6 @@ public class BackpackClient implements ClientModInitializer {
     }
 
     private static void registerReloadEvent() {
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
-            @Override
-            public ResourceLocation getFabricId() {
-                return null;
-            }
-
-            @Override
-            public void onResourceManagerReload(ResourceManager resourceManager) {
-                ItemTagRegistry.loadAllBackpackItems();
-            }
-        });
     }
 
     private static void registerClientTickEvent() {

@@ -4,11 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import xyz.faewulf.backpack.Constants;
-import xyz.faewulf.backpack.util.config.Config;
 import xyz.faewulf.backpack.util.config.ConfigScreen.CustomizeScreen;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.config.util.DummyPlayer;
-import xyz.faewulf.backpack.util.Misc;
+import xyz.faewulf.lib.util.System;
+import xyz.faewulf.lib.util.config.Config;
 
 import java.util.Objects;
 
@@ -19,7 +19,7 @@ public record DataBackPack(String name, String uuid, String model_id, String var
         if (Minecraft.getInstance().player != null && Objects.equals(Minecraft.getInstance().player.getUUID().toString(), uuid)) {
             ModConfigs.variant = variant_id;
             ModConfigs.backpack = model_id;
-            Config.save();
+            Config.save(Constants.MOD_ID);
 
             // Refresh data related to CustomizeScreen
             ClientLevel clientLevel = Minecraft.getInstance().level;
@@ -28,7 +28,7 @@ public record DataBackPack(String name, String uuid, String model_id, String var
             }
             CustomizeScreen.updateRequest = true;
 
-            Misc.sendSystemToast(Component.translatable("backpack.system.upload.syncLocal.done"), null);
+            System.sendSystemToast(Component.translatable("client_backpack.system.upload.syncLocal.done"), null);
         }
 
         Constants.PLAYER_INV_STATUS.computeIfPresent(name, (k, v) -> {

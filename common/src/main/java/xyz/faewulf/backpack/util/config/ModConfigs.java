@@ -1,5 +1,10 @@
 package xyz.faewulf.backpack.util.config;
 
+import xyz.faewulf.backpack.Constants;
+import xyz.faewulf.lib.util.config.Entry;
+import xyz.faewulf.lib.util.config.ModConfig;
+
+@ModConfig(mod_id = Constants.MOD_ID)
 public class ModConfigs {
 
     @Entry(category = "Client", name = "Enable mod", require_restart = false)

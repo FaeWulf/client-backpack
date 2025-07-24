@@ -140,9 +140,9 @@ public class DataSync {
     public static CompletableFuture<Void> sync(String uuid, @NotNull BackpackStatus status) {
         if (!isEnabled()) {
             if (ModConfigs._enable_cloud_sync)
-                Misc.sendSystemToast(
-                        Component.translatable("backpack.system.upload.cant_sync"),
-                        Component.translatable("backpack.system.upload.cant_sync.message")
+                xyz.faewulf.lib.util.System.sendSystemToast(
+                        Component.translatable("client_backpack.system.upload.cant_sync"),
+                        Component.translatable("client_backpack.system.upload.cant_sync.message")
                 );
 
             return CompletableFuture.completedFuture(null);
@@ -154,17 +154,17 @@ public class DataSync {
                 var future = new CompletableFuture<Void>();
                 future.completeExceptionally(new SyncingTooFrequentlyException());
 
-                Misc.sendSystemToast(
-                        Component.translatable("backpack.system.upload.cooldown"),
-                        Component.translatable("backpack.system.upload.cooldown.message")
+                xyz.faewulf.lib.util.System.sendSystemToast(
+                        Component.translatable("client_backpack.system.upload.cooldown"),
+                        Component.translatable("client_backpack.system.upload.cooldown.message")
                 );
                 return future;
             }
             lastSync = Instant.now();
         }
 
-        Misc.sendSystemToast(
-                Component.translatable("backpack.system.upload.syncing"),
+        xyz.faewulf.lib.util.System.sendSystemToast(
+                Component.translatable("client_backpack.system.upload.syncing"),
                 null
         );
 
@@ -246,8 +246,8 @@ public class DataSync {
 
             Constants.LOG.debug("Server responded to update: {}", response.body());
             Constants.LOG.info("Upload data success");
-            Misc.sendSystemToast(
-                    Component.translatable("backpack.system.upload.success"),
+            xyz.faewulf.lib.util.System.sendSystemToast(
+                    Component.translatable("client_backpack.system.upload.success"),
                     null
             );
         }, EXECUTOR);

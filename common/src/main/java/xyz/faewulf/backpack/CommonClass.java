@@ -1,14 +1,11 @@
 package xyz.faewulf.backpack;
 
-import com.mojang.datafixers.kinds.Const;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.Item;
 import xyz.faewulf.backpack.networking.networkConstants;
-import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.platform.Services;
-import xyz.faewulf.backpack.registry.ItemTagRegistry;
-import xyz.faewulf.backpack.util.DataSync;
+import xyz.faewulf.backpack.util.config.ModConfigs;
+import xyz.faewulf.lib.api.v1.client.ItemTagsLoader;
+import xyz.faewulf.lib.api.v1.config.ConfigHelper;
 
 public class CommonClass {
     public static void init() {
@@ -22,6 +19,8 @@ public class CommonClass {
         if (Services.PLATFORM.isDevelopmentEnvironment() && Services.PLATFORM.isClientSide())
             SharedConstants.IS_RUNNING_IN_IDE = true;
 
+        ConfigHelper.register(Constants.MOD_ID, ModConfigs.class);
+        ItemTagsLoader.register(Constants.RESOURCE_LOCATION);
         //load config, moved to util.mixinPlugin.ConditionalMixinPlugin method: onLoad()
         //Config.init();
 

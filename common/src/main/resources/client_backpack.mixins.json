@@ -12,5 +12,5 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "plugin": "xyz.faewulf.backpack.util.mixinPlugin.ConditionalMixinPlugin"
+  "plugin": "xyz.faewulf.lib.util.mixinPlugin.ConditionalMixinPlugin"
 }

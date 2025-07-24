@@ -10,9 +10,7 @@ import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,10 +27,10 @@ import xyz.faewulf.backpack.inter.API.SyncUnavailable;
 import xyz.faewulf.backpack.inter.API.SyncingTooFrequentlyException;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.DataSync;
-import xyz.faewulf.backpack.util.config.Config;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.config.util.DummyPlayer;
 import xyz.faewulf.backpack.util.Misc;
+import xyz.faewulf.lib.util.config.Config;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +42,7 @@ import static net.minecraft.client.gui.screens.inventory.InventoryScreen.renderE
 public class CustomizeScreen extends Screen {
     public static boolean updateRequest = false;
 
-    private static final String translatePath = "backpack.config.";
+    private static final String translatePath = "client_backpack.config.";
 
     //client
     private final Screen parent;
@@ -133,7 +131,7 @@ public class CustomizeScreen extends Screen {
                                 button -> {
                                 })
                         .width(80)
-                        .tooltip(Tooltip.create(Component.translatable("backpack.customize.model.tooltip.label")))
+                        .tooltip(Tooltip.create(Component.translatable("client_backpack.customize.model.tooltip.label")))
                         .build(),
                 1
         );
@@ -185,7 +183,7 @@ public class CustomizeScreen extends Screen {
                                 button -> {
                                 })
                         .width(80)
-                        .tooltip(Tooltip.create(Component.translatable("backpack.customize.variant.tooltip.label")))
+                        .tooltip(Tooltip.create(Component.translatable("client_backpack.customize.variant.tooltip.label")))
                         .build(),
                 1
         );
@@ -216,7 +214,7 @@ public class CustomizeScreen extends Screen {
 
         rowHelper.addChild(
                 Button.builder(
-                                Component.translatable("backpack.customize.preview.tools"),
+                                Component.translatable("client_backpack.customize.preview.tools"),
                                 button -> {
                                     showTools = !showTools;
 
@@ -242,14 +240,14 @@ public class CustomizeScreen extends Screen {
                                     }
                                 })
                         .width(80)
-                        .tooltip(Tooltip.create(Component.translatable("backpack.customize.preview.tools.tooltip")))
+                        .tooltip(Tooltip.create(Component.translatable("client_backpack.customize.preview.tools.tooltip")))
                         .build(),
                 1
         );
 
         rowHelper.addChild(
                 Button.builder(
-                                Component.translatable("backpack.customize.preview.lamb"),
+                                Component.translatable("client_backpack.customize.preview.lamb"),
                                 button -> {
                                     showLightSource = !showLightSource;
 
@@ -269,14 +267,14 @@ public class CustomizeScreen extends Screen {
                                     }
                                 })
                         .width(80)
-                        .tooltip(Tooltip.create(Component.translatable("backpack.customize.preview.lamb.tooltip")))
+                        .tooltip(Tooltip.create(Component.translatable("client_backpack.customize.preview.lamb.tooltip")))
                         .build(),
                 1
         );
 
         rowHelper.addChild(
                 Button.builder(
-                                Component.translatable("backpack.customize.preview.container"),
+                                Component.translatable("client_backpack.customize.preview.container"),
                                 button -> {
                                     showContainer = !showContainer;
 
@@ -300,14 +298,14 @@ public class CustomizeScreen extends Screen {
                                     }
                                 })
                         .width(80)
-                        .tooltip(Tooltip.create(Component.translatable("backpack.customize.preview.container.tooltip")))
+                        .tooltip(Tooltip.create(Component.translatable("client_backpack.customize.preview.container.tooltip")))
                         .build(),
                 1
         );
 
         rowHelper.addChild(
                 Button.builder(
-                                Component.translatable("backpack.customize.preview.banner"),
+                                Component.translatable("client_backpack.customize.preview.banner"),
                                 button -> {
                                     showBanner = !showBanner;
 
@@ -331,14 +329,14 @@ public class CustomizeScreen extends Screen {
                                     }
                                 })
                         .width(80)
-                        .tooltip(Tooltip.create(Component.translatable("backpack.customize.preview.banner.tooltip")))
+                        .tooltip(Tooltip.create(Component.translatable("client_backpack.customize.preview.banner.tooltip")))
                         .build(),
                 1
         );
 
         rowHelper.addChild(
                 Button.builder(
-                                Component.translatable("backpack.customize.preview.hideplayer"),
+                                Component.translatable("client_backpack.customize.preview.hideplayer"),
                                 button -> {
                                     hidePlayer = !hidePlayer;
 
@@ -348,7 +346,7 @@ public class CustomizeScreen extends Screen {
                                     this.dummyPlayer.setInvisible(hidePlayer);
                                 })
                         .width(80)
-                        .tooltip(Tooltip.create(Component.translatable("backpack.customize.preview.hideplayer.tooltip")))
+                        .tooltip(Tooltip.create(Component.translatable("client_backpack.customize.preview.hideplayer.tooltip")))
                         .build(),
                 1
         );
@@ -361,19 +359,19 @@ public class CustomizeScreen extends Screen {
 
         rowHelper_QuitSaveLayout.addChild(
                 Button.builder(
-                                Component.translatable("backpack.customize.exit"),
+                                Component.translatable("client_backpack.customize.exit"),
                                 button -> {
                                     this.onClose();
                                 })
                         .width(80)
-                        .tooltip(Tooltip.create(Component.translatable("backpack.customize.exit.tooltip")))
+                        .tooltip(Tooltip.create(Component.translatable("client_backpack.customize.exit.tooltip")))
                         .build(),
                 1
         );
 
         rowHelper_QuitSaveLayout.addChild(
                 Button.builder(
-                                Component.translatable("backpack.customize.save"),
+                                Component.translatable("client_backpack.customize.save"),
                                 button -> {
                                     this.saveConfig();
 
@@ -395,7 +393,7 @@ public class CustomizeScreen extends Screen {
                                     this.onClose();
                                 })
                         .width(80)
-                        .tooltip(Tooltip.create(Component.translatable("backpack.customize.save.tooltip")))
+                        .tooltip(Tooltip.create(Component.translatable("client_backpack.customize.save.tooltip")))
                         .build(),
                 1
         );
@@ -464,11 +462,11 @@ public class CustomizeScreen extends Screen {
 
         if (result == null) {
             button_Status.setMessage(Component.literal("✔").withStyle(ChatFormatting.GREEN));
-            button_Status.setTooltip(Tooltip.create(Component.translatable("backpack.customize.online_status.normal")));
+            button_Status.setTooltip(Tooltip.create(Component.translatable("client_backpack.customize.online_status.normal")));
             syncCloudToLocal();
         } else {
             button_Status.setMessage(Component.literal("❌").withStyle(ChatFormatting.RED));
-            button_Status.setTooltip(Tooltip.create(Component.translatable("backpack.customize.online_status.error")));
+            button_Status.setTooltip(Tooltip.create(Component.translatable("client_backpack.customize.online_status.error")));
         }
     }
 
@@ -476,7 +474,7 @@ public class CustomizeScreen extends Screen {
         if (Minecraft.getInstance().player != null) {
             DataSync.UPDATE_QUEUE.put(Minecraft.getInstance().player.getName().getString(), Minecraft.getInstance().player.getStringUUID());
             DataSync.requestUpdateData();
-            Misc.sendSystemToast(Component.translatable("backpack.system.upload.syncLocal"), null);
+            xyz.faewulf.lib.util.System.sendSystemToast(Component.translatable("client_backpack.system.upload.syncLocal"), null);
         }
     }
 
@@ -506,7 +504,7 @@ public class CustomizeScreen extends Screen {
     private void saveConfig() {
         ModConfigs.backpack = this.modelList.get(model_index);
         ModConfigs.variant = this.variantList.get(variant_index);
-        Config.save();
+        Config.save(Constants.MOD_ID);
 
         //update model for player
         if (Minecraft.getInstance().player != null) {

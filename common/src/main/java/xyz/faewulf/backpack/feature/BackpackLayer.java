@@ -7,9 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -30,9 +28,9 @@ import xyz.faewulf.backpack.networking.Packet_Handle_BackpackData;
 import xyz.faewulf.backpack.platform.Services;
 import xyz.faewulf.backpack.registry.BackpackModelRegistry;
 import xyz.faewulf.backpack.util.PoseHelper;
-import xyz.faewulf.backpack.util.Compare;
 import xyz.faewulf.backpack.util.config.ModConfigs;
 import xyz.faewulf.backpack.util.Converter;
+import xyz.faewulf.lib.util.Compare;
 
 public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
     public BackpackLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent) {
@@ -161,7 +159,7 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
                 ItemStack itemStack = backpackStatus.getToolsList().get(index);
 
                 //first weapon will hold in the back till out of weapon slot
-                if (Compare.isHasTagClient(itemStack.getItem(), "weapon")
+                if (Compare.isHasTagClient(itemStack.getItem(), Constants.RESOURCE_LOCATION + ":" + "weapon")
                         && (detailBackpack.back_tool != null && index_backTool < detailBackpack.back_tool.size())
                 ) {
                     //render

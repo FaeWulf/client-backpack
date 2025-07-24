@@ -7,11 +7,6 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "client": [
-    "ClientLevelMixin",
-    "ClientPlayerMixin",
-    "LivingEntityRendererMixin",
-    "PlayerEntityRendererMixin"
-  ],
-  "plugin": "xyz.faewulf.backpack.util.mixinPlugin.ConditionalMixinPlugin"
+  "client": ["ClientPlayerMixin", "LivingEntityRendererMixin", "ModInfoScreenMixin", "PlayerEntityRendererMixin"],
+  "plugin": "xyz.faewulf.lib.util.mixinPlugin.ConditionalMixinPlugin"
 }
