@@ -20,7 +20,7 @@ dependencies {
     //implementation("com.moulberry:mixinconstraints:1.0.1")
 
     // mods
-    compileOnly("maven.modrinth:travelersbackpack:${travelersbackpack_neoforge}")
+    compileOnly("maven.modrinth:travelersbackpack:${travelersbackpack_neoforge}-neoforge,${minecraft_version}")
     compileOnly("maven.modrinth:sophisticated-backpacks:Z6CXO9sQ")
     compileOnly("maven.modrinth:ryoamiclights:tApwsw9C")
 

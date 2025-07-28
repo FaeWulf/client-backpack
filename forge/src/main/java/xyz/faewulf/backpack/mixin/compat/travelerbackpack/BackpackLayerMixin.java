@@ -1,6 +1,7 @@
 package xyz.faewulf.backpack.mixin.compat.travelerbackpack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,7 +17,7 @@ import xyz.faewulf.backpack.util.config.ModConfigs;
 @Mixin(targets = "com.tiviacz.travelersbackpack.client.renderer.BackpackLayer")
 public class BackpackLayerMixin {
     @Inject(method = "renderBackpackLayer", at = @At("HEAD"), cancellable = true)
-    private static void renderBackpackLayerInjection(HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack, CallbackInfo ci) {
+    private static void renderBackpackLayerInjection(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack, CallbackInfo ci) {
         if (ModConfigs.__enable_mod)
             ci.cancel();
     }

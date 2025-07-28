@@ -48,7 +48,7 @@ dependencies {
     modCompileOnly("maven.modrinth:inmis:le0fuSb3")
 
     modCompileOnly("maven.modrinth:sophisticated-backpacks-(unoffical-fabric-port):gpSJccbD")
-    modCompileOnly("maven.modrinth:travelersbackpack:${travelersbackpack_fabric}")
+    modCompileOnly("maven.modrinth:travelersbackpack:${travelersbackpack_fabric}-fabric,${minecraft_version}")
 }
 
 loom {
