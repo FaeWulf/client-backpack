@@ -70,6 +70,8 @@ jar {
 
     from(rootProject.file("CHANGELOG.md"))
 
+    from(rootProject.file("CHANGELOG_FULL.md"))
+
     manifest {
         attributes([
                 'Specification-Title'   : mod_name,
@@ -83,6 +85,21 @@ jar {
     }
 }
 
+if (project.name.contains("forge") && !project.name.contains("neoforge")) {
+    afterEvaluate {
+        tasks.named('jarJar').configure {
+            archiveClassifier.set('')
+
+            from(rootProject.file('LICENSE')) {
+                rename { "${it}_${mod_name}" }
+            }
+
+            from(rootProject.file("CHANGELOG.md"))
+
+            from(rootProject.file("CHANGELOG_FULL.md"))
+        }
+    }
+}
 processResources {
     var expandProps = [
             'version'                      : version,

@@ -139,11 +139,15 @@ public class DataSync {
 
     public static CompletableFuture<Void> sync(String uuid, @NotNull BackpackStatus status) {
         if (!isEnabled()) {
-            if (ModConfigs._enable_cloud_sync)
+            if (ModConfigs._enable_cloud_sync) {
                 xyz.faewulf.lib.util.System.sendSystemToast(
                         Component.translatable("client_backpack.system.upload.cant_sync"),
                         Component.translatable("client_backpack.system.upload.cant_sync.message")
                 );
+
+                Constants.LOG.warn("[Sync] Your client is offline, sync service only works with online minecraft account.");
+            }
+
 
             return CompletableFuture.completedFuture(null);
         }

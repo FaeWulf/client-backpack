@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "xyz.faewulf.backpack.mixin",
+  "compatibilityLevel": "JAVA_18",
+  "mixins": ["ItemStackHandlerInvoker"],
+  "client": ["compat.travelerbackpack.BackpackLayerMixin"],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

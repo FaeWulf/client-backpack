@@ -11,7 +11,7 @@ plugins {
 //custom task
 tasks.register('copyJars', Copy) {
 
-    dependsOn ':fabric:build', ':neoforge:build' // Make sure subprojects are built
+    dependsOn ':fabric:build', ':neoforge:build', ':forge:build'// Make sure subprojects are built
 
     from('fabric/build/libs') {
         include("*${project.version}.jar")
@@ -23,12 +23,17 @@ tasks.register('copyJars', Copy) {
         exclude('*-javadoc.jar', '*-sources.jar', '*-orphaned.jar')
     }
 
+    from('forge/build/libs') {
+        include("*${project.version}.jar")
+        exclude('*-javadoc.jar', '*-sources.jar', '*-orphaned.jar')
+    }
+
     into 'build/'
 }
 
 // Trigger the copyJars task after the subprojects' builds are done
 gradle.projectsEvaluated {
-    copyJars.mustRunAfter ':fabric:build', ':neoforge:build'
+    copyJars.mustRunAfter ':fabric:build', ':neoforge:build', ':forge:build'
 }
 
 // Add a custom task to trigger the copy process
@@ -37,7 +42,7 @@ tasks.register('buildAll') {
     description = 'Builds and copies the main JARs from subprojects to the root build folder.'
 
     //delete(fileTree("build/"))
-    dependsOn ':fabric:build', ':neoforge:build', copyJars
+    dependsOn ':fabric:build', ':neoforge:build', ':forge:build', copyJars
 }
 
 // Tasks for publish
@@ -46,7 +51,7 @@ tasks.register('publishAllToModrinth') {
     description = 'Publish all subproject artifacts to Modrinth'
 
     //delete(fileTree("build/"))
-    dependsOn ':fabric:publishModrinth', ':neoforge:publishModrinth'
+    dependsOn ':fabric:publishModrinth', ':neoforge:publishModrinth', ':forge:publishModrinth'
 }
 
 tasks.register('publishAllToCurseforge') {
@@ -54,7 +59,7 @@ tasks.register('publishAllToCurseforge') {
     description = 'Publish all subproject artifacts to Curseforge'
 
     //delete(fileTree("build/"))
-    dependsOn ':fabric:publishCurseforge', ':neoforge:publishCurseforge'
+    dependsOn ':fabric:publishCurseforge', ':neoforge:publishCurseforge', ':forge:publishCurseforge'
 }
 
 tasks.register('publishAllToAll') {
@@ -99,19 +104,31 @@ subprojects { subproject ->
                     setLoaders("Fabric", "Quilt")
                     setDisplayName("[Fabric ${minecraft_version}] ${mod_name} v${project.version}")
                     modrinthDepends {
-                        required "fabric-api"
+                        required "fabric-api", "faewulfslib"
                     }
                     curseDepends {
-                        required "fabric-api"
+                        required "fabric-api", 'faewulfs-lib'
                     }
                     break
                 case "forge":
                     setLoaders("Forge", "NeoForge")
                     setDisplayName("[Forge ${minecraft_version}] ${mod_name} v${project.version}")
+                    modrinthDepends {
+                        required "faewulfslib"
+                    }
+                    curseDepends {
+                        required 'faewulfs-lib'
+                    }
                     break
                 case "neoforge":
                     setLoaders("NeoForge")
                     setDisplayName("[NeoForge ${minecraft_version}] ${mod_name} v${project.version}")
+                    modrinthDepends {
+                        required "faewulfslib"
+                    }
+                    curseDepends {
+                        required 'faewulfs-lib'
+                    }
                     break
             }
         }

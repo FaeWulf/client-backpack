@@ -48,5 +48,5 @@ public class Constants {
     public static boolean RYOAMMIC_LIGHTS_LOADED = false;
 
     public static final String WEBSITE = "https://faewulf.xyz/";
-    public static final String SOURCE_CODE = "https://github.com/FaeWulf/";
+    public static final String SOURCE_CODE = "https://github.com/FaeWulf/client-backpack/";
 }

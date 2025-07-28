@@ -38,6 +38,10 @@ pluginManagement {
         }
 
         maven {
+            url = 'https://maven.parchmentmc.org'
+        }
+
+        maven {
             url "https://maven.firstdark.dev/releases"
         }
 
@@ -54,4 +58,4 @@ rootProject.name = 'Client-Backpack-1.21'
 include('common')
 include('fabric')
 include('neoforge')
-//include('forge')
+include('forge')
